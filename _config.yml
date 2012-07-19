@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://williamherry.github.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://williamherry.com
+title: William's Blog with Octopress
+subtitle: Octopress is A blogging framework for hackers.
+author: William Herry
 simple_search: http://google.com/search
 description:
 
