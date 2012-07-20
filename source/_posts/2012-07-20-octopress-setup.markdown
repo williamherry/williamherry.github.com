@@ -14,6 +14,8 @@ Octopress是一个非常优秀的博客框架,现在已经有越来越多的人�
 - 将博客托管到Github上
 - 我对主题做的一些修改
 
+<!-- more -->
+
 ## 搭建Octopress
 
 Octopress需要Git和Ruby 1.9.2,Git的安装比较简单,下面我们看一下Ruby1.9.2的安装(我的系统是Ubuntu12.04)
