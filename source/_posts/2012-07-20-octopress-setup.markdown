@@ -114,6 +114,8 @@ rake preview
 
 ### 将博客部署到Github上去
 
+主要参考的[这篇博文](http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one)
+
 Octopress可以托管到[Github](https://github.com),[Heroku](http://heroku.com)或者自己有主机通过rsync部署到上面,rsync的方式我没有试过(我没有主机),我只试过Github和Heroku,个人感觉Heroku更好一点,添加自己的域名要比Github方便,但非常蛋疼的一点是Heroku好像被我们亲爱的祖国墙到了外面,所以只能用Github了
 
 要将Octopress托管到Github上需要在Github上有一个帐号,并且创建了个类似username.github.com的仓库(例如我的帐号名为`williamherry`,那么我就要创建一个名为`williamherry.github.com`的仓库),如果还没有点[这里](https://github.com/new)创建一个
