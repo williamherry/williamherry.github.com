@@ -3,7 +3,7 @@ layout: post
 title: "VIM练级日记03-配对外挂Surround"
 date: 2012-07-21 22:46
 comments: true
-categories: 
+categories:
 ---
 
 写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): `(` `)` `[` `]` `{` `}` `<` `>` `'` `"`，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.
@@ -97,3 +97,7 @@ Old text              Command         New text
 ```
 
 基本的使用就这些,一些高级的我自己还没搞清楚,比如加surrounding的时候自动缩进等等
+
+这里还有一个Youtube上的视频
+
+{% youtube 5HF4jSyPpvs %}

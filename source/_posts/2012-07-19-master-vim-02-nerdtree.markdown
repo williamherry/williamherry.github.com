@@ -3,7 +3,7 @@ layout: post
 title: "VIM练级日记02-目录外挂NERDTree"
 date: 2012-07-19 19:16
 comments: true
-categories: 
+categories:
 ---
 
 ## NERDTree简介
@@ -12,9 +12,13 @@ categories:
 
 NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.
 
-看一下它的效果图
+看一下它的效果图(可以在图片上右键选择`view image`看高清大图)
 
 {% img /images/nerdtree/nerdtree.png %}
+
+这里还有一个Youtube上的视频演示
+
+{% youtube CPu9mDpSYj0 %}
 
 ## 安装使用
 
@@ -38,18 +42,18 @@ nmap <F2> :NERDTreeToggle <CR>
 
 这里是NERDTree中的一些按键
 
-`o` 打开关闭文件或者目录  
-`t` 在标签页中打开  
-`T` 在后台标签页中打开  
-`!` 执行此文件  
-`p` 到上层目录  
-`P` 到根目录  
-`K` 到第一个节点  
-`J` 到最后一个节点  
-`u` 打开上层目录  
-`m` 显示文件系统菜单（添加、删除、移动操作）  
-`?` 帮助  
-`q` 关闭   
+`o` 打开关闭文件或者目录
+`t` 在标签页中打开
+`T` 在后台标签页中打开
+`!` 执行此文件
+`p` 到上层目录
+`P` 到根目录
+`K` 到第一个节点
+`J` 到最后一个节点
+`u` 打开上层目录
+`m` 显示文件系统菜单（添加、删除、移动操作）
+`?` 帮助
+`q` 关闭
 
 ## 问题
 
