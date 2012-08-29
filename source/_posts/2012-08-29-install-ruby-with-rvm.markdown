@@ -48,6 +48,12 @@ sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl 
 sudo apt-get install python-dev
 ```
 
+如果你要使用`tk`,安装ruby前安装`tk-dev`可以省去好多麻烦
+
+```
+sudo apt-get install tk-dev
+```
+
 最后安装ruby
 
 ```
