@@ -54,6 +54,12 @@ sudo apt-get install python-dev
 sudo apt-get install tk-dev
 ```
 
+如果要使用rails,安装这些可以省去好多麻烦
+
+```
+sudo apt-get install build-essential git-core curl libmysqlclient-dev nodejs
+```
+
 最后安装ruby
 
 ```
@@ -64,7 +70,7 @@ rvm install 1.9.3
 
 ```
 source ~/.rvm/scripts/rvm
-rvm use 1.9.3
+rvm use 1.9.3 --default
 ```
 
 打完收工
