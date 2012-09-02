@@ -1,0 +1,111 @@
+---
+layout: post
+title: "Chef问题及小知识汇总(持续更新)"
+date: 2012-08-31 09:00
+comments: true
+categories:
+---
+
+Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了
+
+## Centos6.2下Chef-server的安装
+
+目前的知道的在Centos6.2下面安装Chef-server的最方便的方法是执行下面的命令
+
+``` ruby
+rpm -Uvh http://rbel.frameos.org/rbel6
+yum -y install rubygem-chef-server
+service iptables stop
+setup-chef-server.sh
+```
+
+上面的命令已经可以安装并启动所有chef-servef需要的服务了,再加上下面的命令配置一个管理的客户端
+
+``` ruby
+knife configure -i  # 然后一路回车
+```
+
+Note: 以上方面来自[Installing Chef Server 0.10 in RHEL 6](http://blog.frameos.org/2011/05/19/installing-chef-server-0-10-in-rhel-6-scientificlinux-6/)
+
+## Centos6.2下chef-client的安装
+
+从Rackspace开发的部署Openstack的Cookbook里找到的方法,可以通过以下命令安装chef-client
+
+``` ruby
+curl -L http://opscode.com/chef/install.sh | bash
+```
+
+上面的命令会在/opt/chef/下安装chef-client需要的所有东西,好处除了方便外还有就是它是一个独立的环境,可以和系统的ruby完全分开,还有就是它使用的ruby是1.9,有些比较新的cookbook可能需要ruby 1.9才可以工作
+
+## Bootstrap的时候报错
+
+利用bootstrap来配置客户端有时会报下面的错
+
+``` ruby
+error as follows:Bootstrapping Chef on xxx.xxx.xxx.xxx
+ERROR: TypeError: can’t convert false into String
+```
+
+这个算是比较变态的报错了,你从报错信息不好判断哪里出了问题.实际上这个报错的原因是它找不到bootstrap的脚本,例如你在bootstrap的时候加参数`-d centos6`,它会在当前目标下找`.chef/bootstrap/centos6.erb`,找不到就会报这个错,所以解决办法是`cd ~`后再执行,一般`.chef`这个目录都在用户主目录下面
+
+## 批量执行命令(ssh)错误
+
+有时候Chef利用SSH批量执行命令的时候会报类似下面的错
+
+``` ruby
+knife ssh "node:test3.chef.com" 'uptime' -VV
+DEBUG: Using configuration from /root.chef/knife.rb
+DEBUG: Signing the request as root
+DEBUG: Sending HTTP Request via GET to server.chef.com:4000/search/node
+FATAL: No nodes requrned from search!
+```
+
+但是用`knife search node "name:test3.chef.com"`确可以找到这个Node,这里的出错信息也不容易确定问题出在哪儿,实际上`knife ssh`会利用Node的FQDN(就是主机名)去连,如果连不上就会报这个错,解决办法是加上`-a ipaddress`参数明确指定使用IP地址去连接
+
+## Rabbitmq-server服务启动失败
+
+Chef和Openstack都用到了这个软件,我感觉这个软件比较变态,跟个老古董一样,动不动就装死不启动,日志里也不说人话,我目前只知道两个引起它启动失败的原因,一个是主机名,一个是qpidd这个服务已经启动,它也使用5672端口,rabbitmq-server再要绑到这个口上面就会失败.所以,下次如果rabbitmq-server启动不起来,可以先试试这两个
+
+## 利用Bootstrap初始化的Client去连`localhost`
+
+也就是用Bootstrap给Client生成的`/etc/chef/client.rb`配置文件里的`chef_server_url`不对,那么Bootstrap脚本是从哪里得到的`chef_server_url`的值呢,就我所知它是读Chef管理员的`~/.chef/knife.rb`这个文件里的信息,所以解决办法就是把`~/.chef/knife.rb`这个文件里的`chef_server_url`改成chef-server的IP地址
+
+## 打印日志帮助除错
+
+有时候自己写的recipe不按自己的预期工作,又找不出问题的原因,这时可能会想能不能有像C语言里的print一样把一些变量的值打印出来帮助除错,在chef里可以用LOG的方法做到
+
+很简单,只要在recipe中加入一行
+
+``` ruby
+Chef::Log.info("Hello, world!")
+```
+
+客户端执行的时候就会多一条info级别的日志:
+
+``` ruby
+[Sat, 01 Sep 2012 22:50:01 -0700] INFO: Hello, world!
+```
+
+debug和error都是支持的(debug需要将`/etc/chef/client.rb`里的`log_level`改来`:debug`才可以看到)
+
+## 使用每个Client特有的属性(IP地址)
+
+比如MySQL的配置,我希望它监听到自己的IP地址上而不是`0.0.0.0`, 应该怎么做呢?
+
+首先我们定义这个属性
+
+{% codeblock vim /var/chef/cookbooks/mysql/attributes/default.rb lang:ruby %}
+default['mysql']['bind_address'] = ipaddress
+{% endcodeblock %}
+
+这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的功能打印出来看对不对
+
+``` ruby
+Chef::Log.info("MySQL Binding on: #{node['mysql']['bind_address']}")
+```
+
+Note: 注意定义的时候使用的是`default`,使用的时候用`node`
+
+
+
+
