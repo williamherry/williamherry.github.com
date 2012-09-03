@@ -86,7 +86,7 @@ Chef::Log.info("Hello, world!")
 [Sat, 01 Sep 2012 22:50:01 -0700] INFO: Hello, world!
 ```
 
-debug和error都是支持的(debug需要将`/etc/chef/client.rb`里的`log_level`改来`:debug`才可以看到)
+debug和error都是支持的(debug需要将`/etc/chef/client.rb`里的`log\_level`改来`:debug`才可以看到)
 
 ## 使用每个Client特有的属性(IP地址)
 
@@ -98,14 +98,82 @@ debug和error都是支持的(debug需要将`/etc/chef/client.rb`里的`log_level
 default['mysql']['bind_address'] = ipaddress
 {% endcodeblock %}
 
-这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的功能打印出来看对不对
+这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的方法打印出来看对不对
 
 ``` ruby
 Chef::Log.info("MySQL Binding on: #{node['mysql']['bind_address']}")
 ```
 
 Note: 注意定义的时候使用的是`default`,使用的时候用`node`
+Note: `ipaddress`是客户端的`ohai`收集的,要想知道还有哪些类似`ipaddress`的属性,在客户端执行`ohai`就可以看到了
+Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以你自己定义这样的属性会被替换
 
+## 生成随机密码
 
+把密码直接写死在cookbook里可能不是个好主意,更通用的方法是使用随机密码
 
+要使用随机密码需要`openssl`这个cookbook的支持,所以先下载并上传到我们的chef-server上去
+
+``` ruby
+cd
+mkdir cookbooks
+cd cookbooks
+knife cookbook site download openssl
+tar xf openssl*
+knife cookbook upload -o . openssl
+```
+
+在需要用到`openssl`的cookbook的`metadata.rb`文件中加入depends
+
+``` ruby
+depends "openssl"
+```
+
+加这条的意思就是说我会用到`openssl`这个cookbook,客户端下载cookbook的时候一并下载回去,如果没有这一条会报下面的错
+
+``` ruby
+[Sun, 02 Sep 2012 01:50:52 -0700] FATAL: NameError: uninitialized constant Chef::Recipe::Opscode
+```
+
+下面就可以在recipe中使用了,下面是mysql中的例子
+
+``` ruby
+::Chef::Recipe.send(:include, Opscode::OpenSSL:Password)
+
+node.set_unless['mysql']['server_root_password'] = secure_password
+
+Chef::Log.info("Random Password: #{node['mysql']['server_root_password']}")
+```
+
+## MySQL设置密码的问题(Redhat系)
+
+这个问题我花了一下午才搞明白,如果不想听我细细说来,只想知道重点,那么你只要知道MySQL的cookbook还会在root的家目录里创建一个`.my.cnf`的文件就可以了
+
+我们先来了解一个它是怎么设置密码了,首先看下面的resource
+
+``` ruby
+unless platform?(%w{debian ubuntu})
+
+  execute "assign-root-password" do
+    command "#{node['mysql']['mysqladmin_bin']} -u root password \"#{node['mysql']['server_root_password']}\""
+    action :run
+    only_if "#{node['mysql']['mysql_bin']} -u root -e 'show databases;'"
+  end
+
+end
+```
+
+如果platform不是debian或ubuntu(即Redhat系),那么只有在"#{node['mysql']['mysql_bin']} -u root -e 'show databases;'"执行成功的时候才执行"#{node['mysql']['mysqladmin_bin']} -u root password \"#{node['mysql']['server_root_password']}\"". mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置
+
+``` ruby
+execute "mysql-install-privileges" do
+  command "#{node['mysql']['mysql_bin']} -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }\"#{node['mysql']['server_root_password']}\" < #{grants_path}"
+  action :nothing
+  subscribes :run, resources("template[#{grants_path}]"), :immediately
+end
+```
+
+我遇到的问题是这样的,Rackspack公司基于Ubuntu12.04做了安装Openstack的cookbook,由于Chef抽象的特性,理论上应该在CentOS上也能用,所以我拿过来做测试.整个过程太长,不可能一次成功,出错后做一些修改然后让它再跑,系统环境应该要做一些还原,我是把mysql-server删除,然后把`/var/lib/mysql`也删除,这样重新安装后就回到空密码了
+
+问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用`~/.my.cnf`里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:-(
 

@@ -101,3 +101,16 @@ Old text              Command         New text
 这里还有一个Youtube上的视频
 
 {% youtube 5HF4jSyPpvs %}
+
+### 更新
+
+选中,更改,删除和复制引号(`'` `"` `{`....)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了
+
+```
+ci' ci" ci( ci[ ci{ ci< - 更改这些配对标点符号中的内容
+di' di" di( di[ di{ di< - 删除这些配对标点符号中的内容
+yi' yi" yi( yi[ yi{ yi< - 复制这些配对标点符号中的内容
+vi' vi" vi( vi[ vi{ vi< - 选中这些配对标点符号中的内容
+```
+
+如果把上面的`i`改在`a`可以连配对标点一起操作
