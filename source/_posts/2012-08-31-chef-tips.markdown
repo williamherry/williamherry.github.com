@@ -177,3 +177,23 @@ end
 
 问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用`~/.my.cnf`里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:-(
 
+## 配置chef-client周期性唤起时间
+
+chef-client会周期性的每隔一段时间+随机时间启动,这个时间的配置在Debian系和Redhat系不一样,这里记录一下,Debian系中是`/etc/default/chef-client`,Redhat系是`/etc/sysconfig/chef-client`
+
+## 提示认证失败
+
+有时可能会遇到这样的错误
+
+``` ruby
+ERROR: Failed to authenticate to http://xxx.xxx.xxx.xxx:4000 as root with key /root/.chef/root.pem
+Response: Failed to authenticate. Ensure that your client key is valid.
+```
+
+如果你的这个客户端以前认证没有问题,那么可以排除key不对的原因,这个key一般不会发霉变质的.也不是时间不同步的问题,因为如果是时间不同步,报错应该像下面的样子,并提示你同步时间
+
+``` ruby
+[Wed, 11 Dec 2013 12:12:32 -0800] Info: HTTP Request Returned 401 Unauthorized: Failed to authenticate. Please synchronize the clock on your client
+```
+
+这个问题有可能是chef-server上的couchdb服务没有启动引起了,我遇到几次都是这样,所以有时间chef-server不按预期的工作的时候,不公要检查chef-server,相关的服务也要检查

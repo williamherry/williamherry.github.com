@@ -53,3 +53,11 @@ sudo apt-get install weechat
 知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用`Ctrl + P`和`Ctrl + N`来切换,聊天的内容不能通过滚动鼠标滚轮来查看,需要按`PageUp`和`PageDown`
 
 更多的高级的使用可以看它的[手册页](http://www.weechat.org/doc/)
+
+### 更新
+
+使用weechat会有连不上freenode的问题,解决办法是端口改成8001
+
+```
+/set irc.server.freenode.addresses "chat.freenode.net/8001"
+```
