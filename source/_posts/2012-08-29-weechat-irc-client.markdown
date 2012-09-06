@@ -50,14 +50,37 @@ sudo apt-get install weechat
 /set irc.server.freenode.autojoin "#channel1,#channel2"
 ```
 
-知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用`Ctrl + P`和`Ctrl + N`来切换,聊天的内容不能通过滚动鼠标滚轮来查看,需要按`PageUp`和`PageDown`
+知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用`Ctrl + P`和`Ctrl + N`来切换,聊天的内容不能通过滚动鼠标滚轮来查看(可以了,看更新),需要按`PageUp`和`PageDown`
 
 更多的高级的使用可以看它的[手册页](http://www.weechat.org/doc/)
 
-### 更新
+## 更新
 
-使用weechat会有连不上freenode的问题,解决办法是端口改成8001
+### 使用weechat会有连不上freenode的问题
+
+解决办法是端口改成8001
 
 ```
 /set irc.server.freenode.addresses "chat.freenode.net/8001"
+```
+
+### 加入鼠标然支持
+
+启动鼠标支持
+
+``` ruby
+/moune enable
+```
+
+启动weechat的时候就支持鼠标
+
+``` ruby
+/set weechat.look.mouse on
+```
+
+### 屏蔽无关信息
+经常会有一些`aaa join the channel, bbb leave this channel`等的信息,屏蔽的方法是
+
+``` ruby
+/filter add irc_smart *,!*weechat* irc_smart_filter *
 ```

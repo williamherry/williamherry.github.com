@@ -197,3 +197,37 @@ Response: Failed to authenticate. Ensure that your client key is valid.
 ```
 
 这个问题有可能是chef-server上的couchdb服务没有启动引起了,我遇到几次都是这样,所以有时间chef-server不按预期的工作的时候,不公要检查chef-server,相关的服务也要检查
+
+## 有条件的执行
+
+有时候一些资源可以希望在特定的条件下才执行,这时可以用`only_if`和`not_if`来实现,如下面的例子
+
+``` ruby
+template "/tmp/somefile" do
+  mode "0644"
+  source "somefile.erb"
+  not_if "test -f /etc/passwd"
+end
+```
+
+如果只是判断文件是否存在,下面的方法更常用
+
+``` ruby
+template "/tmp/somefile" do
+  mode "0644"
+  source "somefile.erb"
+  not_if do
+    File.exists?("/etc/passwd")
+  end
+end
+```
+或
+
+``` ruby
+template "/tmp/somefile" do
+  mode "0644"
+  source "somefile.erb"
+  not_if { File.exists?("/etc/passwd") }
+end
+```
+
