@@ -84,3 +84,9 @@ sudo apt-get install weechat
 ``` ruby
 /filter add irc_smart *,!*weechat* irc_smart_filter *
 ```
+
+### 去掉用户发言前面的时间
+
+``` ruby
+/set weechat.look.buffer_time_format  ""
+```
