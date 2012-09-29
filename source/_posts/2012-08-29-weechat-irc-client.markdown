@@ -90,3 +90,12 @@ sudo apt-get install weechat
 ``` ruby
 /set weechat.look.buffer_time_format  ""
 ```
+
+### 让给自己的信息在桌面上显示
+
+只要安装一个插件然后重启weechat就可以了
+
+``` ruby
+cd ~/.weechat/python/autoload
+wget http://www.weechat.org/files/scripts/notify.py
+```

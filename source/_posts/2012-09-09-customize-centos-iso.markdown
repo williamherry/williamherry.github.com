@@ -20,7 +20,7 @@ ISO的定制简单来说就是将ISO挂载,修改里面的内容然后打包回�
 - 安装需要要的软件包
 
 ```
-yum -y installl genisoimage createrepo
+yum -y install genisoimage createrepo
 ```
 
 - 挂载ISO
