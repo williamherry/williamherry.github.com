@@ -1,0 +1,81 @@
+---
+layout: post
+title: "轻量级Resources和Providers"
+date: 2012-10-09 20:18
+comments: true
+categories:
+---
+
+## 概述
+
+Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers
+
+如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:
+
+``` ruby
+apt_repository "zenoss" do
+  uri "http://dev.zenoss.org/deb"
+  components ["main","stable"]
+  action :add
+end
+```
+
+那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)
+
+这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: [Lightweight Resources and Providers](http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29)
+
+在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子
+
+``` ruby
+package "vim" do
+  version "1.16.1-1"
+  action :install
+end
+```
+
+这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.
+
+那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是`yum -y install vim`或`apt-get install vim`.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象
+
+## 文件位置
+
+轻量级(或叫自定义)Resources和Providers分区从cookbook的`resources`和`providers`目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为`default.rb`.在这种情况下Resources和Providers的名字仅是cookbook的名字
+
+### 例子
+
+Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP
+
+``` ruby
++----------------------------------------------------------------------------------------+-------------------------------------+
+| Filename                               | Resource or Provider Name, as used in the DSL | Generated Class                     |
++----------+-----------------------------+-----------------------------------------------+-------------------------------------+
+| /cookbooks/aws/resources/default.rb    | aws                                           | Chef::Resource::Aws                 |
++----------------------------------------+-----------------------------------------------+-------------------------------------+
+| /cookbooks/aws/resources/elastic_ip.rb | aws_elastic_ip                                | Chef::Resourcesce::AwsElasticIp     |
++----------------------------------------+-----------------------------------------------+-------------------------------------+
+| /cookbooks/aws/providers/default.rb    | aws                                           | Chef::Providerser::Aws              |
++----------------------------------------+-----------------------------------------------+-------------------------------------+
+| /cookbooks/aws/providers/elastic_ip.rb | aws_elastic_ip                                | Chef::Providerrovider::AwsElasticIp |
++----------------------------------------+-----------------------------------------------+-------------------------------------+
+```
+
+## Resources
+
+前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的
+
+## Providers
+
+Providers就是支持Resources的,它可以通过实例变量`@new_resource`做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了
+
+下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递
+
+## 简单的例子
+
+这个例子我们简单的封装一个内容Resource类型`user`得到一个LWRP
+
+首先我们利用knife命令创建cookbook的目录结构
+
+    knife cookbook users
+
+然后我们直接在resources目录下创建我们的resource
+
