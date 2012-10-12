@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "使用Ngins+SSL代理chef-server"
+title: "使用Nginx+SSL代理chef-server"
 date: 2012-10-12 21:09
 comments: true
 categories:
