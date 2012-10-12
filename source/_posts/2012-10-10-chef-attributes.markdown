@@ -102,4 +102,114 @@ node.default["apache"]["listen_ports"] = [ "80","443" ]
 - default
 - normal(or set)
 
+### Cookbook中属性文件的加载顺序
 
+Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用`include_attribute`方法.像这样:
+
+{% codeblock include\_attribute lang:ruby %}
+include_attribute "rails"
+node.set['apache2']['proxy_to_unicorn'] = node['rails']['use_unicorn']
+{% endcodeblock %}
+
+这会在继续处理当前属性之前首先加载`rails/attributes/defaults.rb`
+
+双冒号的写法也适用于`include_attribute`
+
+{% codeblock include\_attribute lang:ruby %}
+include_attribute "rails::tunables"
+node.set['apache2']['proxy_to_unicorn'] = node['rails']['use_unicorn']
+{% endcodeblock %}
+
+这会加载rails cookbook中的`attributes/tunables.rb`文件
+
+### 从Recipes中重新加载Attribute文件
+
+有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为`include_attribute`在recipes中不可用,所以你需要手动重新加载`firewall::default`属性
+
+{% codeblock reloading attributes from recipes lang:ruby %}
+package 'iptables' do
+  notifies :create, 'ruby_block[try_firewall_again]', :immediately
+end
+
+ruby_block 'try_firewall_again' do
+  block do
+    node.load_attribute_by_short_filename('default', 'firewall')
+  end
+  action :nothing
+end
+{% endcodeblock %}
+
+### 访问属性的方法
+
+属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价
+
+{% codeblock cookbooks/apache2/attributes/default.rb lang:ruby %}
+default.apache.dir          = "/etc/apache2"
+default.apache.listen_ports = [ "80","443" ]
+{% endcodeblock %}
+
+使用哪个只是风格问题,你可能会在检索属性的值的时候看到
+
+## Environment中设置属性
+
+*Environment中可以设置default和override属性*
+
+这可以在Environment的Ruby DSL文件里(分别)通过default_attributes和`override_attributes`方法设置,或者在Environment的JSON数据中使用`default_attributes`和`override_attributes`Hashes进行设置.经常会指定一些这个Environment特别有属性.例如在"production"环境和"staging"环境外部负载均衡器的公共DNS可能会不一样
+
+## 在Role中定义属性
+
+*在Role中只可以设置default和override属性,不能设置normal属性.*这可以在Role的Ruby DSL文件里(分别)通过`default_attributes`和`override_attributes`方法设置,或者在Role的JSON数据中使用`default_attributes`和`override_attributes`Hashes进行设置.经常会指定一些各个Role不同的属性.例如一个`php_apache2_server`的role可能会和`mod_perl_apche2_server`使用不同的优化参数
+
+## 在Node中定义属性
+
+最终,Node对象可以直接被修改以设置属性.通常会设置normal优先级的属性.可以通过使用knife工具直接编辑node,或者通过WebUI.或者通过传递JSON数据给Node进行设置
+
+### JSON属性
+
+你可以使用JSON文件指定Node的属性,它们会以normal的优先级添加到Node
+
+```
+chef-client --help
+[...]
+    -j JSON_ATTRIBS                  Load attributes from a JSON file or URL
+        --json-attributes
+```
+
+例如.设置Apache监听不同的端口
+
+{% codeblock JSON attribute example lang:json %}
+{ "apache": { "listen_ports": ["81", "8080"] } }
+{% endcodeblock %}
+
+记住.通过JSON文件传递的属性会和Node已经保存的属性合并并且没有办法覆盖,但是如果有冲突,从JSON文件传递的属性会最终被使用
+
+### Automatic属性
+
+这第四种属性不能被修改,因为你做的任何修改都会在下一次运行时被Ohai数据覆盖
+
+## 如果使用属性
+
+- 属性的优势
+
+  - 为应用程序跨平台的抽象例如配置文件的路径
+  - 优化参数的默认值例如给处理器多少内存或开启多少个进程
+  - 任何其它你想要在Chef运行之间保留(在Node的数据)的信息
+
+### 使用的最佳实践
+
+*属性优先级的通用模式是在cookbooks和roles中使用default属性*
+
+- 如果你要改变一个特定Node的值,使用normal属性
+- Overrides属性是指roles可以强制设定一个特定的属性,即使Node已经有相应的属性
+
+肯定有其它的使用方式,但上面的模式是设计的初衷
+
+### 设置同一优先级的属性
+
+*一个通用的使用案例是在cookbook的attribute文件中设置default属性,并且在role中以不同的值设置相同的default属性.*在这种情况下,role中的属性会被[deep merged](http://wiki.opscode.com/display/chef/Deep+Merge)到来自attribute文件中的属性顶端.如果有冲突,在role中设置的属性会被使用.
+
+### 只有在这个属性没有值的时候才设置
+
+在属性文件里,你也可以使用属性优先方法的变种`_unless`方法来做到只有在一个属性没有值时才设置这个属性,这些方法是`default_unless`, `set_unless`和`override_unless`.这些方法有时候非常方便,但要小心使用!
+
+在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置--会给调试带来麻烦.出于这个原因,你应该尽可能不用`_unless`方法

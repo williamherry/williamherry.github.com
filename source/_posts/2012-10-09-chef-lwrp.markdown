@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "轻量级Resources和Providers"
+title: "Chef基础之LWRP"
 date: 2012-10-09 20:18
 comments: true
 categories:
@@ -75,7 +75,49 @@ Providers就是支持Resources的,它可以通过实例变量`@new_resource`做�
 
 首先我们利用knife命令创建cookbook的目录结构
 
-    knife cookbook users
+    knife cookbook create users
 
 然后我们直接在resources目录下创建我们的resource
+
+{% codeblock vim users/resources/manage.rb lang:ruby %}
+actions :create, :remove
+
+attribute :user_name, :kind_of => String, :required => true
+{% endcodeblock %}
+
+我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到
+
+下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作
+
+{% codeblock vim users/providers/manage.rb lang:ruby %}
+action :remove do
+  user new_resource.user_name do
+    action :remove
+  end
+  new_resource.updated_by_last_action(true)
+end
+
+action :create do
+  user new_resource.user_name do
+    action :create
+  end
+  new_resource.updated_by_last_action(true)
+end
+{% endcodeblock %}
+
+我们定义了两个动作,使用内置的Resource类型`user`来创建用户,利用`new_resource`得到从recipes中传来的用户名,最后更新状态
+
+下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为`users`,Resouces文件的名字为`manage.rb`,所以我们的Resource名字为`users_manage`
+
+{% codeblock vim users/recipes/test.rb lang:ruby %}
+users_maange "william" do
+  user_name "william"
+end
+{% endcodeblock %}
+
+现在就可以测试我们写的LWRP了
+
+    knife cookbook upload users
+    knife node run list add client1.chef.com 'recipe[users::test]'
+
 
