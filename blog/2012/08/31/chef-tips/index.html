@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Chef问题及小知识汇总(持续更新) - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了 Centos6.2下Chef- &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2012/08/31/chef-tips/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Chef问题及小知识汇总(持续更新)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-31T09:00:00+08:00" pubdate data-updated="true">Aug 31<span>st</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了</p>
+
+<h2>Centos6.2下Chef-server的安装</h2>
+
+<p>目前的知道的在Centos6.2下面安装Chef-server的最方便的方法是执行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rpm</span> <span class="o">-</span><span class="no">Uvh</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">rbel</span><span class="o">.</span><span class="n">frameos</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rbel6</span>
+</span><span class='line'><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">rubygem</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span>
+</span><span class='line'><span class="n">service</span> <span class="n">iptables</span> <span class="n">stop</span>
+</span><span class='line'><span class="n">setup</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span><span class="o">.</span><span class="n">sh</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的命令已经可以安装并启动所有chef-servef需要的服务了,再加上下面的命令配置一个管理的客户端</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">configure</span> <span class="o">-</span><span class="n">i</span>  <span class="c1"># 然后一路回车</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 以上方面来自<a href="http://blog.frameos.org/2011/05/19/installing-chef-server-0-10-in-rhel-6-scientificlinux-6/">Installing Chef Server 0.10 in RHEL 6</a></p>
+
+<h2>Centos6.2下chef-client的安装</h2>
+
+<p>从Rackspace开发的部署Openstack的Cookbook里找到的方法,可以通过以下命令安装chef-client</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">opscode</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chef</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的命令会在/opt/chef/下安装chef-client需要的所有东西,好处除了方便外还有就是它是一个独立的环境,可以和系统的ruby完全分开,还有就是它使用的ruby是1.9,有些比较新的cookbook可能需要ruby 1.9才可以工作</p>
+
+<h2>Bootstrap的时候报错</h2>
+
+<p>利用bootstrap来配置客户端有时会报下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">error</span> <span class="n">as</span> <span class="n">follows</span><span class="ss">:Bootstrapping</span> <span class="no">Chef</span> <span class="n">on</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</span><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">convert</span> <span class="kp">false</span> <span class="n">into</span> <span class="nb">String</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个算是比较变态的报错了,你从报错信息不好判断哪里出了问题.实际上这个报错的原因是它找不到bootstrap的脚本,例如你在bootstrap的时候加参数<code>-d centos6</code>,它会在当前目标下找<code>.chef/bootstrap/centos6.erb</code>,找不到就会报这个错,所以解决办法是<code>cd ~</code>后再执行,一般<code>.chef</code>这个目录都在用户主目录下面</p>
+
+<h2>批量执行命令(ssh)错误</h2>
+
+<p>有时候Chef利用SSH批量执行命令的时候会报类似下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">ssh</span> <span class="s2">&quot;node:test3.chef.com&quot;</span> <span class="s1">&#39;uptime&#39;</span> <span class="o">-</span><span class="no">VV</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Using</span> <span class="n">configuration</span> <span class="n">from</span> <span class="sr">/root.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Signing</span> <span class="n">the</span> <span class="n">request</span> <span class="n">as</span> <span class="n">root</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Sending</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="n">via</span> <span class="no">GET</span> <span class="n">to</span> <span class="n">server</span><span class="o">.</span><span class="n">chef</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">4000</span><span class="o">/</span><span class="n">search</span><span class="o">/</span><span class="n">node</span>
+</span><span class='line'><span class="no">FATAL</span><span class="p">:</span> <span class="no">No</span> <span class="n">nodes</span> <span class="n">requrned</span> <span class="n">from</span> <span class="n">search!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是用<code>knife search node "name:test3.chef.com"</code>确可以找到这个Node,这里的出错信息也不容易确定问题出在哪儿,实际上<code>knife ssh</code>会利用Node的FQDN(就是主机名)去连,如果连不上就会报这个错,解决办法是加上<code>-a ipaddress</code>参数明确指定使用IP地址去连接</p>
+
+<h2>Rabbitmq-server服务启动失败</h2>
+
+<p>Chef和Openstack都用到了这个软件,我感觉这个软件比较变态,跟个老古董一样,动不动就装死不启动,日志里也不说人话,我目前只知道两个引起它启动失败的原因,一个是主机名,一个是qpidd这个服务已经启动,它也使用5672端口,rabbitmq-server再要绑到这个口上面就会失败.所以,下次如果rabbitmq-server启动不起来,可以先试试这两个</p>
+
+<h2>利用Bootstrap初始化的Client去连<code>localhost</code></h2>
+
+<p>也就是用Bootstrap给Client生成的<code>/etc/chef/client.rb</code>配置文件里的<code>chef_server_url</code>不对,那么Bootstrap脚本是从哪里得到的<code>chef_server_url</code>的值呢,就我所知它是读Chef管理员的<code>~/.chef/knife.rb</code>这个文件里的信息,所以解决办法就是把<code>~/.chef/knife.rb</code>这个文件里的<code>chef_server_url</code>改成chef-server的IP地址</p>
+
+<h2>打印日志帮助除错</h2>
+
+<p>有时候自己写的recipe不按自己的预期工作,又找不出问题的原因,这时可能会想能不能有像C语言里的print一样把一些变量的值打印出来帮助除错,在chef里可以用LOG的方法做到</p>
+
+<p>很简单,只要在recipe中加入一行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>客户端执行的时候就会多一条info级别的日志:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sat</span><span class="p">,</span> <span class="mo">01</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mi">22</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">INFO</span><span class="p">:</span> <span class="no">Hello</span><span class="p">,</span> <span class="n">world!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>debug和error都是支持的(debug需要将<code>/etc/chef/client.rb</code>里的<code>log\_level</code>改来<code>:debug</code>才可以看到)</p>
+
+<h2>使用每个Client特有的属性(IP地址)</h2>
+
+<p>比如MySQL的配置,我希望它监听到自己的IP地址上而不是<code>0.0.0.0</code>, 应该怎么做呢?</p>
+
+<p>首先我们定义这个属性</p>
+
+<figure class='code'><figcaption><span>vim /var/chef/cookbooks/mysql/attributes/default.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">ipaddress</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的方法打印出来看对不对</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MySQL Binding on: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 注意定义的时候使用的是<code>default</code>,使用的时候用<code>node</code>
+Note: <code>ipaddress</code>是客户端的<code>ohai</code>收集的,要想知道还有哪些类似<code>ipaddress</code>的属性,在客户端执行<code>ohai</code>就可以看到了
+Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以你自己定义这样的属性会被替换</p>
+
+<h2>生成随机密码</h2>
+
+<p>把密码直接写死在cookbook里可能不是个好主意,更通用的方法是使用随机密码</p>
+
+<p>要使用随机密码需要<code>openssl</code>这个cookbook的支持,所以先下载并上传到我们的chef-server上去</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span>
+</span><span class='line'><span class="n">mkdir</span> <span class="n">cookbooks</span>
+</span><span class='line'><span class="n">cd</span> <span class="n">cookbooks</span>
+</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">site</span> <span class="n">download</span> <span class="n">openssl</span>
+</span><span class='line'><span class="n">tar</span> <span class="n">xf</span> <span class="n">openssl</span><span class="o">*</span>
+</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">upload</span> <span class="o">-</span><span class="n">o</span> <span class="o">.</span> <span class="n">openssl</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在需要用到<code>openssl</code>的cookbook的<code>metadata.rb</code>文件中加入depends</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">depends</span> <span class="s2">&quot;openssl&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加这条的意思就是说我会用到<code>openssl</code>这个cookbook,客户端下载cookbook的时候一并下载回去,如果没有这一条会报下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sun</span><span class="p">,</span> <span class="mo">02</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mo">01</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">FATAL</span><span class="p">:</span> <span class="no">NameError</span><span class="p">:</span> <span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">::</span><span class="no">Opscode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面就可以在recipe中使用了,下面是mysql中的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">::</span><span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">Opscode</span><span class="o">::</span><span class="no">OpenSSL</span><span class="ss">:Password</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set_unless</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">secure_password</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Random Password: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>MySQL设置密码的问题(Redhat系)</h2>
+
+<p>这个问题我花了一下午才搞明白,如果不想听我细细说来,只想知道重点,那么你只要知道MySQL的cookbook还会在root的家目录里创建一个<code>.my.cnf</code>的文件就可以了</p>
+
+<p>我们先来了解一个它是怎么设置密码了,首先看下面的resource</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">platform?</span><span class="p">(</span><span class="sx">%w{debian ubuntu}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">execute</span> <span class="s2">&quot;assign-root-password&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysqladmin_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root password </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:run</span>
+</span><span class='line'>    <span class="n">only_if</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root -e &#39;show databases;&#39;&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果platform不是debian或ubuntu(即Redhat系),那么只有在&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysql_bin&#8217;]} -u root -e &#8216;show databases;&#8217;&#8221;执行成功的时候才执行&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysqladmin_bin&#8217;]} -u root password &#34;#{node[&#8216;mysql&#8217;][&#8216;server_root_password&#8217;]}&#34;&#8221;. mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">execute</span> <span class="s2">&quot;mysql-install-privileges&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">].</span><span class="n">empty?</span> <span class="p">?</span> <span class="s1">&#39;&#39;</span> <span class="p">:</span> <span class="s1">&#39;-p&#39;</span> <span class="si">}</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> &lt; </span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
+</span><span class='line'>  <span class="n">subscribes</span> <span class="ss">:run</span><span class="p">,</span> <span class="n">resources</span><span class="p">(</span><span class="s2">&quot;template[</span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">),</span> <span class="ss">:immediately</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我遇到的问题是这样的,Rackspack公司基于Ubuntu12.04做了安装Openstack的cookbook,由于Chef抽象的特性,理论上应该在CentOS上也能用,所以我拿过来做测试.整个过程太长,不可能一次成功,出错后做一些修改然后让它再跑,系统环境应该要做一些还原,我是把mysql-server删除,然后把<code>/var/lib/mysql</code>也删除,这样重新安装后就回到空密码了</p>
+
+<p>问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用<code>~/.my.cnf</code>里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:-(</p>
+
+<h2>配置chef-client周期性唤起时间</h2>
+
+<p>chef-client会周期性的每隔一段时间+随机时间启动,这个时间的配置在Debian系和Redhat系不一样,这里记录一下,Debian系中是<code>/etc/default/chef-client</code>,Redhat系是<code>/etc/sysconfig/chef-client</code></p>
+
+<h2>提示认证失败</h2>
+
+<p>有时可能会遇到这样的错误</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span> <span class="n">to</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="p">:</span><span class="mi">4000</span> <span class="n">as</span> <span class="n">root</span> <span class="n">with</span> <span class="n">key</span> <span class="sr">/root/</span><span class="o">.</span><span class="n">chef</span><span class="o">/</span><span class="n">root</span><span class="o">.</span><span class="n">pem</span>
+</span><span class='line'><span class="no">Response</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Ensure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">client</span> <span class="n">key</span> <span class="n">is</span> <span class="n">valid</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你的这个客户端以前认证没有问题,那么可以排除key不对的原因,这个key一般不会发霉变质的.也不是时间不同步的问题,因为如果是时间不同步,报错应该像下面的样子,并提示你同步时间</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Wed</span><span class="p">,</span> <span class="mi">11</span> <span class="no">Dec</span> <span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mi">0800</span><span class="o">]</span> <span class="no">Info</span><span class="p">:</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="no">Returned</span> <span class="mi">401</span> <span class="no">Unauthorized</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Please</span> <span class="n">synchronize</span> <span class="n">the</span> <span class="n">clock</span> <span class="n">on</span> <span class="n">your</span> <span class="n">client</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个问题有可能是chef-server上的couchdb服务没有启动引起了,我遇到几次都是这样,所以有时间chef-server不按预期的工作的时候,不公要检查chef-server,相关的服务也要检查</p>
+
+<h2>有条件的执行</h2>
+
+<p>有时候一些资源可以希望在特定的条件下才执行,这时可以用<code>only_if</code>和<code>not_if</code>来实现,如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="s2">&quot;test -f /etc/passwd&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果只是判断文件是否存在,下面的方法更常用</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="p">{</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-31T09:00:00+08:00" pubdate data-updated="true">Aug 31<span>st</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/08/31/chef-tips/" data-via="" data-counturl="http://williamherry.com/blog/2012/08/31/chef-tips/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/08/29/weechat-irc-client/" title="Previous Post: Weechat-命令行下的IRC客户端工具">&laquo; Weechat-命令行下的IRC客户端工具</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/09/02/ubuntu-fcitx-crash/" title="Next Post: fcitx在Ubuntu12.04上Crash的解决办法">fcitx在Ubuntu12.04上Crash的解决办法 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2012/08/31/chef-tips/';
+        var disqus_url = 'http://williamherry.com/blog/2012/08/31/chef-tips/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

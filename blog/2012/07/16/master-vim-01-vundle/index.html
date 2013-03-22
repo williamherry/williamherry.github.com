@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>VIM练级日记01-外挂总管Vundle - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="背景 已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾高見龍老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">VIM练级日记01-外挂总管Vundle</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>背景</h2>
+
+<p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
+
+<h2>外挂总管Vundle</h2>
+
+<p>高老师的视频中使用的是pathogen这个外挂来管理其它VIM外挂,但我通过Google发现有人说Vundle比pathogen要好,就试了下,果然很不错的说</p>
+
+<p>Vundle利用git,插件的git repo以及vim-scripts维护的GitHub repo, 自动安装, 更新和卸载插件. 它把这些繁杂的工作变得简单, 甚至, 成为一种享受.</p>
+
+<h2>安装</h2>
+
+<p>Vundle的github地址在<a href="https://github.com/gmarik/vundle">这里</a>,上面有安装和使用方法,我在这里也简单的写一下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置</h2>
+
+<figure class='code'><figcaption><span>vim ~/.vimrc  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">nocompatible</span>               <span class="c">&quot; be iMproved</span>
+</span><span class='line'><span class="k">filetype</span> off                   <span class="c">&quot; required!</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">set</span> <span class="nb">rtp</span><span class="p">+=~</span><span class="sr">/.vim/</span>bundle<span class="sr">/vundle/</span>
+</span><span class='line'><span class="k">call</span> vundle#rc<span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; let Vundle manage Vundle</span>
+</span><span class='line'><span class="c">&quot; required! </span>
+</span><span class='line'>Bundle <span class="s1">&#39;gmarik/vundle&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; My Bundles here:</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>     <span class="c">&quot; required!</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; Brief help</span>
+</span><span class='line'><span class="c">&quot; :BundleList          - list configured bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleInstall(!)    - install(update) bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleSearch(!) foo - search(or refresh cache first) for foo</span>
+</span><span class='line'><span class="c">&quot; :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; see :h vundle for more details or wiki for FAQ</span>
+</span><span class='line'><span class="c">&quot; NOTE: comments after Bundle command are not allowed..</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用</h2>
+
+<p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
+
+<ul>
+<li><p>在github上搜索nerdtree找到它,我找到的是: https://github.com/scrooloose/nerdtree</p></li>
+<li><p>在～/.vimrc文件里添加一行:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>退出并重新打开VIM,执行:BundleInstall</li>
+</ul>
+
+
+<p>新的外挂NERDTree已经安装好了,可以在~/.vim/bundle/目录下看到它,下一篇我会简单介绍它的使用</p>
+
+<p>用Vundle管理外挂就是这么简单</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/" data-via="" data-counturl="http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/16/chef-basic/" title="Previous Post: Chef基础知识">&laquo; Chef基础知识</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/07/19/master-vim-02-nerdtree/" title="Next Post: VIM练级日记02-目录外挂NERDTree">VIM练级日记02-目录外挂NERDTree &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/';
+        var disqus_url = 'http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

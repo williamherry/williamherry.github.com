@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Welcome - William's Blog with Octopress</title>
+  <title>VIM练级日记02-目录外挂NERDTree - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Welcome Jul 19th, 2012 Hi: This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^. Jul 19th, 2012 Tweet Comments &hellip;">
+  <meta name="description" content="NERDTree简介 上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂 NERDTree是一个用于浏览文件系统的树形资源管理外挂, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.com/">
+  <link rel="canonical" href="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -68,34 +68,15 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Welcome</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time></p>
-  </header>
-  
-  <h2>Hi:</h2>
-
-<p>This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^.
-
-  
-    <footer>
+    
+      <h1 class="entry-title">VIM练级日记02-目录外挂NERDTree</h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -107,21 +88,122 @@
   
 
 
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>NERDTree简介</h2>
+
+<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
+
+<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
+
+<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/nerdtree/nerdtree.png"></p>
+
+<p>这里还有一个Youtube上的视频演示</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
+
+
+<h2>安装使用</h2>
+
+<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重启VIM并执行:BundleInstall</p>
+
+<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
+
+<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
+
+<p>这里是NERDTree中的一些按键</p>
+
+<p><code>o</code> 打开关闭文件或者目录
+<code>t</code> 在标签页中打开
+<code>T</code> 在后台标签页中打开
+<code>!</code> 执行此文件
+<code>p</code> 到上层目录
+<code>P</code> 到根目录
+<code>K</code> 到第一个节点
+<code>J</code> 到最后一个节点
+<code>u</code> 打开上层目录
+<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
+<code>?</code> 帮助
+<code>q</code> 关闭</p>
+
+<h2>问题</h2>
+
+<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
+</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/index.html" data-via="" data-counturl="http://williamherry.com/index.html" >Tweet</a>
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/" data-via="" data-counturl="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/" >Tweet</a>
   
   
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/blog/2012/07/16/master-vim-01-vundle/" title="Previous Post: VIM练级日记01-外挂总管Vundle">&laquo; VIM练级日记01-外挂总管Vundle</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/07/20/octopress-setup/" title="Next Post: Octopress - 像黑客一样写博客">Octopress - 像黑客一样写博客 &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
   <section>
@@ -226,8 +308,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.com/index.html';
-        var disqus_url = 'http://williamherry.com/index.html';
+        var disqus_identifier = 'http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/';
+        var disqus_url = 'http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/';
         var disqus_script = 'embed.js';
       
     (function () {

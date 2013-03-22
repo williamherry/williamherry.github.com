@@ -1,0 +1,2250 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T02:36:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+        
+         | <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
+
+<p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
+
+<p>不过openSUSE 12.3的默认字体还是非常难看的,需要做一些配置才可以让人看着舒服</p>
+
+<p>其实根本的问题并不是没有好看的字体,而是字体的渲染不给力,使字体看起来很虚,锯齿很厉害,我从网上找的这个办法可以开启抗锯齿,分享给大家</p>
+
+<p>原文地址在<a href="http://tuxperience.blogspot.com/2012/12/fix-ugly-fonts-in-kubuntu-or-kde-make.html">这里</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fix: Ugly Fonts in Kubuntu or KDE | Make your fonts crystal clear
+</span><span class='line'>
+</span><span class='line'>By default, KDE Desktop and Kubuntu have a very ugly font behavior compared to GNOME or Ubuntu. But no worries. Fix is easy!
+</span><span class='line'>
+</span><span class='line'>How to fix it?
+</span><span class='line'>
+</span><span class='line'>1- Go to "System Settings &gt; Application Appearance &gt; Fonts"
+</span><span class='line'>2- Enable anti-ailising.
+</span><span class='line'>3- Set Use sub-pixel rendering to RGB and Slight.
+</span><span class='line'>4- Go Advanced tab of Desktop Effects and set scale method to Crisp.
+</span><span class='line'>
+</span><span class='line'>To improve your fonts more, change your fonts to DejaVu and for a better console set console fonts to DejaVu Sans Mono 9.5.
+</span><span class='line'>
+</span><span class='line'>Now you have very cyrstal looking fonts! Have fun!</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有<code>Exclude range</code>正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果</p>
+
+<p>PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-05T11:26:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在<a href="http://www.wyliethomas.com/blog/2011/08/24/rvm-rake-and-cron-on-ubuntu/">这里</a></p>
+
+<p>方法很简单,在crontab中可以定义环境变量</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>crontab -e</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SHELL = /home/william/.rvm/bin/rvm-shell
+</span><span class='line'>
+</span><span class='line'>* 4 * * * /bin/bash -l -c 'cd /path/to/app && RAILS_ENV=production rake mytask –silent'</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-25T22:27:00+08:00" pubdate data-updated="true">Jan 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/01/25/rails-image-upload/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>好久没有更新这个了,竟然连<code>rake new_post['title']</code>都忘记了还得查文档,看来以后还是得时不时的写点</p>
+
+<p>这里简单记录一下Rails中如何处理图片上传,我们选择<a href="https://github.com/jnicklas/carrierwave">CarrierWave</a>这个gem来处理上传的文件,由于重点是处理图片上传,所以我们会使用scaffolding生成一个article的CURD,把图片绑定给它(一个article有一个图片)</p>
+
+<p>首先我们创建一个Rails项目</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new image-upload-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后用脚手架生成article</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd image-upload-demo
+</span><span class='line'>rails g scaffold article title:string content:text</span></code></pre></td></tr></table></div></figure>
+
+
+<p>执行migration生成数据库表结构</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake db:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>rails s</code>启动服务,访问<code>http://localhost:3000/articles</code>检查有没错误</p>
+
+<p>如果没有问题,下一步我们就可以设定CarrierWave了,首先是安装,在Gemfile里添加一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'carrierwave'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后执行<code>bundle install</code>进行安装,然后用下面的命令创建uploader</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g uploader photo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会创建<code>app/uploaders/photo_uploader.rb</code>这个文件,carrierwave的一些设定都在这个文件里面,我们目前先不做更改,只使用默认配置</p>
+
+<p>接着我们给article表加一个字段来存储文件信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g migration AddPhotoToArticles photo:string</span></code></pre></td></tr></table></div></figure>
+
+
+<p>别忘了执行<code>rake db:migrate</code>生成表结构</p>
+
+<p>然后的article的model里加入调用carrierwave的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/models/article.rb
+</span><span class='line'>class Article &lt; ActiveRecord::Base
+</span><span class='line'>  attr_accessible :content, :title, :photo
+</span><span class='line'>
+</span><span class='line'>  mount_uploader :photo, PhotoUploader
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>别忘了把<code>photo</code>也加到<code>attr_accessible</code>里哦
+这样Model和数据库就可以处理上传上来的文件了,接下来在view里加入上传图片的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/views/articles/_form.html.erb
+</span><span class='line'>&lt;%= form_for(@article, :html =&gt; {:multipart =&gt; true}) do |f| %&gt;
+</span><span class='line'>...
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;%= f.label :title %&gt;&lt;br /&gt;
+</span><span class='line'>    &lt;%= f.text_field :title %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;%= f.label :content %&gt;&lt;br /&gt;
+</span><span class='line'>    &lt;%= f.text_area :content %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;label&gt;My Photo&lt;/label&gt;
+</span><span class='line'>    &lt;%= f.file_field :photo %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="actions"&gt;
+</span><span class='line'>    &lt;%= f.submit %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关键在form_for中添加<code>:html =&gt; {:multipart =&gt; true}</code>,现在就可以使用上传的功能了,并且上传的图片可以简单的使用<code>&lt;%= image_tag @article.photo %&gt;</code>来调用,我们再在显示的view里加入显示图片的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/views/articles/show.html.erb
+</span><span class='line'>...
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;
+</span><span class='line'>  &lt;b&gt;Photo:&lt;/b&gt;
+</span><span class='line'>  &lt;%= image_tag @article.photo %&gt;
+</span><span class='line'>&lt;/p&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试了</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-12T21:09:00+08:00" pubdate data-updated="true">Oct 12<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>说明</h2>
+
+<p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
+
+<p>这里使用的系统是centos,应该也适用于其它的发行版</p>
+
+<p>这里假设你已经配置好了chef-server,在整个过程中都不需要对chef-server做修改(你可能会想到让chef-server只监听在127.0.0.1上)</p>
+
+<h2>安装Nginx</h2>
+
+<pre><code>yum -y install nginx
+</code></pre>
+
+<h2>生成自签名证书</h2>
+
+<pre><code>mkdir -p /etc/ssl/nginx
+cd /etc/ssl/nginx
+openssl genrsa -out chef-server.pem 2048
+openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # 回车后按提示填一堆乱七八糟的东西
+</code></pre>
+
+<h2>修改nginx配置文件</h2>
+
+<p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
+
+<figure class='code'><figcaption><span>vim /etc/nginx/nginx.conf  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#######################################################################</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This is the main Nginx configuration file.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># More information about the configuration options is available on</span>
+</span><span class='line'><span class="c">#   * the English wiki - http://wiki.nginx.org/Main</span>
+</span><span class='line'><span class="c">#   * the Russian documentation - http://sysoev.ru/nginx/</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#######################################################################</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'><span class="c"># Main Module - directives that cover basic functionality</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpMainModule</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'>user              nginx;
+</span><span class='line'>worker_processes  1;
+</span><span class='line'>
+</span><span class='line'>error_log  /var/log/nginx/error.log;
+</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  notice;</span>
+</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  info;</span>
+</span><span class='line'>
+</span><span class='line'>pid        /var/run/nginx.pid;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'><span class="c"># Events Module</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpEventsModule</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'>events <span class="o">{</span>
+</span><span class='line'>    worker_connections  1024;
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'><span class="c"># HTTP Core Module</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpCoreModule</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'>http <span class="o">{</span>
+</span><span class='line'>    include       /etc/nginx/mime.types;
+</span><span class='line'>    default_type  application/octet-stream;
+</span><span class='line'>
+</span><span class='line'>    log_format  main  <span class="s1">&#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;</span>
+</span><span class='line'>                      <span class="s1">&#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;</span>
+</span><span class='line'>                      <span class="s1">&#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;</span>;
+</span><span class='line'>
+</span><span class='line'>    access_log  /var/log/nginx/access.log  main;
+</span><span class='line'>
+</span><span class='line'>    sendfile        on;
+</span><span class='line'>    <span class="c">#tcp_nopush     on;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#keepalive_timeout  0;</span>
+</span><span class='line'>    keepalive_timeout  65;
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#gzip  on;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Load config files from the /etc/nginx/conf.d directory</span>
+</span><span class='line'>    <span class="c"># The default server is in conf.d/default.conf</span>
+</span><span class='line'>    include /etc/nginx/conf.d/*.conf;
+</span><span class='line'>    upstream chef-server <span class="o">{</span>
+</span><span class='line'>      server 127.0.0.1:4000;
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    server <span class="o">{</span>
+</span><span class='line'>        listen 443 ssl;
+</span><span class='line'>
+</span><span class='line'>        server_name 192.168.122.44;
+</span><span class='line'>        root /var/lib/chef/rack/api/public;
+</span><span class='line'>
+</span><span class='line'>        ssl_certificate     /etc/ssl/nginx/chef-server.crt;
+</span><span class='line'>        ssl_certificate_key /etc/ssl/nginx/chef-server.key;
+</span><span class='line'>
+</span><span class='line'>        location / <span class="o">{</span>
+</span><span class='line'>            try_files <span class="nv">$uri</span> @backend;
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        location @backend <span class="o">{</span>
+</span><span class='line'>            proxy_set_header X-Forwarded-Proto <span class="s1">&#39;https&#39;</span>;
+</span><span class='line'>            proxy_set_header Host <span class="nv">$server_name</span>;
+</span><span class='line'>            proxy_pass http://chef-server;
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>检查配置文件并启动服务</h2>
+
+<pre><code>nginx -t
+/etc/init.d/nginx start
+</code></pre>
+
+<h2>修改client使用新的地址</h2>
+
+<figure class='code'><figcaption><span>vim /etc/chef/client.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
+</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>vim ~/.chef/knife.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
+</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-10T21:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/10/chef-attributes/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
+
+<h2>概述</h2>
+
+<p><img src="/images/chef/attributes.jpg"></p>
+
+<p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
+
+<h2>属性类型和优先级</h2>
+
+<p><img src="/images/chef/attribute-priority-stack.png"></p>
+
+<p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
+
+<ul>
+<li>automatic</li>
+<li>override</li>
+<li>normal</li>
+<li>default</li>
+</ul>
+
+
+<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
+
+<p>Chef没有提供任何方式去修改自动属性(automatic),因为Ohai下次运行的时候回覆盖你做的任何修改.检验<a href="http://wiki.opscode.com/display/chef/Automatic+Attributes">自动属性</a>看有那些保留的命名</p>
+
+<h2>属性的持久性</h2>
+
+<p><em>每一次chef-client运行的开始,默认属性,覆盖属性和自动属性会被完全重置</em></p>
+
+<p>然后会利用当前的cookbooks, recipes, roles, environment和Ohai数据重新组建</p>
+
+<p>所以,一量recipe, role或environment从一个node移除并且chef-client在这个node上运行,那么在cookbook的attribute文件,roles, recipes或environments里设置的default和override属性会消失</p>
+
+<p><em>Normal属性不会被重置</em></p>
+
+<p>而是,第一次chef-client运行,任何以JSON文件形式传递给node的新属性会被合并到node中已经存在的normal属性中(使用<a href="http://wiki.opscode.com/display/chef/Deep+Merge">Deep Merge</a>)</p>
+
+<p>这就意味着,任何在recipe或cookbook中定义的normal属性会仍然存在,即使是cookbook或role已经从node的run list移除后</p>
+
+<h2>设置属性</h2>
+
+<p>属性可以在下面的对象中设置</p>
+
+<ul>
+<li>cookbooks</li>
+<li>environments (Chef 0.10.0 or above only)</li>
+<li>roles</li>
+<li>nodes</li>
+</ul>
+
+
+<h3>优先级</h3>
+
+<p><em>属性的优先级从低到高排列在下面</em></p>
+
+<ul>
+<li>attributes文件中定义的default属性</li>
+<li>environment中定义的default属性</li>
+<li>role中定义的default属性</li>
+<li>直接在node的recipe中定义的default属性</li>
+<li>attributes文件中定义的normal或set属性</li>
+<li>直接在node的recipe中定义的normal或set属性</li>
+<li>attributes文件中定义的override属性</li>
+<li>role中定义的override属性</li>
+<li>environment中定义的override属性</li>
+<li>直接在node的recipe中定义的override属性</li>
+<li>Ohai产生的automatic属性</li>
+</ul>
+
+
+<p>在attributes文件里定义的default属性有最低的优先级. Ohai生成的automatic属性有最高的优先级</p>
+
+<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
+
+<p><a href="http://wiki.opscode.com/display/chef/Setting+Attributes+%28Examples%29">这里</a>有例子</p>
+
+<h2>Cookbook中定义属性</h2>
+
+<p>Cookbook的属性文件可以在cookbook的attributes子目录中找到.他们在Node对象的上下文中运算并且使用Node的方法设置属性的值</p>
+
+<p>来自Oposcode的Apache cookbook中的例子</p>
+
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
+</span><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
+
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>属性也可以在recipe中设置,但这时<code>node.</code>就不能省略了</p>
+
+<h3>Cookbook设置属性的方法</h3>
+
+<p>使用下面的方法在cookbook的attributes文件或recipe中设置属性.他们对应到和他们名字相同的属性类型(set是normal的一个别名)</p>
+
+<ul>
+<li>override</li>
+<li>default</li>
+<li>normal(or set)</li>
+</ul>
+
+
+<h3>Cookbook中属性文件的加载顺序</h3>
+
+<p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
+
+<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会在继续处理当前属性之前首先加载<code>rails/attributes/defaults.rb</code></p>
+
+<p>双冒号的写法也适用于<code>include_attribute</code></p>
+
+<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会加载rails cookbook中的<code>attributes/tunables.rb</code>文件</p>
+
+<h3>从Recipes中重新加载Attribute文件</h3>
+
+<p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
+
+<figure class='code'><figcaption><span>reloading attributes from recipes  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s1">&#39;iptables&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:create</span><span class="p">,</span> <span class="s1">&#39;ruby_block[try_firewall_again]&#39;</span><span class="p">,</span> <span class="ss">:immediately</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ruby_block</span> <span class="s1">&#39;try_firewall_again&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">block</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">node</span><span class="o">.</span><span class="n">load_attribute_by_short_filename</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>访问属性的方法</h3>
+
+<p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
+
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
+</span><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">listen_ports</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用哪个只是风格问题,你可能会在检索属性的值的时候看到</p>
+
+<h2>Environment中设置属性</h2>
+
+<p><em>Environment中可以设置default和override属性</em></p>
+
+<p>这可以在Environment的Ruby DSL文件里(分别)通过default_attributes和<code>override_attributes</code>方法设置,或者在Environment的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些这个Environment特别有属性.例如在&#8221;production&#8221;环境和&#8221;staging&#8221;环境外部负载均衡器的公共DNS可能会不一样</p>
+
+<h2>在Role中定义属性</h2>
+
+<p><em>在Role中只可以设置default和override属性,不能设置normal属性.</em>这可以在Role的Ruby DSL文件里(分别)通过<code>default_attributes</code>和<code>override_attributes</code>方法设置,或者在Role的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些各个Role不同的属性.例如一个<code>php_apache2_server</code>的role可能会和<code>mod_perl_apche2_server</code>使用不同的优化参数</p>
+
+<h2>在Node中定义属性</h2>
+
+<p>最终,Node对象可以直接被修改以设置属性.通常会设置normal优先级的属性.可以通过使用knife工具直接编辑node,或者通过WebUI.或者通过传递JSON数据给Node进行设置</p>
+
+<h3>JSON属性</h3>
+
+<p>你可以使用JSON文件指定Node的属性,它们会以normal的优先级添加到Node</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chef-client --help
+</span><span class='line'>[...]
+</span><span class='line'>    -j JSON_ATTRIBS                  Load attributes from a JSON file or URL
+</span><span class='line'>        --json-attributes</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例如.设置Apache监听不同的端口</p>
+
+<figure class='code'><figcaption><span>JSON attribute example  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>记住.通过JSON文件传递的属性会和Node已经保存的属性合并并且没有办法覆盖,但是如果有冲突,从JSON文件传递的属性会最终被使用</p>
+
+<h3>Automatic属性</h3>
+
+<p>这第四种属性不能被修改,因为你做的任何修改都会在下一次运行时被Ohai数据覆盖</p>
+
+<h2>如果使用属性</h2>
+
+<ul>
+<li><p>属性的优势</p>
+
+<ul>
+<li>为应用程序跨平台的抽象例如配置文件的路径</li>
+<li>优化参数的默认值例如给处理器多少内存或开启多少个进程</li>
+<li>任何其它你想要在Chef运行之间保留(在Node的数据)的信息</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>使用的最佳实践</h3>
+
+<p><em>属性优先级的通用模式是在cookbooks和roles中使用default属性</em></p>
+
+<ul>
+<li>如果你要改变一个特定Node的值,使用normal属性</li>
+<li>Overrides属性是指roles可以强制设定一个特定的属性,即使Node已经有相应的属性</li>
+</ul>
+
+
+<p>肯定有其它的使用方式,但上面的模式是设计的初衷</p>
+
+<h3>设置同一优先级的属性</h3>
+
+<p><em>一个通用的使用案例是在cookbook的attribute文件中设置default属性,并且在role中以不同的值设置相同的default属性.</em>在这种情况下,role中的属性会被<a href="http://wiki.opscode.com/display/chef/Deep+Merge">deep merged</a>到来自attribute文件中的属性顶端.如果有冲突,在role中设置的属性会被使用.</p>
+
+<h3>只有在这个属性没有值的时候才设置</h3>
+
+<p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
+
+<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&#8211;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-10T20:40:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/10/learning-git-resources/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>收集一下学习Git过程中用过的比较好的资料</p>
+
+<h2>ProGit</h2>
+
+<p>首先是Github的Scott Chacon写的一本叫ProGit的书,已经有人翻译成中文了.可能大多数人学习Git就是从这本书开始的</p>
+
+<p>中文版不知道有没有的买,英文版在亚马逊上的售价是357.90人民币.不过好在它可以在线读全部的内容,也可以下载pdf或其它流行的版本</p>
+
+<p><a href="http://git-scm.com/book">英文版在线读地址</a></p>
+
+<p><a href="http://ishare.iask.sina.com.cn/f/15315980.html">中文版下载地址</a></p>
+
+<h2>Git权威指南</h2>
+
+<p>还有一本国人写的书Git权威指南,比ProGit要深入全面,个人感觉值得一读.好像不能下载pdf版</p>
+
+<p><a href="http://www.worldhello.net/gotgit/">Git权威指南</a></p>
+
+<h2>Tech Talk: Linus Torvalds on Git</h2>
+
+<p>Git的作者,Linux之父Linus在Google的演讲,在演讲中他说出了这样的霸气测露的话</p>
+
+<blockquote><p>You can disagree with me as much as you want, but during this talk, by definition, anybody who disagrees is stupid and ugly, so keep that in mind</p></blockquote>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/4XpnKHJAok8 "></iframe></div>
+
+
+<h2>Introduction to Git with Scott Chacon of GitHub</h2>
+
+<p>这是ProGit的作者的演讲视频,语速很快,演讲用到的资料做的非常赞</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ZDR433b0HJY "></iframe></div>
+
+
+<h2>Advanced Git: Graphs, Hashes, and Compression, Oh My!</h2>
+
+<p>这是GitHub的另一个员工做的演讲,里面讲了一些非常底层的东西</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ig5E8CcdM9g "></iframe></div>
+
+
+<h2>Git and Github</h2>
+
+<p>这又是Github的另一个工程师的演讲视频,他里面用到一个小脚本可以让执行命令的同时看到变量,让人印象深刻.我还给他发邮件要这个小东西</p>
+
+<p>由于嵌入vimeo然插件不工作了,点<a href="https://vimeo.com/49444883">这里</a>观看</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/09/chef-lwrp/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>概述</h2>
+
+<p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
+
+<p>如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">apt_repository</span> <span class="s2">&quot;zenoss&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">uri</span> <span class="s2">&quot;http://dev.zenoss.org/deb&quot;</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="s2">&quot;stable&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:add</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)</p>
+
+<p>这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: <a href="http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29">Lightweight Resources and Providers</a></p>
+
+<p>在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s2">&quot;vim&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">version</span> <span class="s2">&quot;1.16.1-1&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:install</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.</p>
+
+<p>那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是<code>yum -y install vim</code>或<code>apt-get install vim</code>.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象</p>
+
+<h2>文件位置</h2>
+
+<p>轻量级(或叫自定义)Resources和Providers分区从cookbook的<code>resources</code>和<code>providers</code>目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为<code>default.rb</code>.在这种情况下Resources和Providers的名字仅是cookbook的名字</p>
+
+<h3>例子</h3>
+
+<p>Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Resources</h2>
+
+<p>前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的</p>
+
+<h2>Providers</h2>
+
+<p>Providers就是支持Resources的,它可以通过实例变量<code>@new_resource</code>做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了</p>
+
+<p>下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递</p>
+
+<h2>简单的例子</h2>
+
+<p>这个例子我们简单的封装一个内容Resource类型<code>user</code>得到一个LWRP</p>
+
+<p>首先我们利用knife命令创建cookbook的目录结构</p>
+
+<pre><code>knife cookbook create users
+</code></pre>
+
+<p>然后我们直接在resources目录下创建我们的resource</p>
+
+<figure class='code'><figcaption><span>vim users/resources/manage.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">actions</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:remove</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">attribute</span> <span class="ss">:user_name</span><span class="p">,</span> <span class="ss">:kind_of</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到</p>
+
+<p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
+
+<figure class='code'><figcaption><span>vim users/providers/manage.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">action</span> <span class="ss">:remove</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:remove</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">action</span> <span class="ss">:create</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作,使用内置的Resource类型<code>user</code>来创建用户,利用<code>new_resource</code>得到从recipes中传来的用户名,最后更新状态</p>
+
+<p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
+
+<figure class='code'><figcaption><span>vim users/recipes/test.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">users_maange</span> <span class="s2">&quot;william&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user_name</span> <span class="s2">&quot;william&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试我们写的LWRP了</p>
+
+<pre><code>knife cookbook upload users
+knife node run list add client1.chef.com 'recipe[users::test]'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-03T18:38:00+08:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/03/install-gitolite/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法</p>
+
+<h3>安装</h3>
+
+<h4>首先安装必要的软件</h4>
+
+<pre><code>yum -y install git
+</code></pre>
+
+<h4>添加用户</h4>
+
+<pre><code>useradd --system --shell /bin/bash --create-home git
+</code></pre>
+
+<h4>设置密码</h4>
+
+<pre><code>passwd git
+</code></pre>
+
+<h4>拷贝公钥</h4>
+
+<p>Gitolite管理的方式是给你一个特殊的仓库,修改,提交,推送到服务器就可以了,这个仓库只可以管理员访问,现在把管理员的公钥复制到服务器上(可以和Git服务器在同一台服务器上也可以在不同的服务器上)</p>
+
+<pre><code># 如果没有key先生成
+ssh-keygen
+ssh-copy-id git@git-server
+</code></pre>
+
+<h4>安装Gitolite</h4>
+
+<p>现在在Git服务器上切换到git用户进行安装</p>
+
+<pre><code># change to git user
+su - git
+
+# gitolite will install here
+mkdir bin
+
+# authorized_keys is admin's pubkey
+mv ~/.ssh/authorized_keys ~/git.pub
+
+# get the source code
+git clone git://github.com/sitaramc/gitolite.git
+
+# install
+~/gitolite/install -to ~/bin
+
+# setup
+~/bin/gitolite setup -pk ~/git.pub
+</code></pre>
+
+<p>安装已经完成了,可以在以管理用户进行测试(前面运行<code>ssh-copy-id</code>的服务器)</p>
+
+<pre><code>ssh git@chef-server
+</code></pre>
+
+<p>应该看到类似这样的输出:</p>
+
+<pre><code>hello git, this is git@desktop running gitolite3 v3.04-20-g6328ec2 on git 1.7.9.5
+
+  R W   gitolite-admin
+Connection to localhost closed.closed
+</code></pre>
+
+<p>可以把管理仓库克隆下来管理Git服务器</p>
+
+<pre><code>git clone git:git-server:gitolite-admin.git
+</code></pre>
+
+<p>要添加用户,只要把用户的公钥复制到这个仓库里的<code>keydir</code>下并以<code>username.pub</code>命名,然后提交并推送到服务器</p>
+
+<h3>添加用户示例(jenny)</h3>
+
+<pre><code>cd gitolite-admin
+cp path/of/jenny's/pubkey keydir/jenny.pub
+git add keydir
+git commit -m "add new user jenny"
+git push
+</code></pre>
+
+<h3>创建仓库示例</h3>
+
+<p>假如我们要创建一个名为<code>notes</code>的仓库,让刚创建的<code>jenny</code>有读写权限</p>
+
+<pre><code>cd gitolite-admin
+vi conf/gitolite.conf
+</code></pre>
+
+<p>添加类似下面这内容进去</p>
+
+<pre><code>repo notes
+    RW    =   jenny
+</code></pre>
+
+<p>保存,提交并推送到远和服务</p>
+
+<pre><code>git add -u
+git commit -m 'add new repo notes and assign RW to jenny'
+git push
+</code></pre>
+
+<p>推送的时候应该看到类似这样的信息</p>
+
+<pre><code>Counting objects: 7, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 395 bytes, done.
+Total 4 (delta 1), reused 0 (delta 0)
+remote: Initialized empty Git repository in /home/git/repositories/notes.git/
+To git@desktop:gitolite-admin
+   6de90b8..52737aa  master -&gt; master
+</code></pre>
+
+<p>注意<code>remote</code>开头的一行,它已经帮你创建了这个仓库</p>
+
+<h3>通配符仓库的创建示例</h3>
+
+<p>通配符仓库事先不能确定名字,所以不会帮你创建,在你clone的时候才会创建</p>
+
+<p>编辑<code>conf/gitolite.conf</code>文件在里面加入类似下面的内容</p>
+
+<pre><code>repo sandbox/.+$
+  C      =   jenny
+  RW+C   =   jenny
+</code></pre>
+
+<p>注意<code>C  =  username</code>的一行必不可少,这里的<code>C</code>是指创建仓库的意思,下一行的<code>RW+C</code>中的<code>C</code>是指创建引用(branch,tag)的意思</p>
+
+<p>保存后提交并推送到服务上去</p>
+
+<pre><code>git add -u
+git commit -m 'add wildcard repo'
+git push
+</code></pre>
+
+<p>注意看<code>push</code>时输出的信息,应该没有创建仓库的信息</p>
+
+<p>这时<code>jenny</code>克隆仓库的时候会自动创建</p>
+
+<pre><code># as jenny user
+git clone git@desktop:sandbox/test.git
+</code></pre>
+
+<p>输出应该类似这样</p>
+
+<pre><code>Cloning into 'test'...
+Initialized empty Git repository in /home/git/repositories/sandbox/test.git/
+warning: You appear to have cloned an empty repository.
+</code></pre>
+
+<p>如果你的输出报这样的错</p>
+
+<pre><code>FATAL: R any sandbox/test jenny DENIED by fallthru
+(or you mis-spelled the reponame)
+fatal: The remote end hung up unexpectedly
+</code></pre>
+
+<p>一般是没有<code>C  =  username</code>这一行,注意是只有<code>C</code>的一行</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/14/virt-releated-command/">Virt相关命令总结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-14T09:35:00+08:00" pubdate data-updated="true">Sep 14<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/14/virt-releated-command/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在CentOS下面多部分命令都是有包<code>libguestfs-tools-c</code>提供,所以,首先需要安装它</p>
+
+<h2>virt-ls</h2>
+
+<p>virt-ls可以列出虚拟机中目录下的文件或目录,用法如下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-ls [--options] -d domname dir [dir ...]
+</span><span class='line'>virt-ls [--options] -a disk.img [-a disk.img ...] dir [dir ...]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-ls -d centos2 /etc/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以像使用<code>ls</code>一样加一些参数,如<code>-l</code>等,具体请看<code>virt-ls --help</code></p>
+
+<h2>virt-what</h2>
+
+<p>virt-what可以用来检测当前系统是不是一个虚拟机,如果不是虚拟机,执行virt-what将不会有任何输出,如果是虚拟机,它会打印一系列关于虚拟机的&#8217;facts&#8217;(如kvm)</p>
+
+<p>virt-what命令由同名包提供,要命令需要先安装(yum -y install virt-what)</p>
+
+<h2>virt-host-validate</h2>
+
+<p>这个命令可以用来检测本机是否正确配置以运行虚拟化,如果没有加参数,它会检查它所知道的所有的虚拟化驱动,可选的可以加<code>qemu</code>或<code>lxc</code>做限制</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-host-validate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出类似这样</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  QEMU: Checking for hardware virtualization                       : PASS
+</span><span class='line'>  QEMU: Checking for device /dev/kvm                               : PASS
+</span><span class='line'>  QEMU: Checking for device /dev/vhost-net                         : PASS
+</span><span class='line'>  QEMU: Checking for device /dev/net/tun                           : PASS
+</span><span class='line'>   LXC: Checking for Linux &gt;= 2.6.26                               : PASS</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>virt-top</h2>
+
+<p>virt-top命令由同名软件包提供,和top命令相似,只是进程换成了虚拟机</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yum -y install virt-top
+</span><span class='line'>virt-top</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-top 16:58:01 - x86_64 8/8CPU 2127MHz 7854MB 12.2% 12.0% 12.8% 12.0% 12.1% 12.0% 12.0% 12.0%
+</span><span class='line'>4 domains, 3 active, 3 running, 0 sleeping, 0 paused, 1 inactive D:0 O:0 X:0
+</span><span class='line'>CPU: 12.7% Mem: 2048 MB (2048 MB by guests)
+</span><span class='line'>
+</span><span class='line'>  ID S RDRQ WRRQ RXBY TXBY %CPU %MEM    TIME   NAME
+</span><span class='line'>  40 R    0    0   52    0 12.5  6.0  66:38.82 centos2
+</span><span class='line'>  32 R    0    3   22  38K 13.5 16.0  26:28.82 win2003
+</span><span class='line'>  40 R    2    0   52    0 12.5  8.0  36:18.82 test
+</span><span class='line'>   -                                           (centos3)</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>virt-cat</h2>
+
+<p>virt-cat可以虚拟机中文件的内容,用法如下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-cat [--options] -d domname file [file ...]
+</span><span class='line'>virt-cat [--options] -a disk.img [-a disk.img ...] file [file ...]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-cat -d centos2 /etc/passwd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>domname可以通过<code>virsh list</code>得到</p>
+
+<p>也可以对虚拟机的磁盘文件操作</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-cat  -a /opt/images/centos2.img /etc/passwd</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>virt-edit</h2>
+
+<p>这个命令可以修改</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-edit [--options] -d domname file [file ...]
+</span><span class='line'>virt-edit [--options] -a disk.img [-a disk.img ...] file [file ...]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-edit -d centos2 /etc/passwd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在我的系统中它会用<code>vim</code>打开文件,编辑完保存即可修改虚拟机内的文件内容</p>
+
+<p>也可以直接对虚拟机的磁盘文件进行操作</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-edit -a /opt/images/centos2.img /etc/passwd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 如果虚拟机正在运行,使用第一种文件修改它的文件会有下面的报错</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Libguestfs: error: error: domain is a live virtual machine.
+</span><span class='line'>Writing to the disks of a running virtual machine ca cause disk corruption.
+</span><span class='line'>Either use read-only access, or if the guest is running the guestfsd daemon
+</span><span class='line'>specify live access. In most libguestfs tools these options are --ro or
+</span><span class='line'>--live respectively. Consult the documentation for further information.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但直接对虚拟机磁盘镜像文件操作不会有这个提示,并且可以修改成功,会不会出问题我就不知道了</p>
+
+<h2>virt-copy-out</h2>
+
+<p>virt-copy-out这个命令可以把虚拟机里的文件复制出来, 用法如下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-copy-out -d domname file|dir [file|dir ...] localdir
+</span><span class='line'>virt-copy-out -a disk.img file|dir [file|dir ...] localdir</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-copy-out -d centos2 /etc/passwd .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以是多个文件或目录</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir tmp
+</span><span class='line'>virt-copy-out -d centos2 /etc /home /root/.bashrc tmp</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以直接对虚拟机磁盘文件操作,只需要将<code>-d domname</code>换成<code>-a path_of_disk_file</code></p>
+
+<h2>virt-copy-in</h2>
+
+<p>virt-copy-in是将文件复制到虚拟机里面,用法和virt-copy-out基本相同,这里只举一个例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-copy-in -d centos2 test.txt /opt/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不出你的所料,如果虚拟机正在运行,上面的命令也会报错</p>
+
+<h2>virt-df</h2>
+
+<p>这个命令是比较简单了,就是将在虚拟机中执行<code>df</code>命令的结果输出</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-df -d centos2
+</span><span class='line'>virt-df -a /opt/images/centos2.img</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以加<code>-h</code>参数以<code>human-readable</code>显示</p>
+
+<h2>virt-alignment-scan</h2>
+
+<p>旧的操作系统安装时会使用不对齐的分区,这会引起一些不必要的I/O,这个命令的作用是检查是否正在不对齐的问题,如果存在,只是警告(Warns)你,当前这个工具不会帮你解决这个问题</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-alignment-scan -d centos2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出类似这样</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/dev/sda1    1048576     1024K   ok</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>virt-inspector2</h2>
+
+<p>这个命令可以显示虚拟机的操作系统版本和其它一些信息,包含的信息非常多,用法非常简单</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-inspector2 -d centos2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出类似这样</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0"?&gt;
+</span><span class='line'>&lt;operatingsystems&gt;
+</span><span class='line'>  &lt;operatingssystem&gt;
+</span><span class='line'>    &lt;root&gt;/dev/sda1&lt;/root&gt;
+</span><span class='line'>    &lt;name&gt;linux&lt;/name&gt;
+</span><span class='line'>    &lt;arch&gt;x86_64&lt;/arch&gt;
+</span><span class='line'>    ...
+</span><span class='line'>    there are too many
+</span><span class='line'>    ...</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>virt-resize</h2>
+
+<ul>
+<li>virt-resize可以调整虚拟机磁盘的大小,调整或删除任何分区</li>
+<li>virt-resize不可以就地调整磁盘,不应该对正在运行的虚拟机进行磁盘调整,为了确保一致性,调整先需要关闭虚拟机</li>
+<li>virt-resize调整的过程非常慢,从35G的磁盘进行扩展需要差不多10分钟</li>
+<li>virt-resize调整所花的时候只和开始磁盘的大小有关,从35G扩展到40G和扩展到135G所花的时间差不多</li>
+<li>如果你使用qcow2磁盘格式,个人建议先转成raw,调整完后再转回去,因为直接对qcow2做调整,比较35G的qcow2磁盘镜像文件可能只有1G大小(ls查看),通过virt-resize调整后就会变成35G大小了(ls查看)(也可能是我的方法不对),先转成raw调整完大小后再转回去可以避免这个问题</li>
+</ul>
+
+
+<p>概要</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-resize [--resize /dev/sdaN=[+/-]&lt;size&gt;[%]]
+</span><span class='line'>  [--expand /dev/sdaN] [--shrink /dev/sdaN]
+</span><span class='line'>  [--ignore /dev/sdaN] [--delete /dev/sdaN] [...] indisk outdisk</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>示例1.给一个分区增加5G</li>
+</ul>
+
+
+<p>首先关闭虚拟机</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virsh destroy centos2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查看分区情况</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-filesystems --long -h --all -a /opt/images/centos2.img</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Name      Type        VFS       Label     MBR     Size    Parent
+</span><span class='line'>/dev/sda1 filesystems ext4      -         -       35G     -
+</span><span class='line'>/dev/sda1 partition   -         -         83      35G     /dev/sda
+</span><span class='line'>/dev/sda  device      -         -         -       35G     -</span></code></pre></td></tr></table></div></figure>
+
+
+<p>把qcow2格式的磁盘镜像转成raw</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /opt/images
+</span><span class='line'>cp centos2.img centos2.img.orig
+</span><span class='line'>qemu-img convert -f qcow2 -O raw centos2.img centos2.raw</span></code></pre></td></tr></table></div></figure>
+
+
+<p>利用truncate创建一个新的文件,大小比centos2.raw大5G</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>truncate -r centos2.raw newdisk
+</span><span class='line'>truncate -s +5G newdisk</span></code></pre></td></tr></table></div></figure>
+
+
+<p>开始调整</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>virt-resize --expand /dev/sda1 centos2.raw newdisk</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你应该看到类似这样的信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Examining centos2.img.raw ...
+</span><span class='line'>
+</span><span class='line'>Summary of changes:
+</span><span class='line'>
+</span><span class='line'>/dev/sda1: This partition will be resized from 35.0G to 40.0G. The
+</span><span class='line'>    filesystem ext4 on /dev/sda1 will be expanded using the 'resize2fs'
+</span><span class='line'>    method.
+</span><span class='line'>
+</span><span class='line'>**********
+</span><span class='line'>Setting up initial partition table on newdisk ...
+</span><span class='line'>Copying /dev/sda1 ...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后是持续好久的刷屏信息,好在有倒计时</p>
+
+<p>最后应该看到类似下面的信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Expanding /dev/sda1 using the 'resize2fs' method ...
+</span><span class='line'>
+</span><span class='line'>Resize operation completed with no errors. Before deleting the old
+</span><span class='line'>disk, carefully check that the resized disk boots and works correctly.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>调整完后转回qcow2格式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>qemu-img convert -f raw -O qcow2 centos2.raw centos2.qcow2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>虚拟机里面不用再做操作,现在使用新的磁盘镜像文件启动虚拟机应该可以看到/dev/sda1已经从35G变为40G了</p>
+
+<p>分区的缩减我们一般用不到,没有做测试,lvm的调整可以参考<a href="http://askaralikhan.blogspot.tw/2011/07/expanding-kvm-guest-disk-image-using.html">这里</a></p>
+
+<h2>virt-install</h2>
+
+<p>virt-install命令由<code>python-virtinst</code>提供,需要安装python-virtinst才可以使用virt-install</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yum -y install python-virtinst</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装例子</p>
+
+<pre><code>virt-install \
+    --name kvm-test-centos-6.2-x64 \
+    --ram 1024 \
+    --vcpus 4 \
+    --cdrom /opt/isos/CentOS-6.2-x86_64-bin-DVD1.iso \
+    --network bridge:virbr0 \
+    --vnc --vncport=5910 --vnclisten=localhost \
+    --disk /opt/images/kvm-test-centos-6.2-64bit.img,size=20
+</code></pre>
+
+<p>如果磁盘文件不存在,会自动创建(需要size参数),默认创建是raw磁盘镜像,可以用qemu-img手动创建磁盘文件</p>
+
+<pre><code>qemu-img create -f raw kvm-test-centos-6.2-64bit.img 20G
+</code></pre>
+
+<p>这里磁盘格式常见的有两种,raw和qcow2(还有qed正在开发中,据说性能更好)
+raw的读写性能要比qcow2好,但如果你需要快照等高级特性,可以选择qcow2
+如果使用qcow2,加上preallocation性能会有所提升</p>
+
+<pre><code>qemu-img create -f qcow2 -o preallocation=metadata kvm-test-centos-6.2-64bit.img 20G
+</code></pre>
+
+<p>不同的bus类型,cache类型和aio选择都会有性能有影响,所以你可希望把这些也加进去,格式类似这样</p>
+
+<pre><code>...
+    --disk path=/opt/images/kvm-test-centos-6.2-64bit.img,size=20,bus=virtio,cache=none,aio=threads,format=qcow2 \
+...
+</code></pre>
+
+<p>这里可供选择的参数有</p>
+
+<pre><code>bus: virtio, ide
+cache: unsafe, none, writeback, writethrough, directsync
+aio: threads, native
+
+不同的网卡驱动类型会影响到虚拟机的网络性能,可以这样指定
+
+...
+    --network bridge:virbr0,model=e1000 \
+...
+</code></pre>
+
+<p>可供选择的参数有</p>
+
+<pre><code># 可以通过qemu-system-x86_64 -net nic,model=?查到支持的参数
+model:  ne2k_pci,i82551,i82557b,i82559er,rtl8139,e1000,pcnet,virtio
+</code></pre>
+
+<p>virbr0是系统自动创建的桥,可以手动创建桥接设备然后指定虚拟机使用
+如果你的虚拟机是windows并且想使用virtio做为硬盘驱动和网卡驱动,你需要下载两个驱动文件
+这两个文件可以从这里下载</p>
+
+<p><a href="http://ishare.iask.sina.com.cn/f/24109437.html">磁盘驱动</a></p>
+
+<p><a href="http://alt.fedoraproject.org/pub/alt/virtio-win/latest/images/bin/">网卡驱动</a></p>
+
+<pre><code>virt-install \
+    --name kvm-test-win2003 \
+    --ram 1024 \
+    --vcpus 1 \
+    --cdrom /opt/isos/cn_win_srv_2003_r2_enterprise_x64_with_sp2_vl_cd1_X13-47314.iso \
+    --network bridge:virbr0,model=virtio \
+    --vnc \
+    --disk path=/opt/images/kvm-test-win2003.img,bus=virtio,cache=none,format=qcow2,size=20 \
+    --disk path=/opt/drivers/virtio-win-1.1.16.vfd,device=floppy \
+    --disk path=/opt/drivers/virtio-win-0.1-12.iso,device=cdrom,perms=ro
+</code></pre>
+
+<p>如果不出问题,应该可以看到安装窗口了(需要安装virt-viewer)
+如果没有安装virt-viewer或者你在没有安装图形的服务器上操作
+你仍然可以通过以下方法访问到安装窗口</p>
+
+<pre><code>vncviewer vnclisten:vncport
+</code></pre>
+
+<p>前面的–vnclisten就不能写localhost了</p>
+
+<p>第二种方法是:</p>
+
+<pre><code>virt-viewer --connect qemu+ssh://user@ip_address:port/system name_of_instance
+</code></pre>
+
+<p>kickstart安装也可以用在virt-install中</p>
+
+<pre><code>yum -y install httpd
+mkdir /var/www/centos
+mount -o loop /opt/isos/CentOS-6.2-x86_64-bin-DVD1.iso /var/www/centos
+cp /root/ks.cfg /var/www/centos
+/etc/init.d/httpd restart
+
+virt-install \
+    --name kvm-test-centos-6.2-x64 \
+    --ram 1024 \
+    --vcpus 4 \
+    --location http://192.168.122.1/centos/
+    --network bridge:virbr0 \
+    --vnc --vncport=5910 --vnclisten=localhost \
+    --disk /opt/images/kvm-test-centos-6.2-64bit.img,size=20
+    --extra-args "ks=http://192.168.122.1/ks.cfg ip=192.168.122.10 ip=192.168.122.10 netmask=255.255.255.0 gateway=192.168.122.1 dns=8.8.8.8"
+</code></pre>
+
+<p>安装好之后,就可以使用virsh对虚拟做一些操作了
+virt-install的更多参数可以参考<a href="http://my.oschina.net/williamherrychina/blog/56463">这里</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/09/customize-centos-iso/">定制Linux发行版(CentOS-6.2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-09T01:18:00+08:00" pubdate data-updated="true">Sep 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/09/customize-centos-iso/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>主要内容:</p>
+
+<ul>
+<li>基本的定制过程</li>
+<li>改变ISO中包含的软件包</li>
+<li>集成Kickstart</li>
+<li>更换背景图片</li>
+</ul>
+
+
+<h2>基本的定制过程</h2>
+
+<p>ISO的定制简单来说就是将ISO挂载,修改里面的内容然后打包回去,这一节我们不修改ISO里的内容,只熟悉一个这个过程</p>
+
+<ul>
+<li>安装需要要的软件包</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yum -y install genisoimage createrepo</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>挂载ISO</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mount -o loop /opt/CentOS-6.2-x86_64-bin-DVD1.iso /media/</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>将所有人文件复制到一个目录</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cp -r /media mycentos</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>做修改</li>
+</ul>
+
+
+<p>这里我们不做修改,只熟悉这个过程</p>
+
+<ul>
+<li>重新生成软件包列表</li>
+</ul>
+
+
+<p>如果添加或删除了ISO里包含的软件包,需要运行下面命令重新生成列表(注意下面命令最后的<code>.</code>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的很长的文件名可以从<code>repodata/repomd.xml</code>文件里找到,在这个文件中寻找<code>type="group"</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>...
+</span><span class='line'> &lt;data type="group"&gt;
+</span><span class='line'>    &lt;location xml:base="media://1323560292.885204#1" href="repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml"/&gt;
+</span><span class='line'>    &lt;checksum type="sha256"&gt;3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098&lt;/checksum&gt;
+</span><span class='line'>    &lt;timestamp&gt;1324003565&lt;/timestamp&gt;
+</span><span class='line'> &lt;/data&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新打包回去</li>
+</ul>
+
+
+<p>运行下面命令重新生成修改过的ISO保存到<code>/tmp</code>下(注意最后面的<code>.</code>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>改变ISO中包含的软件包</h2>
+
+<p>如果觉得CentOS的ISO太大,可以对里面的软件包做一些删减,只包含最小化安装需要的包可能是一个好选择,在一个最小化安装的系统中<code>/root/install.log</code>里包含了最小化安装所需要的包,所以这一节很简单,在Packages目录下只留下需要的包,重新生成软件列表,重新打包</p>
+
+<ul>
+<li>只复制需要要软件包</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>rm -rf Packages/*
+</span><span class='line'>for i in `cat /root/install.log | grep Installing | sed 's/Installing //'`; do cp -v /media/Packages/$i* Packages/; done</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新生成软件包列表</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新打包回去</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要需要一些自己制作的软件包,需要把他们依赖的包也复制到Packages目录里</p>
+
+<h2>集成Kickstart</h2>
+
+<p>集成Kickstart比较简单,将做好的Kickstart文件复制到ISO里(可以是isolinux下),然后修改<code>isolinux/isolinux.cfg</code>文件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>label autoinstall
+</span><span class='line'>  menu label ^Auto install
+</span><span class='line'>  menu default
+</span><span class='line'>  kernel vmlinuz
+</span><span class='line'>  append initrd=initrd.img ks=cdrom:/isolinux/ks.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重新打包即可</p>
+
+<h2>更换背景图片</h2>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>VIM练级日记04-文件搜索CtrlP - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="CtrlP简介 你可能觉得前面介绍的NERDTree外挂非常好用,但当你过用今天要介绍的这个外挂后,可能NERDTree你就会很少用了 简单的说,CtrlP可以让你以搜索的方式打开文件,你可以输入完整的文件名,或者文件名的一部分,或者路径的一部分,它会帮你自动匹配,如果唯一,就可以回车打开了 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">VIM练级日记04-文件搜索CtrlP</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-25T15:36:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>CtrlP简介</h2>
+
+<p>你可能觉得前面介绍的NERDTree外挂非常好用,但当你过用今天要介绍的这个外挂后,可能NERDTree你就会很少用了</p>
+
+<p>简单的说,CtrlP可以让你以搜索的方式打开文件,你可以输入完整的文件名,或者文件名的一部分,或者路径的一部分,它会帮你自动匹配,如果唯一,就可以回车打开了</p>
+
+<p>看一下效果(可以在图片上右键<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/vim/vim-ctrlp.png"></p>
+
+<h2>CtrlP安装</h2>
+
+<p>使用Vundle管理VIM外挂,安装就非常简单了,打开<code>~/.vimrc</code>文件加入一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'kien/ctrlp.vim'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>保存退出VIM,在命令行执行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim +BundleInstall +qa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装已经完成了,可以做一些配置(来自eddie-vim: https://github.cim/kaochenlong/eddie-vim)</p>
+
+<figure class='code'><figcaption><span>vi .vim/plugin/settings/CtrlP.vim </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">noremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;&lt;</span>C<span class="p">-</span>U<span class="p">&gt;</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'><span class="nb">nnoremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;</span><span class="k">u</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_custom_ignore <span class="p">=</span> <span class="s1">&#39;\.git$\|\.hg$\|\.svn$\|.rvm$&#39;</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_working_path_mode<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_bottom<span class="p">=</span><span class="m">1</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_max_height<span class="p">=</span><span class="m">15</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_reversed<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_mruf_max<span class="p">=</span><span class="m">500</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_follow_symlinks<span class="p">=</span><span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>CtrlP使用</h2>
+
+<p>使用就非常简单了,打开VIM,按<code>Ctrl</code> + <code>P</code>, 输入想要打开的文件名,或者文件名的一部分,或者路径,自己试试吧</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-25T15:36:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/" data-via="" data-counturl="http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/21/master-vim-03-surround/" title="Previous Post: VIM练级日记03-配对外挂Surround">&laquo; VIM练级日记03-配对外挂Surround</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/08/29/install-ruby-with-rvm/" title="Next Post: 用rvm安装ruby-1.9.3">用rvm安装ruby-1.9.3 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/';
+        var disqus_url = 'http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

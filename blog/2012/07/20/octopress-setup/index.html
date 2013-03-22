@@ -1,0 +1,1038 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Octopress - 像黑客一样写博客 - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮 这篇文档主要包括 搭建Octopress
+将博客托管到Github上
+我对主题做的一些修改 搭建Octopress &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2012/07/20/octopress-setup/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Octopress - 像黑客一样写博客</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
+
+<p>这篇文档主要包括</p>
+
+<ul>
+<li>搭建Octopress</li>
+<li>将博客托管到Github上</li>
+<li>我对主题做的一些修改</li>
+</ul>
+
+
+<!-- more -->
+
+
+<h2>搭建Octopress</h2>
+
+<p>Octopress需要Git和Ruby 1.9.2,Git的安装比较简单,下面我们看一下Ruby1.9.2的安装(我的系统是Ubuntu12.04)</p>
+
+<h3>安装Ruby 1.9.2</h3>
+
+<p>可以有两种方法,RVM和rbenv,这里介绍rbenv的方法,因为RVM我没有成功(实际上安装Ruby1.9.2我花了好多时间)</p>
+
+<h4>首先安装rbenv</h4>
+
+<p>下载rbenv</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd
+</span><span class='line'>git clone git://github.com/sstephenson/rbenv.git .rbenv</span></code></pre></td></tr></table></div></figure>
+
+
+<p>将<code>～/.rbenv/bin</code>加到你的<code>$PATH</code>变量里以使你可以使用<code>rbenv</code>这个命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'export PATH="$HOME/.rbenv/bin:$PATH"' &gt;&gt; ~/.bash_profile
+</span><span class='line'>source ~/.bash_profile</span></code></pre></td></tr></table></div></figure>
+
+
+<p>添加rbenv init到你的shell以启用shims(什么东西我也不清楚)和自动补全功能</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'eval "$(rbenv init -)"' &gt;&gt; ~/.bash_profile</span></code></pre></td></tr></table></div></figure>
+
+
+<p>启动shell让<code>$PATH</code>的修改生效,现在可以使用rbenv了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>exec $SHELL</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>安装Ruby 1.9.2</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rbenv install 1.9.2-p290
+</span><span class='line'>rbenv rehash</span></code></pre></td></tr></table></div></figure>
+
+
+<p>确实Ruby 1.9.2已经正确安装(如果没有最好不要继续进行)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ruby --version  # Should report Ruby 1.9.2</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>搭建Octopress</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git://github.com/imathis/octopress.git octopress
+</span><span class='line'>cd octopress    # If you use RVM, You'll be asked if you trust the .rvmrc file (say yes).
+</span><span class='line'>ruby --version  # Should report Ruby 1.9.2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装依赖</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install bundler
+</span><span class='line'>rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+</span><span class='line'>bundle install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装默认Octopress主题</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Octopress的本地搭建工作已经完成,现在可以做一些简单的测试了</p>
+
+<p>创建一篇博文</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake new_post["first post"]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会在<code>source/_posts</code>目录下创建一个以markdown为后缀的文件,打开编辑后保存(markdown语法请看<a href="http://equation85.github.com/blog/markdown-examples/">这里</a>)</p>
+
+<p>生成html文件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake generate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过下面的命令就可以在本地预览一下效果了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在访问<a href="http://localhost:4000">http://localhost:4000</a>就可以看到新创建的页面了,是不是很漂亮:)</p>
+
+<h3>将博客部署到Github上去</h3>
+
+<p>主要参考的<a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">这篇博文</a></p>
+
+<p>Octopress可以托管到<a href="https://github.com">Github</a>,<a href="http://heroku.com">Heroku</a>或者自己有主机通过rsync部署到上面,rsync的方式我没有试过(我没有主机),我只试过Github和Heroku,个人感觉Heroku更好一点,添加自己的域名要比Github方便,但非常蛋疼的一点是Heroku好像被我们亲爱的祖国墙到了外面,所以只能用Github了</p>
+
+<p>要将Octopress托管到Github上需要在Github上有一个帐号,并且创建了个类似username.github.com的仓库(例如我的帐号名为<code>williamherry</code>,那么我就要创建一个名为<code>williamherry.github.com</code>的仓库),如果还没有点<a href="https://github.com/new">这里</a>创建一个</p>
+
+<p>Octopress提供了一些方便的工具来帮你完成托管到Github上的工作,只要在博客目录里执行<br/>
+<code>rake setup_github_pages</code>,当提示你的时候输入你前面创建的仓库的Git Url, 例如我的为<br/>
+<code>git@github.com:williamherry/williamherry.github.com.git</code></p>
+
+<p>注意: 下面命令中的<code>williamherry</code>和<code>username</code>需要换成你自己的Github帐号名</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ rake setup_github_pages
+</span><span class='line'>Enter the read/write url for your repository: git@github.com:williamherry/williamherry.github.com.git
+</span><span class='line'> 
+</span><span class='line'>Added remote git@github.com:williamherry/williamherry.github.com.git as origin
+</span><span class='line'>Set origin as default remote
+</span><span class='line'>Master branch renamed to 'source' for committing your blog source files
+</span><span class='line'>Initialized empty Git repository in /home/williamherry/source/octopress/_deploy/.git/
+</span><span class='line'>[master (root-commit) 2a4e9e7] Octopress init
+</span><span class='line'>1 files changed, 1 insertions(+), 0 deletions(-)
+</span><span class='line'>create mode 100644 index.html
+</span><span class='line'> 
+</span><span class='line'>---
+</span><span class='line'>## Now you can deploy to http://williamherry.github.com with `rake deploy` ##</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么上面的命令具体做了那些工作呢? 它把我们克隆来的博客指向了我们新的仓库,它还创建了一个<code>_deploy</code>目录来包含所有被部署的文件的新仓库,这个目录所指向的远程仓库和我们的<code>octopress</code>目录是同一样,但Checked out的分支是<code>master</code>.顺便说一下,我们现在在<code>source</code>分支</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ git remote -v
+</span><span class='line'>octopress    git://github.com/imathis/octopress.git (fetch)
+</span><span class='line'>octopress    git://github.com/imathis/octopress.git (push)
+</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (fetch)
+</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (push)
+</span><span class='line'> 
+</span><span class='line'>octopress$ git branch
+</span><span class='line'>* source
+</span><span class='line'> 
+</span><span class='line'>octopress$ cd _deploy/
+</span><span class='line'>octopress/_deploy$ git remote -v
+</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (fetch)
+</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (push)
+</span><span class='line'> 
+</span><span class='line'>octopress/_deploy$ git branch
+</span><span class='line'>* master
+</span><span class='line'> 
+</span><span class='line'>octopress/_deploy$ cd ..
+</span><span class='line'> 
+</span><span class='line'>octopress$</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在我们部署到github之前,可以保存<code>source</code>并且把它推到Github上去,注意我们将要推的是<code>source</code>分支</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ git add .
+</span><span class='line'> 
+</span><span class='line'>octopress$ git commit -m "Initial blog post."
+</span><span class='line'>...
+</span><span class='line'> 
+</span><span class='line'>octopress$ git push origin source
+</span><span class='line'>Counting objects: 3927, done.
+</span><span class='line'>Compressing objects: 100% (1412/1412), done.
+</span><span class='line'>Writing objects: 100% (3927/3927), 910.08 KiB, done.
+</span><span class='line'>Total 3927 (delta 2257), reused 3848 (delta 2203)
+</span><span class='line'>To git@github.com:williamherry/williamherry.github.com.git
+</span><span class='line'>* [new branch]      source -&gt; source</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了保存你的博客,每次改变你都要执行上面的命令</p>
+
+<p>接下来我们部署博客,它所做的是把所有<code>_deploy</code>下的东西推到<code>master</code>分支上去</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ rake deploy
+</span><span class='line'> 
+</span><span class='line'>## Pushing generated _deploy website
+</span><span class='line'>Counting objects: 84, done.
+</span><span class='line'>Compressing objects: 100% (74/74), done.
+</span><span class='line'>Writing objects: 100% (84/84), 180.40 KiB, done.
+</span><span class='line'>Total 84 (delta 2), reused 0 (delta 0)
+</span><span class='line'>To git@github.com:williamherry/williamherry.github.com.git
+</span><span class='line'>* [new branch]      master -&gt; master</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦Github生成页面(通常一到两分钟)后你访问<code>http://username.github.com</code>应该就能看到自己的博客了.并且在https://github.com/username/username.github.com你应该可以看到保存生成的页面文件的<code>master</code>分支和保存源码的<code>source</code>分支</p>
+
+<p>每次想部署都需要执行上面的命令</p>
+
+<p>如果你有一台新的电脑,你需要做的步骤和上面大体相同,但不是从头开始</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git@github.com:username/username.github.com.git
+</span><span class='line'>$ cd username.github.com
+</span><span class='line'>username.github.com$ git checkout source
+</span><span class='line'>username.github.com$ mkdir _deploy
+</span><span class='line'>username.github.com$ cd _deploy
+</span><span class='line'>username.github.com/_deploy$ git init
+</span><span class='line'>username.github.com/_deploy$ git remote add origin git@github.com:username/username.github.com.git
+</span><span class='line'>username.github.com/_deploy$ git pull origin master
+</span><span class='line'>username.github.com/_deploy$ cd ..
+</span><span class='line'>username.github.com$</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>添加自己的域名</h3>
+
+<p>如果你有自己的域名,可以很方便的绑定到自己的博客上</p>
+
+<p>首先创建一个<code>CNAME</code>文件里面写上你的域名</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'your-domain.com' &gt;&gt; source/CNAME
+</span><span class='line'>git add .
+</span><span class='line'>git commit -m 'add my own domain name'
+</span><span class='line'>git push origin source
+</span><span class='line'>rake generate
+</span><span class='line'>rake deploy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后更新你的域名指向</p>
+
+<p>如果你使用一个二级域名(如&#8217;blog.williamherry.com&#8217;),你只要加一个<code>CNAME</code>指向<code>username.github.com</code>,如果你使用一个顶级域名,你需要加一条<code>A</code>记录指向<code>207.97.227.245</code></p>
+
+<p>注意:域名的修改需要一定的时间,所以耐心点</p>
+
+<h2>我对主题的修改</h2>
+
+<p>我的主题的修改主要参考的是<a href="http://melandri.net/2012/02/14/octopress-theme-customization/">这篇博文</a> (基本全抄他的,感谢它做了这么漂亮的修改)</p>
+
+<p>此外还参考了<a href="http://octopress.org/docs/theme/template/">Octopress: Theming &amp; Customization</a></p>
+
+<h3>修改导航</h3>
+
+<p>默认只有<code>Blog</code>和<code>Archives</code>,我在前面加了一个<code>Home</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mv source/index.html source/blog/index.html
+</span><span class='line'>rake new_page[index.html]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以修改<code>source/index.html</code>,它将在主面显示,注意,这不是<code>markdown</code>文件</p>
+
+<p>你需要更新你的Rakefile文件以确实当你更新Octopress时你新的博客索引被保留下来(重要)</p>
+
+<figure class='code'><figcaption><span>vim Rakefile </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>...
+</span><span class='line'>blog_index_dir = 'source/blog'
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改导航加上<code>Home</code>并更新<code>Blog</code>的url</p>
+
+<figure class='code'><figcaption><span>vim source/_includes/custom/navigation.html </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;main-navigation&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog&quot;</span><span class="nt">&gt;</span>Blog<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog/archives&quot;</span><span class="nt">&gt;</span>Archives<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>修改字体</h3>
+
+<p>从<a href="http://google.com/webfonts">Google Webfonts</a>选择自己喜欢的字体,我比较喜欢<code>Delius</code>这个字体,需要改两个文件</p>
+
+<figure class='code'><figcaption><span>vim sass/custom/_fonts.scss </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="nv">$sans</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$serif</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">serif</span><span class="p">;</span>
+</span><span class='line'><span class="na">$heading-font-family</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="na">$header-title-font-family</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">cursive</span><span class="o">,</span> <span class="n">Helvetica</span><span class="o">,</span> <span class="n">Arial</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>vim sass/_includes/custom/head.html </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- this font looks great --&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&#39;http://fonts.googleapis.com/css?family=Delius&#39;</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">type=</span><span class="s">&#39;text/css&#39;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>修改CSS样式</h3>
+
+<p>这个基本是抄别人的,我只是加了<code>ul</code>以让列表稍微靠右</p>
+
+<figure class='code'><figcaption><span>vim sass/cuscom/_style.scss </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="k">@font-face</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">font-family</span><span class="o">:</span> <span class="s2">&quot;League&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">src</span><span class="o">:</span> <span class="sx">url(&#39;/font/LeagueGothic.otf&#39;)</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">a</span><span class="nd">:visited</span><span class="o">,</span> <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="nd">:hover</span> <span class="p">{</span> <span class="na">color</span><span class="o">:</span> <span class="mh">#1863A1</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- main layout ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">html</span> <span class="p">{</span> <span class="na">background</span><span class="o">:</span> <span class="mh">#262C33</span> <span class="sx">url(&quot;/images/line-tile.png&quot;)</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="p">{</span> <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="p">{</span> <span class="na">background-image</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="p">{</span> <span class="na">background-image</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- header ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">background</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">padding</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.6</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">1</span><span class="kt">em</span> <span class="mi">0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">2</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">padding-left</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">text-shadow</span><span class="o">:</span> <span class="nf">rgba</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="mf">.8</span><span class="p">)</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h2</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.5</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">-1</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">padding-left</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">padding-top</span><span class="o">:</span> <span class="mf">.15</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">padding-bottom</span><span class="o">:</span> <span class="mf">.15</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="nt">a</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="nt">form</span> <span class="nc">.search</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">padding</span><span class="o">:</span> <span class="mf">.2</span><span class="kt">em</span> <span class="mf">.3</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- Content ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span><span class="o">,</span> <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span> <span class="nt">a</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">color</span><span class="o">:</span> <span class="mh">#555555</span> <span class="nv">!important</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">h1</span> <span class="p">{</span> <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">h1</span> <span class="nt">span</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">color</span><span class="o">:</span> <span class="mh">#E0841B</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">article</span> <span class="nt">h2</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">h3</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="nd">:hover</span><span class="p">{</span> <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">article</span> <span class="nt">p</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nt">text-align</span><span class="nd">:justify</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">margin-bottom</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">/</span><span class="err">\</span><span class="o">*</span> <span class="nt">-----</span> <span class="nt">Sidebar</span> <span class="nt">-----</span> <span class="err">\</span><span class="o">*/</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span> <span class="nt">section</span> <span class="nt">h1</span> <span class="p">{</span> <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.1</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span> <span class="nt">a</span> <span class="p">{</span> <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.toggle-sidebar</span><span class="p">{</span><span class="na">display</span><span class="o">:</span> <span class="no">none</span><span class="p">;}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">ul</span><span class="nn">#gh</span><span class="err">\</span><span class="nt">_repos</span> <span class="o">&gt;</span> <span class="nt">li</span> <span class="o">&gt;</span> <span class="nt">a</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">display</span><span class="o">:</span> <span class="no">block</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* make list looks better */</span>
+</span><span class='line'><span class="nt">ul</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">margin-left</span><span class="o">:</span><span class="mi">18</span><span class="kt">px</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">-moz-border-radius-topright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- Footer ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">border-radius</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- 404 ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.notfound404</span> <span class="nt">article</span><span class="p">{</span>
+</span><span class='line'>  <span class="na">margin-left</span><span class="o">:</span> <span class="mi">0</span> <span class="nv">!important</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* ----- Media queries ----- */</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@media</span> <span class="nt">only</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">min-width</span><span class="nd">:</span> <span class="nt">550px</span><span class="o">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
+</span><span class='line'>      <span class="na">background</span><span class="o">:</span> <span class="sx">url(&quot;/favicon.png&quot;)</span> <span class="no">no-repeat</span> <span class="mi">0</span> <span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">padding-left</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h2</span> <span class="p">{</span> <span class="na">padding-left</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span> <span class="p">{</span> <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">3</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@media</span> <span class="nt">only</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">min-width</span><span class="nd">:</span> <span class="nt">1040px</span><span class="o">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="p">{</span>
+</span><span class='line'>    <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>    <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>    <span class="na">border-radius</span><span class="o">:</span><span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>    <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">2</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span><span class="p">{</span>
+</span><span class='line'>      <span class="na">-moz-border-radius-bottomleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-moz-border-radius-bottomright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nn">#main</span><span class="p">{</span>
+</span><span class='line'>      <span class="na">-moz-border-radius-topleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-moz-border-radius-topright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nn">#content</span><span class="p">{</span>
+</span><span class='line'>      <span class="na">-moz-border-radius-topleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">a</span><span class="o">[</span><span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;full-article&quot;</span><span class="o">]</span><span class="p">{</span>
+</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/07/20/octopress-setup/" data-via="" data-counturl="http://williamherry.com/blog/2012/07/20/octopress-setup/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/19/master-vim-02-nerdtree/" title="Previous Post: VIM练级日记02-目录外挂NERDTree">&laquo; VIM练级日记02-目录外挂NERDTree</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/07/21/master-vim-03-surround/" title="Next Post: VIM练级日记03-配对外挂Surround">VIM练级日记03-配对外挂Surround &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2012/07/20/octopress-setup/';
+        var disqus_url = 'http://williamherry.com/blog/2012/07/20/octopress-setup/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

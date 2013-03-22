@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Welcome - William's Blog with Octopress</title>
+  <title>William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Welcome Jul 19th, 2012 Hi: This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^. Jul 19th, 2012 Tweet Comments &hellip;">
+  <meta name="description" content="背景 利用LVS和Keepalived实现高可用负载均衡已经不是什么新鲜玩意了,网上的资料的也非常多,但大多都是转载的NetSeek大侠的博文,我学习的过程中也遇到一些困难,所以就有了写一篇自己的文档的想法.本文档没有太多自己的东西,只是将网上的资料做一些整理的工作 本文档主要包括以下内容 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.com/">
+  <link rel="canonical" href="http://williamherry.com/blog/page/3/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,35 +67,19 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Welcome</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time></p>
-  </header>
-  
-  <h2>Hi:</h2>
-
-<p>This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^.
-
-  
-    <footer>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/14/lvs-and-keepalived/">LVS和KEEPALIVED实现高可用负载均衡</a></h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -107,31 +91,47 @@
   
 
 
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+<time datetime="2012-07-14T21:16:00+08:00" pubdate data-updated="true">Jul 14<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/14/lvs-and-keepalived/#disqus_thread">Comments</a>
         
       </p>
-      
-        <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/index.html" data-via="" data-counturl="http://williamherry.com/index.html" >Tweet</a>
-  
-  
-  
-</div>
+    
+  </header>
 
-      
+
+  <div class="entry-content"><h2>背景</h2>
+
+<p>利用LVS和Keepalived实现高可用负载均衡已经不是什么新鲜玩意了,网上的资料的也非常多,但大多都是转载的NetSeek大侠的博文,我学习的过程中也遇到一些困难,所以就有了写一篇自己的文档的想法.本文档没有太多自己的东西,只是将网上的资料做一些整理的工作</p>
+
+<p>本文档主要包括以下内容</p>
+
+<ul>
+<li>RSYNC和SERSYNC实现后端服务器内容同步</li>
+<li>LVS实现负载均衡</li>
+<li>KEEPALIVED实现高可用</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/14/lvs-and-keepalived/">Read on &rarr;</a>
     </footer>
   
-</article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
 </div>
-  </section>
-
-</div>
-
 <aside class="sidebar">
   
     <section>
@@ -176,7 +176,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/williamherry">@williamherry</a> on GitHub
@@ -210,7 +210,6 @@
   
 </aside>
 
-
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -225,10 +224,7 @@
       var disqus_shortname = 'williamherry';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.com/index.html';
-        var disqus_url = 'http://williamherry.com/index.html';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

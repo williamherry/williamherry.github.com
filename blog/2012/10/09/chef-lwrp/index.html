@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Chef基础之LWRP - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="概述 Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers 如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个: 1
+2
+3
+4
+5 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2012/10/09/chef-lwrp/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Chef基础之LWRP</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>概述</h2>
+
+<p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
+
+<p>如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">apt_repository</span> <span class="s2">&quot;zenoss&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">uri</span> <span class="s2">&quot;http://dev.zenoss.org/deb&quot;</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="s2">&quot;stable&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:add</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)</p>
+
+<p>这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: <a href="http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29">Lightweight Resources and Providers</a></p>
+
+<p>在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s2">&quot;vim&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">version</span> <span class="s2">&quot;1.16.1-1&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:install</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.</p>
+
+<p>那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是<code>yum -y install vim</code>或<code>apt-get install vim</code>.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象</p>
+
+<h2>文件位置</h2>
+
+<p>轻量级(或叫自定义)Resources和Providers分区从cookbook的<code>resources</code>和<code>providers</code>目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为<code>default.rb</code>.在这种情况下Resources和Providers的名字仅是cookbook的名字</p>
+
+<h3>例子</h3>
+
+<p>Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Resources</h2>
+
+<p>前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的</p>
+
+<h2>Providers</h2>
+
+<p>Providers就是支持Resources的,它可以通过实例变量<code>@new_resource</code>做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了</p>
+
+<p>下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递</p>
+
+<h2>简单的例子</h2>
+
+<p>这个例子我们简单的封装一个内容Resource类型<code>user</code>得到一个LWRP</p>
+
+<p>首先我们利用knife命令创建cookbook的目录结构</p>
+
+<pre><code>knife cookbook create users
+</code></pre>
+
+<p>然后我们直接在resources目录下创建我们的resource</p>
+
+<figure class='code'><figcaption><span>vim users/resources/manage.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">actions</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:remove</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">attribute</span> <span class="ss">:user_name</span><span class="p">,</span> <span class="ss">:kind_of</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到</p>
+
+<p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
+
+<figure class='code'><figcaption><span>vim users/providers/manage.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">action</span> <span class="ss">:remove</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:remove</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">action</span> <span class="ss">:create</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作,使用内置的Resource类型<code>user</code>来创建用户,利用<code>new_resource</code>得到从recipes中传来的用户名,最后更新状态</p>
+
+<p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
+
+<figure class='code'><figcaption><span>vim users/recipes/test.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">users_maange</span> <span class="s2">&quot;william&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user_name</span> <span class="s2">&quot;william&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试我们写的LWRP了</p>
+
+<pre><code>knife cookbook upload users
+knife node run list add client1.chef.com 'recipe[users::test]'
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/10/09/chef-lwrp/" data-via="" data-counturl="http://williamherry.com/blog/2012/10/09/chef-lwrp/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/03/install-gitolite/" title="Previous Post: 安装配置Git服务器Gitolite">&laquo; 安装配置Git服务器Gitolite</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/10/learning-git-resources/" title="Next Post: Git学习资料收集">Git学习资料收集 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2012/10/09/chef-lwrp/';
+        var disqus_url = 'http://williamherry.com/blog/2012/10/09/chef-lwrp/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

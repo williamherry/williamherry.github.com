@@ -1,0 +1,1411 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除~/.config/fcitx/table/ 好像有点太短了,怎么办呢?粘张图片吧 ">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/02/ubuntu-fcitx-crash/">fcitx在Ubuntu12.04上Crash的解决办法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-02T12:34:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/02/ubuntu-fcitx-crash/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
+
+<p>好像有点太短了,怎么办呢?粘张图片吧</p>
+
+<p><img src="/images/fcitx/fcitx.png"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/31/chef-tips/">Chef问题及小知识汇总(持续更新)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-31T09:00:00+08:00" pubdate data-updated="true">Aug 31<span>st</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/31/chef-tips/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了</p>
+
+<h2>Centos6.2下Chef-server的安装</h2>
+
+<p>目前的知道的在Centos6.2下面安装Chef-server的最方便的方法是执行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rpm</span> <span class="o">-</span><span class="no">Uvh</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">rbel</span><span class="o">.</span><span class="n">frameos</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rbel6</span>
+</span><span class='line'><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">rubygem</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span>
+</span><span class='line'><span class="n">service</span> <span class="n">iptables</span> <span class="n">stop</span>
+</span><span class='line'><span class="n">setup</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span><span class="o">.</span><span class="n">sh</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的命令已经可以安装并启动所有chef-servef需要的服务了,再加上下面的命令配置一个管理的客户端</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">configure</span> <span class="o">-</span><span class="n">i</span>  <span class="c1"># 然后一路回车</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 以上方面来自<a href="http://blog.frameos.org/2011/05/19/installing-chef-server-0-10-in-rhel-6-scientificlinux-6/">Installing Chef Server 0.10 in RHEL 6</a></p>
+
+<h2>Centos6.2下chef-client的安装</h2>
+
+<p>从Rackspace开发的部署Openstack的Cookbook里找到的方法,可以通过以下命令安装chef-client</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">opscode</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chef</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的命令会在/opt/chef/下安装chef-client需要的所有东西,好处除了方便外还有就是它是一个独立的环境,可以和系统的ruby完全分开,还有就是它使用的ruby是1.9,有些比较新的cookbook可能需要ruby 1.9才可以工作</p>
+
+<h2>Bootstrap的时候报错</h2>
+
+<p>利用bootstrap来配置客户端有时会报下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">error</span> <span class="n">as</span> <span class="n">follows</span><span class="ss">:Bootstrapping</span> <span class="no">Chef</span> <span class="n">on</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</span><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">convert</span> <span class="kp">false</span> <span class="n">into</span> <span class="nb">String</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个算是比较变态的报错了,你从报错信息不好判断哪里出了问题.实际上这个报错的原因是它找不到bootstrap的脚本,例如你在bootstrap的时候加参数<code>-d centos6</code>,它会在当前目标下找<code>.chef/bootstrap/centos6.erb</code>,找不到就会报这个错,所以解决办法是<code>cd ~</code>后再执行,一般<code>.chef</code>这个目录都在用户主目录下面</p>
+
+<h2>批量执行命令(ssh)错误</h2>
+
+<p>有时候Chef利用SSH批量执行命令的时候会报类似下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">ssh</span> <span class="s2">&quot;node:test3.chef.com&quot;</span> <span class="s1">&#39;uptime&#39;</span> <span class="o">-</span><span class="no">VV</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Using</span> <span class="n">configuration</span> <span class="n">from</span> <span class="sr">/root.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Signing</span> <span class="n">the</span> <span class="n">request</span> <span class="n">as</span> <span class="n">root</span>
+</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Sending</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="n">via</span> <span class="no">GET</span> <span class="n">to</span> <span class="n">server</span><span class="o">.</span><span class="n">chef</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">4000</span><span class="o">/</span><span class="n">search</span><span class="o">/</span><span class="n">node</span>
+</span><span class='line'><span class="no">FATAL</span><span class="p">:</span> <span class="no">No</span> <span class="n">nodes</span> <span class="n">requrned</span> <span class="n">from</span> <span class="n">search!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是用<code>knife search node "name:test3.chef.com"</code>确可以找到这个Node,这里的出错信息也不容易确定问题出在哪儿,实际上<code>knife ssh</code>会利用Node的FQDN(就是主机名)去连,如果连不上就会报这个错,解决办法是加上<code>-a ipaddress</code>参数明确指定使用IP地址去连接</p>
+
+<h2>Rabbitmq-server服务启动失败</h2>
+
+<p>Chef和Openstack都用到了这个软件,我感觉这个软件比较变态,跟个老古董一样,动不动就装死不启动,日志里也不说人话,我目前只知道两个引起它启动失败的原因,一个是主机名,一个是qpidd这个服务已经启动,它也使用5672端口,rabbitmq-server再要绑到这个口上面就会失败.所以,下次如果rabbitmq-server启动不起来,可以先试试这两个</p>
+
+<h2>利用Bootstrap初始化的Client去连<code>localhost</code></h2>
+
+<p>也就是用Bootstrap给Client生成的<code>/etc/chef/client.rb</code>配置文件里的<code>chef_server_url</code>不对,那么Bootstrap脚本是从哪里得到的<code>chef_server_url</code>的值呢,就我所知它是读Chef管理员的<code>~/.chef/knife.rb</code>这个文件里的信息,所以解决办法就是把<code>~/.chef/knife.rb</code>这个文件里的<code>chef_server_url</code>改成chef-server的IP地址</p>
+
+<h2>打印日志帮助除错</h2>
+
+<p>有时候自己写的recipe不按自己的预期工作,又找不出问题的原因,这时可能会想能不能有像C语言里的print一样把一些变量的值打印出来帮助除错,在chef里可以用LOG的方法做到</p>
+
+<p>很简单,只要在recipe中加入一行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>客户端执行的时候就会多一条info级别的日志:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sat</span><span class="p">,</span> <span class="mo">01</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mi">22</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">INFO</span><span class="p">:</span> <span class="no">Hello</span><span class="p">,</span> <span class="n">world!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>debug和error都是支持的(debug需要将<code>/etc/chef/client.rb</code>里的<code>log\_level</code>改来<code>:debug</code>才可以看到)</p>
+
+<h2>使用每个Client特有的属性(IP地址)</h2>
+
+<p>比如MySQL的配置,我希望它监听到自己的IP地址上而不是<code>0.0.0.0</code>, 应该怎么做呢?</p>
+
+<p>首先我们定义这个属性</p>
+
+<figure class='code'><figcaption><span>vim /var/chef/cookbooks/mysql/attributes/default.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">ipaddress</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的方法打印出来看对不对</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MySQL Binding on: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 注意定义的时候使用的是<code>default</code>,使用的时候用<code>node</code>
+Note: <code>ipaddress</code>是客户端的<code>ohai</code>收集的,要想知道还有哪些类似<code>ipaddress</code>的属性,在客户端执行<code>ohai</code>就可以看到了
+Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以你自己定义这样的属性会被替换</p>
+
+<h2>生成随机密码</h2>
+
+<p>把密码直接写死在cookbook里可能不是个好主意,更通用的方法是使用随机密码</p>
+
+<p>要使用随机密码需要<code>openssl</code>这个cookbook的支持,所以先下载并上传到我们的chef-server上去</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span>
+</span><span class='line'><span class="n">mkdir</span> <span class="n">cookbooks</span>
+</span><span class='line'><span class="n">cd</span> <span class="n">cookbooks</span>
+</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">site</span> <span class="n">download</span> <span class="n">openssl</span>
+</span><span class='line'><span class="n">tar</span> <span class="n">xf</span> <span class="n">openssl</span><span class="o">*</span>
+</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">upload</span> <span class="o">-</span><span class="n">o</span> <span class="o">.</span> <span class="n">openssl</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在需要用到<code>openssl</code>的cookbook的<code>metadata.rb</code>文件中加入depends</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">depends</span> <span class="s2">&quot;openssl&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加这条的意思就是说我会用到<code>openssl</code>这个cookbook,客户端下载cookbook的时候一并下载回去,如果没有这一条会报下面的错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sun</span><span class="p">,</span> <span class="mo">02</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mo">01</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">FATAL</span><span class="p">:</span> <span class="no">NameError</span><span class="p">:</span> <span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">::</span><span class="no">Opscode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面就可以在recipe中使用了,下面是mysql中的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">::</span><span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">Opscode</span><span class="o">::</span><span class="no">OpenSSL</span><span class="ss">:Password</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set_unless</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">secure_password</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Random Password: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>MySQL设置密码的问题(Redhat系)</h2>
+
+<p>这个问题我花了一下午才搞明白,如果不想听我细细说来,只想知道重点,那么你只要知道MySQL的cookbook还会在root的家目录里创建一个<code>.my.cnf</code>的文件就可以了</p>
+
+<p>我们先来了解一个它是怎么设置密码了,首先看下面的resource</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">platform?</span><span class="p">(</span><span class="sx">%w{debian ubuntu}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">execute</span> <span class="s2">&quot;assign-root-password&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysqladmin_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root password </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:run</span>
+</span><span class='line'>    <span class="n">only_if</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root -e &#39;show databases;&#39;&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果platform不是debian或ubuntu(即Redhat系),那么只有在&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysql_bin&#8217;]} -u root -e &#8216;show databases;&#8217;&#8221;执行成功的时候才执行&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysqladmin_bin&#8217;]} -u root password &#34;#{node[&#8216;mysql&#8217;][&#8216;server_root_password&#8217;]}&#34;&#8221;. mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">execute</span> <span class="s2">&quot;mysql-install-privileges&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">].</span><span class="n">empty?</span> <span class="p">?</span> <span class="s1">&#39;&#39;</span> <span class="p">:</span> <span class="s1">&#39;-p&#39;</span> <span class="si">}</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> &lt; </span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
+</span><span class='line'>  <span class="n">subscribes</span> <span class="ss">:run</span><span class="p">,</span> <span class="n">resources</span><span class="p">(</span><span class="s2">&quot;template[</span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">),</span> <span class="ss">:immediately</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我遇到的问题是这样的,Rackspack公司基于Ubuntu12.04做了安装Openstack的cookbook,由于Chef抽象的特性,理论上应该在CentOS上也能用,所以我拿过来做测试.整个过程太长,不可能一次成功,出错后做一些修改然后让它再跑,系统环境应该要做一些还原,我是把mysql-server删除,然后把<code>/var/lib/mysql</code>也删除,这样重新安装后就回到空密码了</p>
+
+<p>问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用<code>~/.my.cnf</code>里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:-(</p>
+
+<h2>配置chef-client周期性唤起时间</h2>
+
+<p>chef-client会周期性的每隔一段时间+随机时间启动,这个时间的配置在Debian系和Redhat系不一样,这里记录一下,Debian系中是<code>/etc/default/chef-client</code>,Redhat系是<code>/etc/sysconfig/chef-client</code></p>
+
+<h2>提示认证失败</h2>
+
+<p>有时可能会遇到这样的错误</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span> <span class="n">to</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="p">:</span><span class="mi">4000</span> <span class="n">as</span> <span class="n">root</span> <span class="n">with</span> <span class="n">key</span> <span class="sr">/root/</span><span class="o">.</span><span class="n">chef</span><span class="o">/</span><span class="n">root</span><span class="o">.</span><span class="n">pem</span>
+</span><span class='line'><span class="no">Response</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Ensure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">client</span> <span class="n">key</span> <span class="n">is</span> <span class="n">valid</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你的这个客户端以前认证没有问题,那么可以排除key不对的原因,这个key一般不会发霉变质的.也不是时间不同步的问题,因为如果是时间不同步,报错应该像下面的样子,并提示你同步时间</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Wed</span><span class="p">,</span> <span class="mi">11</span> <span class="no">Dec</span> <span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mi">0800</span><span class="o">]</span> <span class="no">Info</span><span class="p">:</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="no">Returned</span> <span class="mi">401</span> <span class="no">Unauthorized</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Please</span> <span class="n">synchronize</span> <span class="n">the</span> <span class="n">clock</span> <span class="n">on</span> <span class="n">your</span> <span class="n">client</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个问题有可能是chef-server上的couchdb服务没有启动引起了,我遇到几次都是这样,所以有时间chef-server不按预期的工作的时候,不公要检查chef-server,相关的服务也要检查</p>
+
+<h2>有条件的执行</h2>
+
+<p>有时候一些资源可以希望在特定的条件下才执行,这时可以用<code>only_if</code>和<code>not_if</code>来实现,如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="s2">&quot;test -f /etc/passwd&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果只是判断文件是否存在,下面的方法更常用</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
+</span><span class='line'>  <span class="n">not_if</span> <span class="p">{</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/29/weechat-irc-client/">Weechat-命令行下的IRC客户端工具</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-29T20:15:00+08:00" pubdate data-updated="true">Aug 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/29/weechat-irc-client/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西</p>
+
+<p>首先看一下效果图(右键图形选择<code>view image</code>可以看到高清大图哦):</p>
+
+<p><img src="/images/weechat/weechat.png"></p>
+
+<p>在Ubuntu下安装非常简单</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install weechat</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装完之后运行<code>weechat-curses</code>就可以打开软件了</p>
+
+<p>在软件下方的输入框里输入<code>/connect freenode</code>就可连接到freenode的服务器,输入<code>/join #ruby</code>就可以加入到<code>#ruby</code>群组里了</p>
+
+<p>你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:</p>
+
+<p>自动连接到freenode</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autoconnect on</span></code></pre></td></tr></table></div></figure>
+
+
+<p>设置nicks,username,realname</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.nicks "nickname"
+</span><span class='line'>/set irc.server.freenode.username "username"
+</span><span class='line'>/set irc.server.freenode.realname "realname"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自动认证nickname</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.command "/msg nickserv identify xxxxxx"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自动加入群组</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autojoin "#channel1,#channel2"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用<code>Ctrl + P</code>和<code>Ctrl + N</code>来切换,聊天的内容不能通过滚动鼠标滚轮来查看(可以了,看更新),需要按<code>PageUp</code>和<code>PageDown</code></p>
+
+<p>更多的高级的使用可以看它的<a href="http://www.weechat.org/doc/">手册页</a></p>
+
+<h2>更新</h2>
+
+<h3>使用weechat会有连不上freenode的问题</h3>
+
+<p>解决办法是端口改成8001</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.addresses "chat.freenode.net/8001"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>加入鼠标然支持</h3>
+
+<p>启动鼠标支持</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/moune enable</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>启动weechat的时候就支持鼠标</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.mouse on</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>屏蔽无关信息</h3>
+
+<p>经常会有一些<code>aaa join the channel, bbb leave this channel</code>等的信息,屏蔽的方法是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/filter add irc_smart *,!*weechat* irc_smart_filter *</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>去掉用户发言前面的时间</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.buffer_time_format  &quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>让给自己的信息在桌面上显示</h3>
+
+<p>只要安装一个插件然后重启weechat就可以了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
+</span><span class='line'><span class="n">wget</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/29/install-ruby-with-rvm/">用rvm安装ruby-1.9.3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-29T19:47:00+08:00" pubdate data-updated="true">Aug 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/29/install-ruby-with-rvm/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Octopress已经可以使用最新的ruby-1.9.3了,每次安装都会遇到一些问题,自己又记不住,每次都要Google,所以在这里简单的记录一下</p>
+
+<p>首先安装curl</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get -y install curl</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装rvm</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L https://get.rvm.io | bash -s stable</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这时你还不能执行rvm这个命令,需要重新打开一个终端或者<code>source ~/.bashrc</code></p>
+
+<p>安装依赖包</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rvm requirements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出中会看到类似这样的一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Additional Dependencies:
+</span><span class='line'># For Ruby / Ruby HEAD (MRI, Rubinius, & REE), install the following:
+</span><span class='line'>  ruby: /usr/bin/apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>按提示安装这些依赖包</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装<code>python-dev</code>,不然<code>rake generate</code>的时候会报<code>Could not open library 'lib.so'</code>的错</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install python-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你要使用<code>tk</code>,安装ruby前安装<code>tk-dev</code>可以省去好多麻烦</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install tk-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要使用rails,安装这些可以省去好多麻烦</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install build-essential git-core curl libmysqlclient-dev nodejs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后安装ruby</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rvm install 1.9.3</span></code></pre></td></tr></table></div></figure>
+
+
+<p>指定默认使用1.9.3</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>source ~/.rvm/scripts/rvm
+</span><span class='line'>rvm use 1.9.3 --default</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打完收工</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/25/master-vim-04-ctrlp/">VIM练级日记04-文件搜索CtrlP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-25T15:36:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/25/master-vim-04-ctrlp/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>CtrlP简介</h2>
+
+<p>你可能觉得前面介绍的NERDTree外挂非常好用,但当你过用今天要介绍的这个外挂后,可能NERDTree你就会很少用了</p>
+
+<p>简单的说,CtrlP可以让你以搜索的方式打开文件,你可以输入完整的文件名,或者文件名的一部分,或者路径的一部分,它会帮你自动匹配,如果唯一,就可以回车打开了</p>
+
+<p>看一下效果(可以在图片上右键<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/vim/vim-ctrlp.png"></p>
+
+<h2>CtrlP安装</h2>
+
+<p>使用Vundle管理VIM外挂,安装就非常简单了,打开<code>~/.vimrc</code>文件加入一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'kien/ctrlp.vim'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>保存退出VIM,在命令行执行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim +BundleInstall +qa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装已经完成了,可以做一些配置(来自eddie-vim: https://github.cim/kaochenlong/eddie-vim)</p>
+
+<figure class='code'><figcaption><span>vi .vim/plugin/settings/CtrlP.vim </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">noremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;&lt;</span>C<span class="p">-</span>U<span class="p">&gt;</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'><span class="nb">nnoremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;</span><span class="k">u</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_custom_ignore <span class="p">=</span> <span class="s1">&#39;\.git$\|\.hg$\|\.svn$\|.rvm$&#39;</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_working_path_mode<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_bottom<span class="p">=</span><span class="m">1</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_max_height<span class="p">=</span><span class="m">15</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_reversed<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_mruf_max<span class="p">=</span><span class="m">500</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_follow_symlinks<span class="p">=</span><span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>CtrlP使用</h2>
+
+<p>使用就非常简单了,打开VIM,按<code>Ctrl</code> + <code>P</code>, 输入想要打开的文件名,或者文件名的一部分,或者路径,自己试试吧</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/21/master-vim-03-surround/">VIM练级日记03-配对外挂Surround</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-21T22:46:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/21/master-vim-03-surround/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): <code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>&lt;</code> <code>&gt;</code> <code>'</code> <code>"</code>，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.</p>
+
+<p>今天给大家介绍的这个外挂就是用来简化这些事情的,首先我们从安装开始说起</p>
+
+<h2>安装Surround</h2>
+
+<p>如果你已经知道怎么用Vundle管理VIM外挂,那么安装这个外挂非常简单(不知道Vundle? 请看<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>)</p>
+
+<p>在<a href="https://github.ocm">Github</a>上搜索打到surround这个外挂(我找到的是<a href="https://github.com/tpope/vim-surround">这个</a>)</p>
+
+<p>在<code>~/.vimrc</code>里添加一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'tpope/vim-surround'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打开VIM运行<code>:BundleInstall</code>,安装完成下面会有提示</p>
+
+<p>重启VIM,现在你就可以使用了</p>
+
+<h2>使用Surround</h2>
+
+<p>可以先看一下Surround自带的帮助,在VIM中输入<code>:help surround</code>,我这里也简单的总结一下</p>
+
+<h3>添加surrounding</h3>
+
+<h4>给一个单词添加</h4>
+
+<p>使用命令<code>ysiw</code> + <code>surrounding</code>,例如下面的例子,想要给<code>William</code>这个单词两边添加一个单引号,只需要将水标称到这个单词中,然后输入<code>ysiw'</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      ysiw'           'William' Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再多几个例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      ysiw"           "William" Herry
+</span><span class='line'>William Herry      ysiw*           *William* Herry
+</span><span class='line'>William Herry      ysiw)           (William) Herry
+</span><span class='line'>William Herry      ysiw(           ( William ) Herry
+</span><span class='line'>William Herry      ysiw&lt;html&gt;      &lt;html&gt;William&lt;/html&gt; Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可能已经注意到了使用<code>(</code>和<code>)</code>的不同,<code>{}</code>和<code>[]</code>也是一样的,使用左边的会多出一空格</p>
+
+<p>还有就是它也支持HTML的Tag(如<code>&lt;html&gt;&lt;/html&gt;</code>, <code>&lt;body&gt;&lt;/body&gt;</code>这些</p>
+
+<h4>给一整行添加</h4>
+
+<p>使用<code>yss</code> + <code>surrounging</code>,请看例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      yss"            "William Herry"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其它的类似,请自己做实验验证</p>
+
+<h4>给选中的区域添加</h4>
+
+<p>使用Visual模式选中后按<code>S</code> + <code>surrounding</code>,例如光标在<code>a</code>上,我按<code>Ctrl</code> + <code>v</code>再按4下<code>l</code>选中<code>am He</code>后按<code>S%</code>,就会得到下面的结果</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      vllllS%         Willi%am He%rry"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>修改surrounding</h3>
+
+<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&#8230;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
+</span><span class='line'>"William" Herry       cs"'            'William' Herry
+</span><span class='line'>&lt;p&gt;William&lt;/p&gt; Herry  cst&lt;div&gt;        &lt;div&gt;William&lt;/div&gt; Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>删除surrounding</h3>
+
+<p>删除的时候也是分成两类的,使用<code>ds</code> + <code>surrounging</code>删除一般的surrounding,<code>dst</code>删除HTML的Tag</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
+</span><span class='line'>"william" herry       ds"'            william Herry
+</span><span class='line'>&lt;p&gt;william&lt;/p&gt; herry  dst             William Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>基本的使用就这些,一些高级的我自己还没搞清楚,比如加surrounding的时候自动缩进等等</p>
+
+<p>这里还有一个Youtube上的视频</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/5HF4jSyPpvs "></iframe></div>
+
+
+<h3>更新</h3>
+
+<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&#8230;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ci' ci" ci( ci[ ci{ ci&lt; - 更改这些配对标点符号中的内容
+</span><span class='line'>di' di" di( di[ di{ di&lt; - 删除这些配对标点符号中的内容
+</span><span class='line'>yi' yi" yi( yi[ yi{ yi&lt; - 复制这些配对标点符号中的内容
+</span><span class='line'>vi' vi" vi( vi[ vi{ vi&lt; - 选中这些配对标点符号中的内容</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果把上面的<code>i</code>改在<code>a</code>可以连配对标点一起操作</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/20/octopress-setup/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
+
+<p>这篇文档主要包括</p>
+
+<ul>
+<li>搭建Octopress</li>
+<li>将博客托管到Github上</li>
+<li>我对主题做的一些修改</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/20/octopress-setup/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/19/master-vim-02-nerdtree/">VIM练级日记02-目录外挂NERDTree</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/19/master-vim-02-nerdtree/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>NERDTree简介</h2>
+
+<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
+
+<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
+
+<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/nerdtree/nerdtree.png"></p>
+
+<p>这里还有一个Youtube上的视频演示</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
+
+
+<h2>安装使用</h2>
+
+<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重启VIM并执行:BundleInstall</p>
+
+<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
+
+<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
+
+<p>这里是NERDTree中的一些按键</p>
+
+<p><code>o</code> 打开关闭文件或者目录
+<code>t</code> 在标签页中打开
+<code>T</code> 在后台标签页中打开
+<code>!</code> 执行此文件
+<code>p</code> 到上层目录
+<code>P</code> 到根目录
+<code>K</code> 到第一个节点
+<code>J</code> 到最后一个节点
+<code>u</code> 打开上层目录
+<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
+<code>?</code> 帮助
+<code>q</code> 关闭</p>
+
+<h2>问题</h2>
+
+<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
+</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/16/master-vim-01-vundle/">VIM练级日记01-外挂总管Vundle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/16/master-vim-01-vundle/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>背景</h2>
+
+<p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
+
+<h2>外挂总管Vundle</h2>
+
+<p>高老师的视频中使用的是pathogen这个外挂来管理其它VIM外挂,但我通过Google发现有人说Vundle比pathogen要好,就试了下,果然很不错的说</p>
+
+<p>Vundle利用git,插件的git repo以及vim-scripts维护的GitHub repo, 自动安装, 更新和卸载插件. 它把这些繁杂的工作变得简单, 甚至, 成为一种享受.</p>
+
+<h2>安装</h2>
+
+<p>Vundle的github地址在<a href="https://github.com/gmarik/vundle">这里</a>,上面有安装和使用方法,我在这里也简单的写一下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置</h2>
+
+<figure class='code'><figcaption><span>vim ~/.vimrc  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">nocompatible</span>               <span class="c">&quot; be iMproved</span>
+</span><span class='line'><span class="k">filetype</span> off                   <span class="c">&quot; required!</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">set</span> <span class="nb">rtp</span><span class="p">+=~</span><span class="sr">/.vim/</span>bundle<span class="sr">/vundle/</span>
+</span><span class='line'><span class="k">call</span> vundle#rc<span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; let Vundle manage Vundle</span>
+</span><span class='line'><span class="c">&quot; required! </span>
+</span><span class='line'>Bundle <span class="s1">&#39;gmarik/vundle&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; My Bundles here:</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>     <span class="c">&quot; required!</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; Brief help</span>
+</span><span class='line'><span class="c">&quot; :BundleList          - list configured bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleInstall(!)    - install(update) bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleSearch(!) foo - search(or refresh cache first) for foo</span>
+</span><span class='line'><span class="c">&quot; :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; see :h vundle for more details or wiki for FAQ</span>
+</span><span class='line'><span class="c">&quot; NOTE: comments after Bundle command are not allowed..</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用</h2>
+
+<p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
+
+<ul>
+<li><p>在github上搜索nerdtree找到它,我找到的是: https://github.com/scrooloose/nerdtree</p></li>
+<li><p>在～/.vimrc文件里添加一行:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>退出并重新打开VIM,执行:BundleInstall</li>
+</ul>
+
+
+<p>新的外挂NERDTree已经安装好了,可以在~/.vim/bundle/目录下看到它,下一篇我会简单介绍它的使用</p>
+
+<p>用Vundle管理外挂就是这么简单</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/16/chef-basic/">Chef基础知识</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T18:57:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/16/chef-basic/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>主要内容</h2>
+
+<p>本文档主要讲述了一些Chef的基础知识,包括:</p>
+
+<ul>
+<li>Chef是什么</li>
+<li>Chef能做什么</li>
+<li>Chef怎么做</li>
+</ul>
+
+
+<h2>Chef是什么</h2>
+
+<h3>Chef简介</h3>
+
+<p>Chef是，由Ruby开发的服务器的构成管理工具</p>
+
+<p>想像一下我们现在需要搭建一台mysql database slave服务器，安装过程我们手动操作了 没过多久，我们需要第二台，这时候我们会想，如果之后安装第一台的时候把操作过程执行的命令写成脚本 现在安装第二台，运行一下脚本就行了，节约时间而且不容易出错</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/16/chef-basic/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

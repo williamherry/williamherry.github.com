@@ -5,11 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Welcome - William's Blog with Octopress</title>
+  <title>最简单的在crontab中执行rake命令的方法 - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Welcome Jul 19th, 2012 Hi: This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^. Jul 19th, 2012 Tweet Comments &hellip;">
+  <meta name="description" content="stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在这里 方法很简单,在crontab中可以定义环境变量 1
+crontab -e 1
+2
+3
+SHELL = /home/william/.rvm/bin/rvm-shell * 4 * * * /bin &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.com/">
+  <link rel="canonical" href="http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -68,34 +72,15 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Welcome</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time></p>
-  </header>
-  
-  <h2>Hi:</h2>
-
-<p>This is William&#8217;s personal blog using Octopress, thanks for visiting, have fun ^_^.
-
-  
-    <footer>
+    
+      <h1 class="entry-title">最简单的在crontab中执行rake命令的方法</h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -107,21 +92,78 @@
   
 
 
-<time datetime="2012-07-19T19:03:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+<time datetime="2013-02-05T11:26:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在<a href="http://www.wyliethomas.com/blog/2011/08/24/rvm-rake-and-cron-on-ubuntu/">这里</a></p>
+
+<p>方法很简单,在crontab中可以定义环境变量</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>crontab -e</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SHELL = /home/william/.rvm/bin/rvm-shell
+</span><span class='line'>
+</span><span class='line'>* 4 * * * /bin/bash -l -c 'cd /path/to/app && RAILS_ENV=production rake mytask –silent'</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/index.html" data-via="" data-counturl="http://williamherry.com/index.html" >Tweet</a>
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-05T11:26:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/" data-via="" data-counturl="http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/" >Tweet</a>
   
   
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/blog/2013/01/25/rails-image-upload/" title="Previous Post: Rails图片上传">&laquo; Rails图片上传</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/" title="Next Post: openSUSE 12.3 字体美化">openSUSE 12.3 字体美化 &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
   <section>
@@ -226,8 +268,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.com/index.html';
-        var disqus_url = 'http://williamherry.com/index.html';
+        var disqus_identifier = 'http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/';
+        var disqus_url = 'http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/';
         var disqus_script = 'embed.js';
       
     (function () {
