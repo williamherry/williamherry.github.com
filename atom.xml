@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[William's Blog with Octopress]]></title>
-  <link href="http://williamherry.com/atom.xml" rel="self"/>
-  <link href="http://williamherry.com/"/>
-  <updated>2013-03-23T03:03:12+08:00</updated>
-  <id>http://williamherry.com/</id>
+  <link href="http://williamherry.github.com/atom.xml" rel="self"/>
+  <link href="http://williamherry.github.com/"/>
+  <updated>2013-03-23T10:34:59+08:00</updated>
+  <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
     
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[openSUSE 12.3 字体美化]]></title>
-    <link href="http://williamherry.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
+    <title type="html"><![CDATA[openSUSE 12.3 字体美化及无线网问题]]></title>
+    <link href="http://williamherry.github.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
     <updated>2013-03-23T02:36:00+08:00</updated>
-    <id>http://williamherry.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
+    <id>http://williamherry.github.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
     <content type="html"><![CDATA[<p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
 
 <p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
@@ -61,14 +61,28 @@
 <p>我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有<code>Exclude range</code>正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果</p>
 
 <p>PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了</p>
+
+<p>UPDATE: 无线网络的问题</p>
+
+<p>Release Note中有说安装完无线网没有启动,需要手机重启系统,但是我发现我还遇到一个问题,有时候开机无线网络是没有连上了,点开直接是空的,我在<a href="http://forums.opensuse.org/english/get-technical-help-here/network-internet/470567-wireless-problems-opensuse-12-1-a.html">这里</a>找到了解决办法,简单说就是默认他用的<code>dhcpd</code>好像不太稳定,改成<code>dhclient</code>就好了</p>
+
+<p>在<code>/etc/sysconfig/network/dhcp</code>中修改下面两行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DHCLIENT_BIN="dhclient"
+</span><span class='line'>DHCLIENT_DEBUG="yes"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加第二行是因为有一个<a href="https://bugzilla.novell.com/show_bug.cgi?id=732910">bug</a> (不过好像已经修复了)</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[最简单的在crontab中执行rake命令的方法]]></title>
-    <link href="http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
+    <link href="http://williamherry.github.com/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
     <updated>2013-02-05T11:26:00+08:00</updated>
-    <id>http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
+    <id>http://williamherry.github.com/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
     <content type="html"><![CDATA[<p>stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在<a href="http://www.wyliethomas.com/blog/2011/08/24/rvm-rake-and-cron-on-ubuntu/">这里</a></p>
 
 <p>方法很简单,在crontab中可以定义环境变量</p>
@@ -91,9 +105,9 @@
   
   <entry>
     <title type="html"><![CDATA[Rails图片上传]]></title>
-    <link href="http://williamherry.com/blog/2013/01/25/rails-image-upload/"/>
+    <link href="http://williamherry.github.com/blog/2013/01/25/rails-image-upload/"/>
     <updated>2013-01-25T22:27:00+08:00</updated>
-    <id>http://williamherry.com/blog/2013/01/25/rails-image-upload</id>
+    <id>http://williamherry.github.com/blog/2013/01/25/rails-image-upload</id>
     <content type="html"><![CDATA[<p>好久没有更新这个了,竟然连<code>rake new_post['title']</code>都忘记了还得查文档,看来以后还是得时不时的写点</p>
 
 <p>这里简单记录一下Rails中如何处理图片上传,我们选择<a href="https://github.com/jnicklas/carrierwave">CarrierWave</a>这个gem来处理上传的文件,由于重点是处理图片上传,所以我们会使用scaffolding生成一个article的CURD,把图片绑定给它(一个article有一个图片)</p>
@@ -227,9 +241,9 @@
   
   <entry>
     <title type="html"><![CDATA[使用Nginx+SSL代理chef-server]]></title>
-    <link href="http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
+    <link href="http://williamherry.github.com/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
     <updated>2012-10-12T21:09:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx</id>
+    <id>http://williamherry.github.com/blog/2012/10/12/proxy-chef-server-with-nginx</id>
     <content type="html"><![CDATA[<h2>说明</h2>
 
 <p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
@@ -479,20 +493,20 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之Arrtibutes]]></title>
-    <link href="http://williamherry.com/blog/2012/10/10/chef-attributes/"/>
+    <link href="http://williamherry.github.com/blog/2012/10/10/chef-attributes/"/>
     <updated>2012-10-10T21:42:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/10/chef-attributes</id>
+    <id>http://williamherry.github.com/blog/2012/10/10/chef-attributes</id>
     <content type="html"><![CDATA[<p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
 
 <h2>概述</h2>
 
-<p><img src="http://williamherry.com/images/chef/attributes.jpg"></p>
+<p><img src="http://williamherry.github.com/images/chef/attributes.jpg"></p>
 
 <p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
 
 <h2>属性类型和优先级</h2>
 
-<p><img src="http://williamherry.com/images/chef/attribute-priority-stack.png"></p>
+<p><img src="http://williamherry.github.com/images/chef/attribute-priority-stack.png"></p>
 
 <p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
 
@@ -746,9 +760,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Git学习资料收集]]></title>
-    <link href="http://williamherry.com/blog/2012/10/10/learning-git-resources/"/>
+    <link href="http://williamherry.github.com/blog/2012/10/10/learning-git-resources/"/>
     <updated>2012-10-10T20:40:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/10/learning-git-resources</id>
+    <id>http://williamherry.github.com/blog/2012/10/10/learning-git-resources</id>
     <content type="html"><![CDATA[<p>收集一下学习Git过程中用过的比较好的资料</p>
 
 <h2>ProGit</h2>
@@ -800,9 +814,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之LWRP]]></title>
-    <link href="http://williamherry.com/blog/2012/10/09/chef-lwrp/"/>
+    <link href="http://williamherry.github.com/blog/2012/10/09/chef-lwrp/"/>
     <updated>2012-10-09T20:18:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/09/chef-lwrp</id>
+    <id>http://williamherry.github.com/blog/2012/10/09/chef-lwrp</id>
     <content type="html"><![CDATA[<h2>概述</h2>
 
 <p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
@@ -965,9 +979,9 @@ knife node run list add client1.chef.com 'recipe[users::test]'
   
   <entry>
     <title type="html"><![CDATA[安装配置Git服务器Gitolite]]></title>
-    <link href="http://williamherry.com/blog/2012/10/03/install-gitolite/"/>
+    <link href="http://williamherry.github.com/blog/2012/10/03/install-gitolite/"/>
     <updated>2012-10-03T18:38:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/03/install-gitolite</id>
+    <id>http://williamherry.github.com/blog/2012/10/03/install-gitolite</id>
     <content type="html"><![CDATA[<p>Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法</p>
 
 <h3>安装</h3>
@@ -1131,9 +1145,9 @@ fatal: The remote end hung up unexpectedly
   
   <entry>
     <title type="html"><![CDATA[virt相关命令总结]]></title>
-    <link href="http://williamherry.com/blog/2012/09/14/virt-releated-command/"/>
+    <link href="http://williamherry.github.com/blog/2012/09/14/virt-releated-command/"/>
     <updated>2012-09-14T09:35:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/09/14/virt-releated-command</id>
+    <id>http://williamherry.github.com/blog/2012/09/14/virt-releated-command</id>
     <content type="html"><![CDATA[<p>在CentOS下面多部分命令都是有包<code>libguestfs-tools-c</code>提供,所以,首先需要安装它</p>
 
 <h2>virt-ls</h2>
@@ -1612,9 +1626,9 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
   
   <entry>
     <title type="html"><![CDATA[定制Linux发行版(CentOS-6.2)]]></title>
-    <link href="http://williamherry.com/blog/2012/09/09/customize-centos-iso/"/>
+    <link href="http://williamherry.github.com/blog/2012/09/09/customize-centos-iso/"/>
     <updated>2012-09-09T01:18:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/09/09/customize-centos-iso</id>
+    <id>http://williamherry.github.com/blog/2012/09/09/customize-centos-iso</id>
     <content type="html"><![CDATA[<p>主要内容:</p>
 
 <ul>
@@ -1772,22 +1786,22 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
   
   <entry>
     <title type="html"><![CDATA[fcitx在Ubuntu12.04上Crash的解决办法]]></title>
-    <link href="http://williamherry.com/blog/2012/09/02/ubuntu-fcitx-crash/"/>
+    <link href="http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/"/>
     <updated>2012-09-02T12:34:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/09/02/ubuntu-fcitx-crash</id>
+    <id>http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash</id>
     <content type="html"><![CDATA[<p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
 
 <p>好像有点太短了,怎么办呢?粘张图片吧</p>
 
-<p><img src="http://williamherry.com/images/fcitx/fcitx.png"></p>
+<p><img src="http://williamherry.github.com/images/fcitx/fcitx.png"></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Chef问题及小知识汇总(持续更新)]]></title>
-    <link href="http://williamherry.com/blog/2012/08/31/chef-tips/"/>
+    <link href="http://williamherry.github.com/blog/2012/08/31/chef-tips/"/>
     <updated>2012-08-31T09:00:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/08/31/chef-tips</id>
+    <id>http://williamherry.github.com/blog/2012/08/31/chef-tips</id>
     <content type="html"><![CDATA[<p>Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了</p>
 
 <h2>Centos6.2下Chef-server的安装</h2>
@@ -2085,14 +2099,14 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[Weechat-命令行下的IRC客户端工具]]></title>
-    <link href="http://williamherry.com/blog/2012/08/29/weechat-irc-client/"/>
+    <link href="http://williamherry.github.com/blog/2012/08/29/weechat-irc-client/"/>
     <updated>2012-08-29T20:15:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/08/29/weechat-irc-client</id>
+    <id>http://williamherry.github.com/blog/2012/08/29/weechat-irc-client</id>
     <content type="html"><![CDATA[<p>以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西</p>
 
 <p>首先看一下效果图(右键图形选择<code>view image</code>可以看到高清大图哦):</p>
 
-<p><img src="http://williamherry.com/images/weechat/weechat.png"></p>
+<p><img src="http://williamherry.github.com/images/weechat/weechat.png"></p>
 
 <p>在Ubuntu下安装非常简单</p>
 
@@ -2195,9 +2209,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[用rvm安装ruby-1.9.3]]></title>
-    <link href="http://williamherry.com/blog/2012/08/29/install-ruby-with-rvm/"/>
+    <link href="http://williamherry.github.com/blog/2012/08/29/install-ruby-with-rvm/"/>
     <updated>2012-08-29T19:47:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/08/29/install-ruby-with-rvm</id>
+    <id>http://williamherry.github.com/blog/2012/08/29/install-ruby-with-rvm</id>
     <content type="html"><![CDATA[<p>Octopress已经可以使用最新的ruby-1.9.3了,每次安装都会遇到一些问题,自己又记不住,每次都要Google,所以在这里简单的记录一下</p>
 
 <p>首先安装curl</p>
@@ -2274,9 +2288,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[VIM练级日记04-文件搜索CtrlP]]></title>
-    <link href="http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/"/>
+    <link href="http://williamherry.github.com/blog/2012/08/25/master-vim-04-ctrlp/"/>
     <updated>2012-08-25T15:36:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp</id>
+    <id>http://williamherry.github.com/blog/2012/08/25/master-vim-04-ctrlp</id>
     <content type="html"><![CDATA[<h2>CtrlP简介</h2>
 
 <p>你可能觉得前面介绍的NERDTree外挂非常好用,但当你过用今天要介绍的这个外挂后,可能NERDTree你就会很少用了</p>
@@ -2285,7 +2299,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <p>看一下效果(可以在图片上右键<code>view image</code>看高清大图)</p>
 
-<p><img src="http://williamherry.com/images/vim/vim-ctrlp.png"></p>
+<p><img src="http://williamherry.github.com/images/vim/vim-ctrlp.png"></p>
 
 <h2>CtrlP安装</h2>
 
@@ -2335,9 +2349,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[VIM练级日记03-配对外挂Surround]]></title>
-    <link href="http://williamherry.com/blog/2012/07/21/master-vim-03-surround/"/>
+    <link href="http://williamherry.github.com/blog/2012/07/21/master-vim-03-surround/"/>
     <updated>2012-07-21T22:46:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/07/21/master-vim-03-surround</id>
+    <id>http://williamherry.github.com/blog/2012/07/21/master-vim-03-surround</id>
     <content type="html"><![CDATA[<p>写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): <code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>&lt;</code> <code>&gt;</code> <code>'</code> <code>"</code>，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.</p>
 
 <p>今天给大家介绍的这个外挂就是用来简化这些事情的,首先我们从安装开始说起</p>
@@ -2467,9 +2481,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[Octopress - 像黑客一样写博客]]></title>
-    <link href="http://williamherry.com/blog/2012/07/20/octopress-setup/"/>
+    <link href="http://williamherry.github.com/blog/2012/07/20/octopress-setup/"/>
     <updated>2012-07-20T11:14:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/07/20/octopress-setup</id>
+    <id>http://williamherry.github.com/blog/2012/07/20/octopress-setup</id>
     <content type="html"><![CDATA[<p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
 
 <p>这篇文档主要包括</p>
@@ -3229,9 +3243,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[VIM练级日记02-目录外挂NERDTree]]></title>
-    <link href="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/"/>
+    <link href="http://williamherry.github.com/blog/2012/07/19/master-vim-02-nerdtree/"/>
     <updated>2012-07-19T19:16:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree</id>
+    <id>http://williamherry.github.com/blog/2012/07/19/master-vim-02-nerdtree</id>
     <content type="html"><![CDATA[<h2>NERDTree简介</h2>
 
 <p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
@@ -3240,7 +3254,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
 
-<p><img src="http://williamherry.com/images/nerdtree/nerdtree.png"></p>
+<p><img src="http://williamherry.github.com/images/nerdtree/nerdtree.png"></p>
 
 <p>这里还有一个Youtube上的视频演示</p>
 
@@ -3298,9 +3312,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[VIM练级日记01-外挂总管Vundle]]></title>
-    <link href="http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/"/>
+    <link href="http://williamherry.github.com/blog/2012/07/16/master-vim-01-vundle/"/>
     <updated>2012-07-16T22:02:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/07/16/master-vim-01-vundle</id>
+    <id>http://williamherry.github.com/blog/2012/07/16/master-vim-01-vundle</id>
     <content type="html"><![CDATA[<h2>背景</h2>
 
 <p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
@@ -3396,9 +3410,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
   
   <entry>
     <title type="html"><![CDATA[Chef基础知识]]></title>
-    <link href="http://williamherry.com/blog/2012/07/16/chef-basic/"/>
+    <link href="http://williamherry.github.com/blog/2012/07/16/chef-basic/"/>
     <updated>2012-07-16T18:57:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/07/16/chef-basic</id>
+    <id>http://williamherry.github.com/blog/2012/07/16/chef-basic</id>
     <content type="html"><![CDATA[<h2>主要内容</h2>
 
 <p>本文档主要讲述了一些Chef的基础知识,包括:</p>
@@ -3469,7 +3483,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <h3>Chef结构</h3>
 
-<p><img src="http://williamherry.com/images/chef/chef-arch.png"></p>
+<p><img src="http://williamherry.github.com/images/chef/chef-arch.png"></p>
 
 <p>这是Chef的结构图,对图做一点解释:</p>
 

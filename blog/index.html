@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.com/blog/">
+  <link rel="canonical" href="http://williamherry.github.com/blog/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -53,7 +53,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input type="hidden" name="q" value="site:williamherry.github.com" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -75,7 +75,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化及无线网问题</a></h1>
     
     
       <p class="meta">
@@ -143,6 +143,20 @@
 <p>我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有<code>Exclude range</code>正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果</p>
 
 <p>PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了</p>
+
+<p>UPDATE: 无线网络的问题</p>
+
+<p>Release Note中有说安装完无线网没有启动,需要手机重启系统,但是我发现我还遇到一个问题,有时候开机无线网络是没有连上了,点开直接是空的,我在<a href="http://forums.opensuse.org/english/get-technical-help-here/network-internet/470567-wireless-problems-opensuse-12-1-a.html">这里</a>找到了解决办法,简单说就是默认他用的<code>dhcpd</code>好像不太稳定,改成<code>dhclient</code>就好了</p>
+
+<p>在<code>/etc/sysconfig/network/dhcp</code>中修改下面两行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DHCLIENT_BIN="dhclient"
+</span><span class='line'>DHCLIENT_DEBUG="yes"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加第二行是因为有一个<a href="https://bugzilla.novell.com/show_bug.cgi?id=732910">bug</a> (不过好像已经修复了)</p>
 </div>
   
   
@@ -2132,7 +2146,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化</a>
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化及无线网问题</a>
       </li>
     
       <li class="post">
