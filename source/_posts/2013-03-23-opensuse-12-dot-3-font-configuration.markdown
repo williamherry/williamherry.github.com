@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "openSUSE 12.3 字体美化"
+title: "openSUSE 12.3 字体美化及无线网问题"
 date: 2013-03-23 02:36
 comments: true
 categories: 
@@ -36,3 +36,16 @@ Now you have very cyrstal looking fonts! Have fun!
 我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有`Exclude range`正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果
 
 PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了
+
+UPDATE: 无线网络的问题
+
+Release Note中有说安装完无线网没有启动,需要手机重启系统,但是我发现我还遇到一个问题,有时候开机无线网络是没有连上了,点开直接是空的,我在[这里](http://forums.opensuse.org/english/get-technical-help-here/network-internet/470567-wireless-problems-opensuse-12-1-a.html)找到了解决办法,简单说就是默认他用的`dhcpd`好像不太稳定,改成`dhclient`就好了
+
+在`/etc/sysconfig/network/dhcp`中修改下面两行
+
+```
+DHCLIENT_BIN="dhclient"
+DHCLIENT_DEBUG="yes"
+```
+
+加第二行是因为有一个[bug](https://bugzilla.novell.com/show_bug.cgi?id=732910) (不过好像已经修复了)
