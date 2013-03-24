@@ -49,3 +49,7 @@ DHCLIENT_DEBUG="yes"
 ```
 
 加第二行是因为有一个[bug](https://bugzilla.novell.com/show_bug.cgi?id=732910) (不过好像已经修复了)
+
+UPDATE2: 支付宝插件
+
+需要安装`libpng12-0`才可以使支付宝的插件安装成功,不然它提示成功但却用不了
