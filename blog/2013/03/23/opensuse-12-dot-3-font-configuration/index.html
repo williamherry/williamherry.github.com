@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>openSUSE 12.3 字体美化及无线网问题 - William's Blog with Octopress</title>
+  <title>openSUSE 12.3 安装完后需要做的事情 - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
@@ -72,7 +72,7 @@
   
   <header>
     
-      <h1 class="entry-title">openSUSE 12.3 字体美化及无线网问题</h1>
+      <h1 class="entry-title">openSUSE 12.3 安装完后需要做的事情</h1>
     
     
       <p class="meta">
@@ -158,6 +158,14 @@
 <p>UPDATE2: 支付宝插件</p>
 
 <p>需要安装<code>libpng12-0</code>才可以使支付宝的插件安装成功,不然它提示成功但却用不了</p>
+
+<p>UPDATE3: 无线网硬件禁用的问题</p>
+
+<p>从sleep状态resume后无线网会是硬件禁用状态,需要手动按<code>Fn + F3</code>开启,后来发现是驱动冲突,在<code>/etc/modprobe.d/50-blacklist.conf</code>中的最后加上<code>blacklist acer-wmi</code>就好了</p>
+
+<p>还有一直让我很迷惑的<code>Magic Lamp</code>的问题,我很早就发现这个特效会有两种不同的效果,有时会最小化收到状态栏,有时会收到鼠标的位置,后来才知道原来收到鼠标的位置是一种fallback的情形,有的时候收到状态栏不可用,比如程序刚启动的时候,状态栏还没有调整好,这时候这个特效就会收到鼠标的位置</p>
+
+<p>还有默认的配置如果你一段时间不操作电脑,他会出现输入密码的登陆的画面,但只要你动一下鼠标或键盘就消失了,我看的一个youtube上的视频上还有人说这是个bug,其实不是,这只是它的默认屏保画面而已</p>
 </div>
 
 
@@ -219,7 +227,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 字体美化及无线网问题</a>
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
       </li>
     
       <li class="post">
