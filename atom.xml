@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-03-23T10:34:59+08:00</updated>
+  <updated>2013-04-06T23:18:39+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -75,6 +75,10 @@
 
 
 <p>加第二行是因为有一个<a href="https://bugzilla.novell.com/show_bug.cgi?id=732910">bug</a> (不过好像已经修复了)</p>
+
+<p>UPDATE2: 支付宝插件</p>
+
+<p>需要安装<code>libpng12-0</code>才可以使支付宝的插件安装成功,不然它提示成功但却用不了</p>
 ]]></content>
   </entry>
   
@@ -269,8 +273,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
 
-<figure class='code'><figcaption><span>vim /etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -465,8 +468,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <h2>修改client使用新的地址</h2>
 
-<figure class='code'><figcaption><span>vim /etc/chef/client.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
@@ -879,13 +881,13 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
 </span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
 </span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
 </span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
 </span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
 </span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
 </span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -1812,7 +1814,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rpm</span> <span class="o">-</span><span class="no">Uvh</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">rbel</span><span class="o">.</span><span class="n">frameos</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rbel6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rpm</span> <span class="o">-</span><span class="no">Uvh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">rbel</span><span class="o">.</span><span class="n">frameos</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rbel6</span>
 </span><span class='line'><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">rubygem</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span>
 </span><span class='line'><span class="n">service</span> <span class="n">iptables</span> <span class="n">stop</span>
 </span><span class='line'><span class="n">setup</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span><span class="o">.</span><span class="n">sh</span>
@@ -1833,7 +1835,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <p>从Rackspace开发的部署Openstack的Cookbook里找到的方法,可以通过以下命令安装chef-client</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">opscode</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chef</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//o</span><span class="n">pscode</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chef</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1845,8 +1847,8 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">error</span> <span class="n">as</span> <span class="n">follows</span><span class="ss">:Bootstrapping</span> <span class="no">Chef</span> <span class="n">on</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
-</span><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">convert</span> <span class="kp">false</span> <span class="n">into</span> <span class="nb">String</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">error</span> <span class="n">as</span> <span class="ss">follows</span><span class="p">:</span><span class="no">Bootstrapping</span> <span class="no">Chef</span> <span class="n">on</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</span><span class='line'><span class="ss">ERROR</span><span class="p">:</span> <span class="ss">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">convert</span> <span class="kp">false</span> <span class="n">into</span> <span class="nb">String</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1862,10 +1864,10 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">ssh</span> <span class="s2">&quot;node:test3.chef.com&quot;</span> <span class="s1">&#39;uptime&#39;</span> <span class="o">-</span><span class="no">VV</span>
-</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Using</span> <span class="n">configuration</span> <span class="n">from</span> <span class="sr">/root.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Signing</span> <span class="n">the</span> <span class="n">request</span> <span class="n">as</span> <span class="n">root</span>
-</span><span class='line'><span class="no">DEBUG</span><span class="p">:</span> <span class="no">Sending</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="n">via</span> <span class="no">GET</span> <span class="n">to</span> <span class="n">server</span><span class="o">.</span><span class="n">chef</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">4000</span><span class="o">/</span><span class="n">search</span><span class="o">/</span><span class="n">node</span>
-</span><span class='line'><span class="no">FATAL</span><span class="p">:</span> <span class="no">No</span> <span class="n">nodes</span> <span class="n">requrned</span> <span class="n">from</span> <span class="n">search!</span>
+</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Using</span> <span class="n">configuration</span> <span class="n">from</span> <span class="sr">/root.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Signing</span> <span class="n">the</span> <span class="n">request</span> <span class="n">as</span> <span class="n">root</span>
+</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Sending</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="n">via</span> <span class="no">GET</span> <span class="n">to</span> <span class="n">server</span><span class="o">.</span><span class="n">chef</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">4000</span><span class="o">/</span><span class="n">search</span><span class="o">/</span><span class="n">node</span>
+</span><span class='line'><span class="ss">FATAL</span><span class="p">:</span> <span class="no">No</span> <span class="n">nodes</span> <span class="n">requrned</span> <span class="n">from</span> <span class="n">search!</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1886,14 +1888,14 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <p>很简单,只要在recipe中加入一行</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>客户端执行的时候就会多一条info级别的日志:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sat</span><span class="p">,</span> <span class="mo">01</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mi">22</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">INFO</span><span class="p">:</span> <span class="no">Hello</span><span class="p">,</span> <span class="n">world!</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sat</span><span class="p">,</span> <span class="mo">01</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mi">22</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="ss">INFO</span><span class="p">:</span> <span class="no">Hello</span><span class="p">,</span> <span class="n">world!</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1905,8 +1907,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 
 <p>首先我们定义这个属性</p>
 
-<figure class='code'><figcaption><span>vim /var/chef/cookbooks/mysql/attributes/default.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/var/chef/cookbooks/mysql/attributes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">ipaddress</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -1914,7 +1915,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <p>这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的方法打印出来看对不对</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MySQL Binding on: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MySQL Binding on: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1953,7 +1954,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 <p>加这条的意思就是说我会用到<code>openssl</code>这个cookbook,客户端下载cookbook的时候一并下载回去,如果没有这一条会报下面的错</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sun</span><span class="p">,</span> <span class="mo">02</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mo">01</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="no">FATAL</span><span class="p">:</span> <span class="no">NameError</span><span class="p">:</span> <span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">::</span><span class="no">Opscode</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sun</span><span class="p">,</span> <span class="mo">02</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mo">01</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="ss">FATAL</span><span class="p">:</span> <span class="ss">NameError</span><span class="p">:</span> <span class="n">uninitialized</span> <span class="n">constant</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Recipe</span><span class="o">::</span><span class="no">Opscode</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -1964,11 +1965,11 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">::</span><span class="no">Chef</span><span class="o">::</span><span class="no">Recipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">Opscode</span><span class="o">::</span><span class="no">OpenSSL</span><span class="ss">:Password</span><span class="p">)</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">::</span><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Recipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="ss">Opscode</span><span class="p">:</span><span class="ss">:OpenSSL:Password</span><span class="p">)</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set_unless</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">secure_password</span>
 </span><span class='line'>
-</span><span class='line'><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Random Password: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Random Password: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -2028,15 +2029,15 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ERROR</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span> <span class="n">to</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="p">:</span><span class="mi">4000</span> <span class="n">as</span> <span class="n">root</span> <span class="n">with</span> <span class="n">key</span> <span class="sr">/root/</span><span class="o">.</span><span class="n">chef</span><span class="o">/</span><span class="n">root</span><span class="o">.</span><span class="n">pem</span>
-</span><span class='line'><span class="no">Response</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Ensure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">client</span> <span class="n">key</span> <span class="n">is</span> <span class="n">valid</span><span class="o">.</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">ERROR</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span> <span class="n">to</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="p">:</span><span class="mi">4000</span> <span class="n">as</span> <span class="n">root</span> <span class="n">with</span> <span class="n">key</span> <span class="sr">/root/</span><span class="o">.</span><span class="n">chef</span><span class="o">/</span><span class="n">root</span><span class="o">.</span><span class="n">pem</span>
+</span><span class='line'><span class="ss">Response</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Ensure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">client</span> <span class="n">key</span> <span class="n">is</span> <span class="n">valid</span><span class="o">.</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>如果你的这个客户端以前认证没有问题,那么可以排除key不对的原因,这个key一般不会发霉变质的.也不是时间不同步的问题,因为如果是时间不同步,报错应该像下面的样子,并提示你同步时间</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Wed</span><span class="p">,</span> <span class="mi">11</span> <span class="no">Dec</span> <span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mi">0800</span><span class="o">]</span> <span class="no">Info</span><span class="p">:</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="no">Returned</span> <span class="mi">401</span> <span class="no">Unauthorized</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Please</span> <span class="n">synchronize</span> <span class="n">the</span> <span class="n">clock</span> <span class="n">on</span> <span class="n">your</span> <span class="n">client</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Wed</span><span class="p">,</span> <span class="mi">11</span> <span class="no">Dec</span> <span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mi">0800</span><span class="o">]</span> <span class="ss">Info</span><span class="p">:</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="no">Returned</span> <span class="mi">401</span> <span class="ss">Unauthorized</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Please</span> <span class="n">synchronize</span> <span class="n">the</span> <span class="n">clock</span> <span class="n">on</span> <span class="n">your</span> <span class="n">client</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -2201,7 +2202,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
-</span><span class='line'><span class="n">wget</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
+</span><span class='line'><span class="n">wget</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
 </span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
@@ -3679,8 +3680,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <p>看一个配置ntp服务的Recipe</p>
 
-<figure class='code'><figcaption><span>vim /var/chef/cookbooks/ntp/recipes/default.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/var/chef/cookbooks/ntp/recipes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3718,8 +3718,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <p>Recipe可以包含其它的Recipe,如这个Recipe</p>
 
-<figure class='code'><figcaption><span>vim /var/chef/cookbooks/mysql/recipes/default.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/var/chef/cookbooks/mysql/recipes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
