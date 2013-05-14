@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>理解测试中的stub和mock - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="刚开始学习rspec的时候,stub和mock理解起来有点困难,听了Terry和aNdReW的讲解后,对它们的理解深入多了,在此表示感谢 先从stub说起,什么是stub呢,CodeSchool给出这样的定义: Stub:
+For replacing a method with code that &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">理解测试中的stub和mock</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-13T16:46:00+08:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>刚开始学习<code>rspec</code>的时候,<code>stub</code>和<code>mock</code>理解起来有点困难,听了<code>Terry</code>和<code>aNdReW</code>的讲解后,对它们的理解深入多了,在此表示感谢</p>
+
+<p>先从<code>stub</code>说起,什么是<code>stub</code>呢,<code>CodeSchool</code>给出这样的定义:</p>
+
+<blockquote><p>Stub:<br/>
+For replacing a method with code that returns a specified result</p></blockquote>
+
+<p>简单说就是你可以用<code>stub</code>去<strong>伪造(fade)</strong>一个方法,<strong>阻断</strong>对原来方法的调用,例如下面来自<code>CodeSchool</code>的例子</p>
+
+<p>我们有一个叫<code>zombie</code>的<code>model</code></p>
+
+<figure class='code'><figcaption><span>app/models/zombie.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Zombie</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_one</span> <span class="ss">:weapon</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">decapitate</span>
+</span><span class='line'>    <span class="n">weapon</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">:head</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;dead again&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们要测试<code>decapitate</code>方法,它里面调用了<code>weapon</code>的<code>slice</code>方法,下面是测试代码:</p>
+
+<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;sets status to dead again&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s2">&quot;dead again&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面代码的第6行就是用<code>stub</code>伪造了<code>weapon</code>的<code>slice</code>方法,阻断了对原来方法的调用</p>
+
+<p>你可能会问为什么我们要这样做,这是因为我们在做单元测试,<code>weapon</code>的<code>slice</code>可能会非常复杂,里面又调用了其它的方法等等,这是集成测试应该做的工作.事实上这里我们是在测试<code>decapitate</code>方法会把<code>zombie.status</code>设置成<code>"dead again"</code></p>
+
+<p>接下来我们来说<code>mock</code>, <code>CodeSchool</code>上给的定义是这样的:</p>
+
+<blockquote><p>Mock:<br/>
+A stub with an expectations that the method gets called.</p></blockquote>
+
+<p>简单来说<code>mock</code>就是<code>stub + expectation</code>, 说它是<code>stub</code>是因为它也可以像<code>stub</code>一样伪造方法,阻断对原来方法的调用, <code>expectation</code>是说它不仅伪造了这个方法,它还期望你(必须)调用这个方法,如果没有被调用到,这个<code>test</code>就<code>fail</code>了,看下面的例子</p>
+
+<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;calls weapon.slice&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的第6行伪造了<code>weapon</code>的<code>slice</code>方法,并期望这个方法在这个测试中被调用.</p>
+
+<p>你可能会想为什么要这样写,这是因为我们仅仅是要测试<code>decapitate</code>这个方法确实调用了<code>weapon.slice</code>, 可以把<code>decapitate</code>想成下面的黑盒,我们蹲在图中的A点,等着看它会不会去调用<code>weapon.slice</code></p>
+
+<p><img src="/images/test/test_outgoing.jpg"></p>
+
+<p>这个图是<code>Sandi Metz</code>在<code>RailsConf 2013</code>上的演讲<code>The Magic Tricks of Testing</code></p>
+
+<p><a href="http://www.justin.tv/confreaks/c/2247122">视频</a></p>
+
+<p><a href="https://speakerdeck.com/skmetz/magic-tricks-of-testing-railsconf">Slides</a></p>
+
+<p>这里注意一下顺序,一般的测试先是执行一个动作,然后再去判断状态或其它东西,像前面<code>stub</code>的例子,先调用decapitate方法,再去判断<code>status</code>的变化,就好像我踢你一脚,看你会不会喊疼,而这里是先有期望再有动作,这就好比老板对你说这个下周前完成,不然就滚蛋一样</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-13T16:46:00+08:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/" data-via="williamherry" data-counturl="http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/" title="Previous Post: openSUSE 12.3 安装完后需要做的事情">&laquo; openSUSE 12.3 安装完后需要做的事情</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/';
+        var disqus_url = 'http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
