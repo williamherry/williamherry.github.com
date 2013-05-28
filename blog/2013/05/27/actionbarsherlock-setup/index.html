@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>fcitx在Ubuntu12.04上Crash的解决办法 - William's Blog with Octopress</title>
+  <title>ActionBarSherlock使用 - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除~/.config/fcitx/table/ 好像有点太短了,怎么办呢?粘张图片吧 ">
+  <meta name="description" content="从Android 3.0(API Level 11)开始,Android加入了一个新的API, ActionBar.但目前市面上还有好多的Android 2.3(API Level 8),并不支持ActionBar,还好有人开发了ActionBarSherlock可以让2. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/">
+  <link rel="canonical" href="http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -72,7 +72,7 @@
   
   <header>
     
-      <h1 class="entry-title">fcitx在Ubuntu12.04上Crash的解决办法</h1>
+      <h1 class="entry-title">ActionBarSherlock使用</h1>
     
     
       <p class="meta">
@@ -88,7 +88,7 @@
   
 
 
-<time datetime="2012-09-02T12:34:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2012</time>
+<time datetime="2013-05-27T21:50:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -97,11 +97,17 @@
   </header>
 
 
-<div class="entry-content"><p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
+<div class="entry-content"><p>从Android 3.0(API Level 11)开始,Android加入了一个新的API, ActionBar.但目前市面上还有好多的Android 2.3(API Level 8),并不支持ActionBar,还好有人开发了ActionBarSherlock可以让2.x的系统也能使用ActionBar,而且它有一个特点,如果你在3.0以上的机子上使用,那么它会调用系统原生的ActionBar.这里简单记录一下设置过程.</p>
 
-<p>好像有点太短了,怎么办呢?粘张图片吧</p>
+<p>首先从<a href="http://actionbarsherlock.com/">官方网站</a>上下载压缩包</p>
 
-<p><img src="/images/fcitx/fcitx.png"></p>
+<p>解开里面会有一个actionbarsherlock的目录,在eclipse中导入这个项目(eclipse中file -> new -> other -> android类下的android project from existing code,选择解压开的actionbarsherlock目录)</p>
+
+<p>导入之后会多了一个名为actionbarsherlock的项目</p>
+
+<p>然后在你要使用ActionBarSherlock的项目名字上右键选择properties,弹出的窗口中点击左边的Android标签,然后点击add选择刚才导入的项目</p>
+
+<p>完成后就可以在项目中使用ActionBarSherlock了</p>
 </div>
 
 
@@ -124,7 +130,7 @@
   
 
 
-<time datetime="2012-09-02T12:34:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2012</time>
+<time datetime="2013-05-27T21:50:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time>
       
 
 
@@ -132,7 +138,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/" data-via="williamherry" data-counturl="http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/" data-via="williamherry" data-counturl="http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/" >Tweet</a>
   
   
   
@@ -141,10 +147,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/08/31/chef-tips/" title="Previous Post: Chef问题及小知识汇总(持续更新)">&laquo; Chef问题及小知识汇总(持续更新)</a>
+        <a class="basic-alignment left" href="/blog/2013/05/13/understand-stub-and-mock/" title="Previous Post: 理解测试中的stub和mock">&laquo; 理解测试中的stub和mock</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/09/09/customize-centos-iso/" title="Next Post: 定制Linux发行版(CentOS-6.2)">定制Linux发行版(CentOS-6.2) &raquo;</a>
       
     </p>
   </footer>
@@ -251,8 +255,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/';
-        var disqus_url = 'http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/';
+        var disqus_identifier = 'http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/';
+        var disqus_url = 'http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/';
         var disqus_script = 'embed.js';
       
     (function () {
