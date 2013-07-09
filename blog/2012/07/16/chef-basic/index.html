@@ -210,7 +210,7 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
 <li><p>Client-Server<br/>
 所有的服务器作为chef-client，统一由chef-server进行管理，管理包括安装、配置等工作 chef-server可以自建，但安装的东西较多，由于使用solr作为全文搜索引擎，还需要安装java</p></li>
 <li><p>Opscode Platform <br/>
-类似于Client-Server，只是Server端不需要自建，而是采用http://www.opscode.com 提供的chef-server服务</p></li>
+类似于Client-Server，只是Server端不需要自建，而是采用<a href="http://www.opscode.com">http://www.opscode.com</a> 提供的chef-server服务</p></li>
 </ul>
 
 
@@ -700,13 +700,13 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
 </pre></td><td class='code'><pre><code class=''><span class='line'>data_bag("admin")# =&gt; ["william"] </span></code></pre></td></tr></table></div></figure>
 
 
-<p>&#8217;# =>&#8217; 这里指返回的意思,也就是说如果这样写:</p>
+<p>&lsquo;# =>&rsquo; 这里指返回的意思,也就是说如果这样写:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>username=data_bag("admin")</span></code></pre></td></tr></table></div></figure>
 
 
-<p>那么username就等[&#8220;william&#8221;]</p>
+<p>那么username就等[&ldquo;william&rdquo;]</p>
 
 <ul>
 <li>data_bag_item</li>
@@ -947,7 +947,7 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
 </span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
 
 
-<p>重点看一下template &#8220;root.ssh/.keys&#8221;这个Resource 如果所有的服务器都有这一条Recipe,那么我要知道所有服务上都有那些人的key, 我只要查看workstation上的这个模板文件就可以了,因为所有其它服务器上的这个文件都是从这里复制过去的, 要添加删除某个用户的key,也只要修改这个文件然后upload</p>
+<p>重点看一下template &ldquo;root.ssh/.keys&#8221;这个Resource 如果所有的服务器都有这一条Recipe,那么我要知道所有服务上都有那些人的key, 我只要查看workstation上的这个模板文件就可以了,因为所有其它服务器上的这个文件都是从这里复制过去的, 要添加删除某个用户的key,也只要修改这个文件然后upload</p>
 
 <h3>账号管理的Recipe(user)</h3>
 
@@ -958,7 +958,7 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
 <pre><code>charlie.json herry.json william.json
 </code></pre>
 
-<p>那么users就等于[&#8220;charlie&#8221;, &#8220;herry&#8221;, &#8220;william&#8221;]</p>
+<p>那么users就等于[&ldquo;charlie&rdquo;, &ldquo;herry&rdquo;, &ldquo;william&rdquo;]</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

@@ -798,7 +798,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 
 
-<figure class='code'><figcaption><span>vim ~/.chef/knife.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim ~/.chef/knife.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -929,7 +929,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>来自Oposcode的Apache cookbook中的例子</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -939,7 +939,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -964,7 +964,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
 
-<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
@@ -976,7 +976,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>双冒号的写法也适用于<code>include_attribute</code></p>
 
-<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
@@ -990,7 +990,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
 
-<figure class='code'><figcaption><span>reloading attributes from recipes  </span></figcaption>
+<figure class='code'><figcaption><span>reloading attributes from recipes </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1018,7 +1018,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -1058,7 +1058,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>例如.设置Apache监听不同的端口</p>
 
-<figure class='code'><figcaption><span>JSON attribute example  </span></figcaption>
+<figure class='code'><figcaption><span>JSON attribute example </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -1104,7 +1104,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
 
-<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&#8211;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
+<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&mdash;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
 </div>
   
   
@@ -1319,7 +1319,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>然后我们直接在resources目录下创建我们的resource</p>
 
-<figure class='code'><figcaption><span>vim users/resources/manage.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/resources/manage.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1333,7 +1333,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
 
-<figure class='code'><figcaption><span>vim users/providers/manage.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/providers/manage.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1367,7 +1367,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
 
-<figure class='code'><figcaption><span>vim users/recipes/test.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/recipes/test.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>

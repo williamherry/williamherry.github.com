@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-09T17:03:00+08:00</updated>
+  <updated>2013-07-09T17:11:01+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -599,7 +599,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 
 
-<figure class='code'><figcaption><span>vim ~/.chef/knife.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim ~/.chef/knife.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -701,7 +701,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>来自Oposcode的Apache cookbook中的例子</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -711,7 +711,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -736,7 +736,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
 
-<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
@@ -748,7 +748,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>双冒号的写法也适用于<code>include_attribute</code></p>
 
-<figure class='code'><figcaption><span>include\_attribute  </span></figcaption>
+<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
@@ -762,7 +762,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
 
-<figure class='code'><figcaption><span>reloading attributes from recipes  </span></figcaption>
+<figure class='code'><figcaption><span>reloading attributes from recipes </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -790,7 +790,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
 
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb  </span></figcaption>
+<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
@@ -830,7 +830,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>例如.设置Apache监听不同的端口</p>
 
-<figure class='code'><figcaption><span>JSON attribute example  </span></figcaption>
+<figure class='code'><figcaption><span>JSON attribute example </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -876,7 +876,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
 
-<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&#8211;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
+<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&mdash;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
 ]]></content>
   </entry>
   
@@ -1033,7 +1033,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>然后我们直接在resources目录下创建我们的resource</p>
 
-<figure class='code'><figcaption><span>vim users/resources/manage.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/resources/manage.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1047,7 +1047,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
 
-<figure class='code'><figcaption><span>vim users/providers/manage.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/providers/manage.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1081,7 +1081,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
 
-<figure class='code'><figcaption><span>vim users/recipes/test.rb  </span></figcaption>
+<figure class='code'><figcaption><span>vim users/recipes/test.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -2120,7 +2120,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>如果platform不是debian或ubuntu(即Redhat系),那么只有在&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysql_bin&#8217;]} -u root -e &#8216;show databases;&#8217;&#8221;执行成功的时候才执行&#8221;#{node[&#8216;mysql&#8217;][&#8216;mysqladmin_bin&#8217;]} -u root password &#34;#{node[&#8216;mysql&#8217;][&#8216;server_root_password&#8217;]}&#34;&#8221;. mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置</p>
+<p>如果platform不是debian或ubuntu(即Redhat系),那么只有在&#8221;#{node[&lsquo;mysql&rsquo;][&lsquo;mysql_bin&rsquo;]} -u root -e &lsquo;show databases;&rsquo;&ldquo;执行成功的时候才执行&rdquo;#{node[&lsquo;mysql&rsquo;][&lsquo;mysqladmin_bin&rsquo;]} -u root password \&ldquo;#{node[&lsquo;mysql&rsquo;][&lsquo;server_root_password&rsquo;]}\&rdquo;&ldquo;. mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2137,7 +2137,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <p>我遇到的问题是这样的,Rackspack公司基于Ubuntu12.04做了安装Openstack的cookbook,由于Chef抽象的特性,理论上应该在CentOS上也能用,所以我拿过来做测试.整个过程太长,不可能一次成功,出错后做一些修改然后让它再跑,系统环境应该要做一些还原,我是把mysql-server删除,然后把<code>/var/lib/mysql</code>也删除,这样重新安装后就回到空密码了</p>
 
-<p>问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用<code>~/.my.cnf</code>里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:-(</p>
+<p>问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用<code>~/.my.cnf</code>里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:&ndash;(</p>
 
 <h2>配置chef-client周期性唤起时间</h2>
 
@@ -2436,7 +2436,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 </pre></td><td class='code'><pre><code class=''><span class='line'>vim +BundleInstall +qa</span></code></pre></td></tr></table></div></figure>
 
 
-<p>安装已经完成了,可以做一些配置(来自eddie-vim: https://github.cim/kaochenlong/eddie-vim)</p>
+<p>安装已经完成了,可以做一些配置(来自eddie-vim: <a href="https://github.cim/kaochenlong/eddie-vim">https://github.cim/kaochenlong/eddie-vim</a>)</p>
 
 <figure class='code'><figcaption><span>vi .vim/plugin/settings/CtrlP.vim </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -2553,7 +2553,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <h3>修改surrounding</h3>
 
-<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&#8230;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
+<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&hellip;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2584,7 +2584,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <h3>更新</h3>
 
-<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&#8230;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
+<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&hellip;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2859,7 +2859,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 </span><span class='line'>* [new branch]      master -&gt; master</span></code></pre></td></tr></table></div></figure>
 
 
-<p>一旦Github生成页面(通常一到两分钟)后你访问<code>http://username.github.com</code>应该就能看到自己的博客了.并且在https://github.com/username/username.github.com你应该可以看到保存生成的页面文件的<code>master</code>分支和保存源码的<code>source</code>分支</p>
+<p>一旦Github生成页面(通常一到两分钟)后你访问<code>http://username.github.com</code>应该就能看到自己的博客了.并且在<a href="https://github.com/username/username.github.com%E4%BD%A0%E5%BA%94%E8%AF%A5%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E4%BF%9D%E5%AD%98%E7%94%9F%E6%88%90%E7%9A%84%E9%A1%B5%E9%9D%A2%E6%96%87%E4%BB%B6%E7%9A%84">https://github.com/username/username.github.com%E4%BD%A0%E5%BA%94%E8%AF%A5%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E4%BF%9D%E5%AD%98%E7%94%9F%E6%88%90%E7%9A%84%E9%A1%B5%E9%9D%A2%E6%96%87%E4%BB%B6%E7%9A%84</a><code>master</code>分支和保存源码的<code>source</code>分支</p>
 
 <p>每次想部署都需要执行上面的命令</p>
 
@@ -3456,7 +3456,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 <h2>配置</h2>
 
-<figure class='code'><figcaption><span>vim ~/.vimrc  </span></figcaption>
+<figure class='code'><figcaption><span>vim ~/.vimrc </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -3509,7 +3509,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 <p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
 
 <ul>
-<li><p>在github上搜索nerdtree找到它,我找到的是: https://github.com/scrooloose/nerdtree</p></li>
+<li><p>在github上搜索nerdtree找到它,我找到的是: <a href="https://github.com/scrooloose/nerdtree">https://github.com/scrooloose/nerdtree</a></p></li>
 <li><p>在～/.vimrc文件里添加一行:</p></li>
 </ul>
 
