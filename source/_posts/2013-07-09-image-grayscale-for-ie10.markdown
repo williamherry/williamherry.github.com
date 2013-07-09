@@ -36,6 +36,8 @@ categories:
 
 还用上面的例子,它会把图片按比较放到和短的边一样, 这里是100X1000,然后把100X100的框放中间,多余的裁掉,剩下的就是显示的部分
 
+{% img /images/svg/preverse-aspect-ratio.svg %}
+
 这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题
 
 更多`preserveAspectRatio`的信息请看[这里](http://www.w3.org/TR/SVG/coords.html)
