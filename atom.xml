@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-09T17:46:36+08:00</updated>
+  <updated>2013-07-09T18:10:49+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -58,6 +58,8 @@
 <p>对于这个问题我还没有找到完美的解决办法,但有一个办法已经可以满足我自己的需求,这个方法是在<code>&lt;image</code>后面加上<code>preserveAspectRatio="xMidYMid slice"</code></p>
 
 <p>还用上面的例子,它会把图片按比较放到和短的边一样, 这里是100X1000,然后把100X100的框放中间,多余的裁掉,剩下的就是显示的部分</p>
+
+<p><img src="http://williamherry.github.com/images/svg/preverse-aspect-ratio.svg"></p>
 
 <p>这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题</p>
 
