@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-05-28T09:37:09+08:00</updated>
+  <updated>2013-07-09T17:03:00+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,25 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[ActionBarSherlock使用]]></title>
-    <link href="http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup/"/>
-    <updated>2013-05-27T21:50:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/05/27/actionbarsherlock-setup</id>
-    <content type="html"><![CDATA[<p>从Android 3.0(API Level 11)开始,Android加入了一个新的API, ActionBar.但目前市面上还有好多的Android 2.3(API Level 8),并不支持ActionBar,还好有人开发了ActionBarSherlock可以让2.x的系统也能使用ActionBar,而且它有一个特点,如果你在3.0以上的机子上使用,那么它会调用系统原生的ActionBar.这里简单记录一下设置过程.</p>
-
-<p>首先从<a href="http://actionbarsherlock.com/">官方网站</a>上下载压缩包</p>
-
-<p>解开里面会有一个actionbarsherlock的目录,在eclipse中导入这个项目(eclipse中file -> new -> other -> android类下的android project from existing code,选择解压开的actionbarsherlock目录)</p>
-
-<p>导入之后会多了一个名为actionbarsherlock的项目</p>
-
-<p>然后在你要使用ActionBarSherlock的项目名字上右键选择properties,弹出的窗口中点击左边的Android标签,然后点击add选择刚才导入的项目</p>
-
-<p>完成后就可以在项目中使用ActionBarSherlock了</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[理解测试中的stub和mock]]></title>
@@ -3447,6 +3428,104 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 
 <p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[VIM练级日记01-外挂总管Vundle]]></title>
+    <link href="http://williamherry.github.com/blog/2012/07/16/master-vim-01-vundle/"/>
+    <updated>2012-07-16T22:02:00+08:00</updated>
+    <id>http://williamherry.github.com/blog/2012/07/16/master-vim-01-vundle</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
+
+<h2>外挂总管Vundle</h2>
+
+<p>高老师的视频中使用的是pathogen这个外挂来管理其它VIM外挂,但我通过Google发现有人说Vundle比pathogen要好,就试了下,果然很不错的说</p>
+
+<p>Vundle利用git,插件的git repo以及vim-scripts维护的GitHub repo, 自动安装, 更新和卸载插件. 它把这些繁杂的工作变得简单, 甚至, 成为一种享受.</p>
+
+<h2>安装</h2>
+
+<p>Vundle的github地址在<a href="https://github.com/gmarik/vundle">这里</a>,上面有安装和使用方法,我在这里也简单的写一下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置</h2>
+
+<figure class='code'><figcaption><span>vim ~/.vimrc  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">nocompatible</span>               <span class="c">&quot; be iMproved</span>
+</span><span class='line'><span class="k">filetype</span> off                   <span class="c">&quot; required!</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">set</span> <span class="nb">rtp</span><span class="p">+=~</span><span class="sr">/.vim/</span>bundle<span class="sr">/vundle/</span>
+</span><span class='line'><span class="k">call</span> vundle#rc<span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; let Vundle manage Vundle</span>
+</span><span class='line'><span class="c">&quot; required! </span>
+</span><span class='line'>Bundle <span class="s1">&#39;gmarik/vundle&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; My Bundles here:</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>     <span class="c">&quot; required!</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; Brief help</span>
+</span><span class='line'><span class="c">&quot; :BundleList          - list configured bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleInstall(!)    - install(update) bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleSearch(!) foo - search(or refresh cache first) for foo</span>
+</span><span class='line'><span class="c">&quot; :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; see :h vundle for more details or wiki for FAQ</span>
+</span><span class='line'><span class="c">&quot; NOTE: comments after Bundle command are not allowed..</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用</h2>
+
+<p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
+
+<ul>
+<li><p>在github上搜索nerdtree找到它,我找到的是: https://github.com/scrooloose/nerdtree</p></li>
+<li><p>在～/.vimrc文件里添加一行:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>退出并重新打开VIM,执行:BundleInstall</li>
+</ul>
+
+
+<p>新的外挂NERDTree已经安装好了,可以在~/.vim/bundle/目录下看到它,下一篇我会简单介绍它的使用</p>
+
+<p>用Vundle管理外挂就是这么简单</p>
 ]]></content>
   </entry>
   
