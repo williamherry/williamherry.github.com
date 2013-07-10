@@ -122,7 +122,7 @@
 </span><span class='line'>    resp <span class="p">=</span> Net::HTTP.get_response<span class="p">(</span>URI.parse<span class="p">(</span>uri<span class="p">))</span>
 </span><span class='line'>    data <span class="p">=</span> resp.body
 </span><span class='line'>    result <span class="p">=</span> JSON.parse<span class="p">(</span>data<span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> false <span class="k">if</span> result[<span class="s1">&#39;status&#39;</span>] <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'>    <span class="k">return</span> false <span class="k">if</span> result[<span class="s1">&#39;status&#39;</span>] <span class="p">==</span> <span class="m">1</span>
 </span><span class='line'>    result[<span class="s1">&#39;content&#39;</span>][<span class="s1">&#39;address&#39;</span>] <span class="p">==</span> <span class="s2">&quot;上海市&quot;</span> ? true : false
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>...
