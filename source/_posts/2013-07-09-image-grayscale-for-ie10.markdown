@@ -41,3 +41,7 @@ categories:
 这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题
 
 更多`preserveAspectRatio`的信息请看[这里](http://www.w3.org/TR/SVG/coords.html)
+
+## 更新
+
+StackOverflow上对[这个问题](http://stackoverflow.com/questions/17540298/image-inside-svg-width-and-height-not-working-as-expected/17545343)已经有人回答了,让图片按给定的高和宽拉伸只要把`preserveAspectRatio`设置成`none`就可以了
