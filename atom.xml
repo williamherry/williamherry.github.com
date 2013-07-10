@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-09T18:10:49+08:00</updated>
+  <updated>2013-07-10T13:53:20+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,76 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[只允许上海的用户注册]]></title>
+    <link href="http://williamherry.github.com/blog/2013/07/10/allow-ip-from-shanghai-do-something/"/>
+    <updated>2013-07-10T13:33:00+08:00</updated>
+    <id>http://williamherry.github.com/blog/2013/07/10/allow-ip-from-shanghai-do-something</id>
+    <content type="html"><![CDATA[<p>刚开始听到老板说这个需求的时候,我还傻呼呼一直在想要怎么得到所有上海的IP地址,都打算试着写爬虫去爬这些数据,事实上我只要判断一个客户端的IP是不是属于上海就行了,而这个动作可以由一些第三方提供的API来做,像百度就有提供这个的服务</p>
+
+<p>转过弯来就比较简单了,我的方法在<code>app/controller/application_controller.rb</code>文件里加一个helper方法</p>
+
+<figure class='code'><figcaption><span>app/controller/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>class ApplicationController <span class="p">&lt;</span> ActionController::Base
+</span><span class='line'>  helper_method :is_shanghai_ip?
+</span><span class='line'>...
+</span><span class='line'>  <span class="nb">def</span> is_shanghai_ip?<span class="p">(</span>ip<span class="p">)</span>
+</span><span class='line'>    uri <span class="p">=</span> <span class="s2">&quot;http://api.map.baidu.com/location/ip?ak=your_api_key&amp;ip=#{ip}&amp;coor=bd09ll&quot;</span>
+</span><span class='line'>    resp <span class="p">=</span> Net::HTTP.get_response<span class="p">(</span>URI.parse<span class="p">(</span>uri<span class="p">))</span>
+</span><span class='line'>    data <span class="p">=</span> resp.body
+</span><span class='line'>    result <span class="p">=</span> JSON.parse<span class="p">(</span>data<span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> false <span class="k">if</span> result[<span class="s1">&#39;status&#39;</span>] <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'>    result[<span class="s1">&#39;content&#39;</span>][<span class="s1">&#39;address&#39;</span>] <span class="p">==</span> <span class="s2">&quot;上海市&quot;</span> ? true : false
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>...
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在你要做控制的action中调用这个方法,比如我们要限制只有上海的用户可以注册</p>
+
+<figure class='code'><figcaption><span>app/controller/users_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> sign_up
+</span><span class='line'>  unless is_shanghai_ip?<span class="p">(</span>request.remote_ip<span class="p">)</span>
+</span><span class='line'>    redirect_to <span class="s2">&quot;/about/us&quot;</span> and <span class="k">return</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  ...
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>百度提供的这个服务的地址是: <a href="http://developer.baidu.com/map/ip-location-api.htm">http://developer.baidu.com/map/ip-location-api.htm</a></p>
+
+<p>另外有一个叫<code>geocoder</code>的gem非常强大,它直接在<code>Rack::Request</code>里塞一个<code>location</code>的方法,你可以直接在controller里这样调用</p>
+
+<figure class='code'><figcaption><span>app/controller/users_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>city <span class="p">=</span> request.location.city
+</span><span class='line'>country <span class="p">=</span> request.location.country_code
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此外它还有一些非常强大的功能如查找经纬度,查找附近,查找距离等等,更详细的信息可以访问它的<a href="http://www.rubygeocoder.com/">官方网站</a>, <a href="http://railscasts.com/episodes/273-geocoder">RailsCast</a>还有一期是介绍它的</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[IE10下图片灰度处理]]></title>
@@ -3413,75 +3483,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[VIM练级日记02-目录外挂NERDTree]]></title>
-    <link href="http://williamherry.github.com/blog/2012/07/19/master-vim-02-nerdtree/"/>
-    <updated>2012-07-19T19:16:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/07/19/master-vim-02-nerdtree</id>
-    <content type="html"><![CDATA[<h2>NERDTree简介</h2>
-
-<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
-
-<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
-
-<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
-
-<p><img src="http://williamherry.github.com/images/nerdtree/nerdtree.png"></p>
-
-<p>这里还有一个Youtube上的视频演示</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
-
-
-<h2>安装使用</h2>
-
-<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>重启VIM并执行:BundleInstall</p>
-
-<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
-
-<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
-
-<p>这里是NERDTree中的一些按键</p>
-
-<p><code>o</code> 打开关闭文件或者目录
-<code>t</code> 在标签页中打开
-<code>T</code> 在后台标签页中打开
-<code>!</code> 执行此文件
-<code>p</code> 到上层目录
-<code>P</code> 到根目录
-<code>K</code> 到第一个节点
-<code>J</code> 到最后一个节点
-<code>u</code> 打开上层目录
-<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
-<code>?</code> 帮助
-<code>q</code> 关闭</p>
-
-<h2>问题</h2>
-
-<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
-</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
 ]]></content>
   </entry>
   
