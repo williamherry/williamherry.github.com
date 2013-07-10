@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     resp = Net::HTTP.get_response(URI.parse(uri))
     data = resp.body
     result = JSON.parse(data)
-    return false if result['status'] = 1
+    return false if result['status'] == 1
     result['content']['address'] == "上海市" ? true : false
   end
 ...
