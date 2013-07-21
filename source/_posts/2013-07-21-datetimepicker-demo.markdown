@@ -8,7 +8,13 @@ categories:
 
 以前做过这样的东西,花了好多时间,因为要选择到底用那个插件,还有好多插件要只有日期没有时间,今天做这样的东西又花了不少时间,决定记录下来,下一次就简单多了
 
-我使用的是`jQuery`的`datepicker`加上[jQuery-Timepicker-Addon](https://github.com/trentrichardson/jQuery-Timepicker-Addon), 示例代码在这里: [datetimepicker-demo](https://github.com/williamherry/datetimepicker-demo),懒得看详细的步骤可以直接看代码
+我使用的是`jQuery`的`datepicker`加上[jQuery-Timepicker-Addon](https://github.com/trentrichardson/jQuery-Timepicker-Addon)
+
+示例代码在这里: [datetimepicker-demo](https://github.com/williamherry/datetimepicker-demo),懒得看详细的步骤可以直接看代码
+
+效果类似这样:
+
+{% img /images/datetimepicker.png %}
 
 - 首先创建项目
 
