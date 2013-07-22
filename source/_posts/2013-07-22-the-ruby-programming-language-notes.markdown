@@ -56,7 +56,7 @@ categories:
 ?A  # Character literal for the  ASCII character A
 /"  # Character literal for the  ASCII character "
 /?  # Character literal for the  ASCII character ?
-# not need any more
+not need any more
 
 ```
 a = 0;
@@ -220,3 +220,199 @@ max = data.inject { |m, x| m>x ? m : x }   # => 5
 
 - manipulate
 - represent
+
+- An important feature of procs and lambdas is that they are closures: they retain access to the local variables that were in scope when they were defined, even then the proc or lambda is invoked from a different scope
+
+- subtle
+- invocation
+- respectively
+
+- Ruby implementations typically treat Fixnum and Symbol values as immediate values rather than as true object references. For this reason, singleton methods may not be defined on Fixnum and Symbol objects. For consistency, singletons are also prohibited on other Numberic objects.
+
+- Interestingly, undef can be used to undefine inherited method, without affecting the definition of the method in the class from which it is inherited.
+
+- It cannot be used to undefine a singleton method in the way that def can be used to define such a method.
+
+- punctuation
+- unary
+
+```
+alias aka also_known_as   # alias new_name existing_name
+```
+
+```
+def hello
+  puts 'Hello World'
+end
+
+alias original_hello hello
+
+def hello
+  puts 'Your attention please'
+  original_hello
+  puts 'This has been a test'
+end
+```
+
+- overload
+- ambiguous
+- wrinkle
+
+```
+def suffix(s, index=s.size-1)
+  s[index, s.size-index]
+end
+```
+
+- In Ruby 1.8, method parameters with default values must appear after all ordinary parameters in the parameter list. Ruby 1.9 relaxes this restriction and allows ordinary parameters to appear after parameters with defaults. It still requires all parameters with defaults to be adjacent in the parameter list - you can't declare two parameters with default values with an ordinary parameter between them, for example.
+
+- No more than one parameter may be prefixed with an *. In Ruby 1.8, this parameter must appear after all ordinary parameters and after all parameters with defaults specified. It should be the last parameter of the method, unless the method also has a parameter with an & prefix. In Ruby 1.9, a parameter with an * prefix must still appear after any parameters with defaults specified, but it may be followed by additional ordinary parameters. It must also still appear before any &-prefixed parameter.
+
+- anonymity
+
+- Blocks are syntactic structures in Ruby; they are not objects, and cannot be manipulated as objects.
+- It is possible, however, to create an object that represents a block. Depending on how the object is created, it is called a proc or a lambda
+- Procs have block-like behavior and lambdas have method-like behavior. Both, however, are instances of class Proc.
+
+- Proc.new => procs
+- Kernel.lambda => lambda
+- Kernel.proc => alias of lambda in Ruby 1.8
+- Kernel.proc => alias of Proc.new in Ruby 1.9
+
+```
+succ = lambda {|x| x+1}  # Ruby 1.8 lambda
+succ = ->(x){ x+1 }      # Ruby 1.9 lambda
+```
+
+```
+# This lambda takes 2 args and declares 3 local vars
+f = ->(x,y; i,j,k) { ... }
+```
+
+```
+zoom = ->(x,y,factor=2) { [x*factor, y*factor] }   # only on Ruby 1.9
+```
+
+```
+succ = ->x { x+1 }
+f = -> x,y; i,j,k { ... }
+zoom = ->x,y,factor=2 { [x*factor, y*factor] }
+```
+
+- Proc Equality - The `==` method only returns true if on Proc is a clone or duplicate of the other;
+
+```
+p = lambda {|x| x*x }
+q = p.dup
+q == p                      # => true: the two procs are equal
+p.object_id == q.object_id  # => false: they are not the same object
+
+- A proc is the object form of a block, and it behaves like a block.
+- A lambda has slightly modified behavior and behaves more like a mthod that a block.
+
+- The return statement in a block does not just return from the block to the invoking iterator, it returns from the method that invoked the interator.
+
+```
+def test
+  puts "entering method"
+  1.times { puts "entering block"; return }  # Makes test method return
+  puts "exiting method"   # This line is never executed
+end
+test
+```
+
+- A proc is like a block, so if you call a proc that executes a return statement, it attempts to return from the method that encloses the block that was converted to the proc.
+
+```
+def test
+  puts "entering method"
+  p = Proc.new { puts "entering proc"; return }
+  p.call                # Invoking the proc makes method return
+  puts "exiting method" # This line is never executed
+end
+test
+```
+
+- Using a return statement in a proc is tricky, however, because procs are ofter passed around between methods. By the time a proc is invoked, the lexically enclosing method may already have returned:
+
+```
+def procBuilder(message)            # Create and return a proc
+  Proc.new { puts message; return } # return returns from procBuilder
+  # but procBuilder has already returned here!
+end
+
+def test
+  puts "entering method"
+  p = procBuilder("entering proc")
+  p.call                # Prints "entering proc" and raises LocalJumpError!
+  puts "exiting method" # This line is never executed
+end
+test
+```
+
+- A return statement in a lambda, therefore, returns from the lambda itself, not from the method that surrounds the creation site of the lambda:
+
+```
+def test
+  puts "entering method"
+  p = lambda { puts "entering lambda"; return }
+  p.call                  # Invoking the lambda does not make the method return
+  puts "exiting method"   # This line *is* executed now
+end
+test
+```
+
+- The fact that return in lambda only returns from the lambda itself means that we never have to worry about LocalJumpError
+
+```
+def lambdaBuilder(message)            # Create and return a proc
+  lambda { puts message; return }     # return returns from lambda
+  # but procBuilder has already returned here!
+end
+
+def test
+  puts "entering method"
+  p = lambdaBuilder("entering lambda")
+  p.call                # Prints "entering lambda"
+  puts "exiting method" # This line is executed
+end
+test
+```
+
+- A top-level next statement works the same in a block, proc, or lambda: ti causes the yield statement or call method that invoked the block, proc, or lambda to return. If next is followed by an expression, then the value of that expression becomes the rturn value of the block, proc, or lambda.
+
+- redo also works the same in procs and lambdas: it transfers control back to the beginning of the proc or lambda.
+
+- retry is never allowed in procs or lambdas: using it always results in a LocalJumpError.
+
+- raise behaves the same in blocks, procs, and lambdas. Exceptions always propagate up the call stack. If a block, proc, or lambda raises an exception and there is no local rescue clause, the exception first propagates to the method that invoked the block with yield or that invoked the proc or lambda with call.
+
+- Argument passing to procs and lambdas
+  - The yield statement uses yield semantics
+  - method invocation uses invocation semantics
+  - Yield semantics are similar to parallel assignment
+  - invoking a proc uses yield semantics
+  - invoking a lambda uses invocation semantics
+
+```
+p = Proc.new {|x,y| print x,y }
+p.call(1)       # x,y=1:     nil used for missing rvalue:  Prints 1nil
+p.call(1,2)     # x,y=1,2:   2 lvalues, 2rvalues:          Print 12
+p.call(1,2,3)   # x,y=1,2,3: extra rvalues discarded:      Print 12
+p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12
+```
+
+```
+l = lambda {|x,y| print x,y }
+l.call(1,2)     # This works
+l.call(1)       # Wrong number of arguments
+l.call(1,2,3)   # Wrong number of arguments
+l.call([1,2])   # Wrong number of arguments
+l.call(*[1,2])  # Works: explicit splat to unpack the array
+```
+
+- In Ruby, procs and lambdas are closures.
+- An object that is both an invocable function and a variable binding for that function.
+- When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.
+
+- One important difference between Method objects and Proc objects is that Method objects are not closures.
