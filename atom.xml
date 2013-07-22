@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-22T11:16:11+08:00</updated>
+  <updated>2013-07-22T13:52:42+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -66,9 +66,8 @@
 
 <p>?A  # Character literal for the  ASCII character A
 /&ldquo;  # Character literal for the  ASCII character &rdquo;
-/?  # Character literal for the  ASCII character ?</p>
-
-<h1>not need any more</h1>
+/?  # Character literal for the  ASCII character ?
+not need any more</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -295,7 +294,273 @@ they have lower precedence that the assignment operator</p></li>
 <li><p>return always causes the enclosing method to return. the enclosing method, also called the lexically enclosing method, is the method that the block appears inside of when you look at the source code</p></li>
 <li><p>note that unlike return, break never causes the lexically enclosing method to return. break can only appear within a lexically enclosing loop or within a block. using it in any other context causes a LocalJumpError</p></li>
 <li><p>manipulate</p></li>
-<li>represent</li>
+<li><p>represent</p></li>
+<li><p>An important feature of procs and lambdas is that they are closures: they retain access to the local variables that were in scope when they were defined, even then the proc or lambda is invoked from a different scope</p></li>
+<li><p>subtle</p></li>
+<li>invocation</li>
+<li><p>respectively</p></li>
+<li><p>Ruby implementations typically treat Fixnum and Symbol values as immediate values rather than as true object references. For this reason, singleton methods may not be defined on Fixnum and Symbol objects. For consistency, singletons are also prohibited on other Numberic objects.</p></li>
+<li><p>Interestingly, undef can be used to undefine inherited method, without affecting the definition of the method in the class from which it is inherited.</p></li>
+<li><p>It cannot be used to undefine a singleton method in the way that def can be used to define such a method.</p></li>
+<li><p>punctuation</p></li>
+<li>unary</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias aka also_known_as   # alias new_name existing_name</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def hello
+</span><span class='line'>  puts 'Hello World'
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>alias original_hello hello
+</span><span class='line'>
+</span><span class='line'>def hello
+</span><span class='line'>  puts 'Your attention please'
+</span><span class='line'>  original_hello
+</span><span class='line'>  puts 'This has been a test'
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>overload</li>
+<li>ambiguous</li>
+<li>wrinkle</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def suffix(s, index=s.size-1)
+</span><span class='line'>  s[index, s.size-index]
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>In Ruby 1.8, method parameters with default values must appear after all ordinary parameters in the parameter list. Ruby 1.9 relaxes this restriction and allows ordinary parameters to appear after parameters with defaults. It still requires all parameters with defaults to be adjacent in the parameter list &ndash; you can&rsquo;t declare two parameters with default values with an ordinary parameter between them, for example.</p></li>
+<li><p>No more than one parameter may be prefixed with an *. In Ruby 1.8, this parameter must appear after all ordinary parameters and after all parameters with defaults specified. It should be the last parameter of the method, unless the method also has a parameter with an &amp; prefix. In Ruby 1.9, a parameter with an * prefix must still appear after any parameters with defaults specified, but it may be followed by additional ordinary parameters. It must also still appear before any &amp;-prefixed parameter.</p></li>
+<li><p>anonymity</p></li>
+<li><p>Blocks are syntactic structures in Ruby; they are not objects, and cannot be manipulated as objects.</p></li>
+<li>It is possible, however, to create an object that represents a block. Depending on how the object is created, it is called a proc or a lambda</li>
+<li><p>Procs have block-like behavior and lambdas have method-like behavior. Both, however, are instances of class Proc.</p></li>
+<li><p>Proc.new => procs</p></li>
+<li>Kernel.lambda => lambda</li>
+<li>Kernel.proc => alias of lambda in Ruby 1.8</li>
+<li>Kernel.proc => alias of Proc.new in Ruby 1.9</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>succ = lambda {|x| x+1}  # Ruby 1.8 lambda
+</span><span class='line'>succ = -&gt;(x){ x+1 }      # Ruby 1.9 lambda</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># This lambda takes 2 args and declares 3 local vars
+</span><span class='line'>f = -&gt;(x,y; i,j,k) { ... }</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>zoom = -&gt;(x,y,factor=2) { [x*factor, y*factor] }   # only on Ruby 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>succ = -&gt;x { x+1 }
+</span><span class='line'>f = -&gt; x,y; i,j,k { ... }
+</span><span class='line'>zoom = -&gt;x,y,factor=2 { [x*factor, y*factor] }</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Proc Equality &ndash; The <code>==</code> method only returns true if on Proc is a clone or duplicate of the other;</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>p = lambda {|x| x*x }
+</span><span class='line'>q = p.dup
+</span><span class='line'>q == p                      # =&gt; true: the two procs are equal
+</span><span class='line'>p.object_id == q.object_id  # =&gt; false: they are not the same object
+</span><span class='line'>
+</span><span class='line'>- A proc is the object form of a block, and it behaves like a block.
+</span><span class='line'>- A lambda has slightly modified behavior and behaves more like a mthod that a block.
+</span><span class='line'>
+</span><span class='line'>- The return statement in a block does not just return from the block to the invoking iterator, it returns from the method that invoked the interator.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>def test
+  puts &ldquo;entering method&rdquo;
+  1.times { puts &ldquo;entering block&rdquo;; return }  # Makes test method return
+  puts &ldquo;exiting method&rdquo;   # This line is never executed
+end
+test</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- A proc is like a block, so if you call a proc that executes a return statement, it attempts to return from the method that encloses the block that was converted to the proc.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>def test
+  puts &ldquo;entering method&rdquo;
+  p = Proc.new { puts &ldquo;entering proc&rdquo;; return }
+  p.call                # Invoking the proc makes method return
+  puts &ldquo;exiting method&rdquo; # This line is never executed
+end
+test</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- Using a return statement in a proc is tricky, however, because procs are ofter passed around between methods. By the time a proc is invoked, the lexically enclosing method may already have returned:
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>def procBuilder(message)            # Create and return a proc
+  Proc.new { puts message; return } # return returns from procBuilder
+  # but procBuilder has already returned here!
+end</p>
+
+<p>def test
+  puts &ldquo;entering method&rdquo;
+  p = procBuilder(&ldquo;entering proc&rdquo;)
+  p.call                # Prints &ldquo;entering proc&rdquo; and raises LocalJumpError!
+  puts &ldquo;exiting method&rdquo; # This line is never executed
+end
+test</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- A return statement in a lambda, therefore, returns from the lambda itself, not from the method that surrounds the creation site of the lambda:
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>def test
+  puts &ldquo;entering method&rdquo;
+  p = lambda { puts &ldquo;entering lambda&rdquo;; return }
+  p.call                  # Invoking the lambda does not make the method return
+  puts &ldquo;exiting method&rdquo;   # This line <em>is</em> executed now
+end
+test</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- The fact that return in lambda only returns from the lambda itself means that we never have to worry about LocalJumpError
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>def lambdaBuilder(message)            # Create and return a proc
+  lambda { puts message; return }     # return returns from lambda
+  # but procBuilder has already returned here!
+end</p>
+
+<p>def test
+  puts &ldquo;entering method&rdquo;
+  p = lambdaBuilder(&ldquo;entering lambda&rdquo;)
+  p.call                # Prints &ldquo;entering lambda&rdquo;
+  puts &ldquo;exiting method&rdquo; # This line is executed
+end
+test</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>- A top-level next statement works the same in a block, proc, or lambda: ti causes the yield statement or call method that invoked the block, proc, or lambda to return. If next is followed by an expression, then the value of that expression becomes the rturn value of the block, proc, or lambda.
+</span><span class='line'>
+</span><span class='line'>- redo also works the same in procs and lambdas: it transfers control back to the beginning of the proc or lambda.
+</span><span class='line'>
+</span><span class='line'>- retry is never allowed in procs or lambdas: using it always results in a LocalJumpError.
+</span><span class='line'>
+</span><span class='line'>- raise behaves the same in blocks, procs, and lambdas. Exceptions always propagate up the call stack. If a block, proc, or lambda raises an exception and there is no local rescue clause, the exception first propagates to the method that invoked the block with yield or that invoked the proc or lambda with call.
+</span><span class='line'>
+</span><span class='line'>- Argument passing to procs and lambdas
+</span><span class='line'>  - The yield statement uses yield semantics
+</span><span class='line'>  - method invocation uses invocation semantics
+</span><span class='line'>  - Yield semantics are similar to parallel assignment
+</span><span class='line'>  - invoking a proc uses yield semantics
+</span><span class='line'>  - invoking a lambda uses invocation semantics
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>p = Proc.new {|x,y| print x,y }
+p.call(1)       # x,y=1:     nil used for missing rvalue:  Prints 1nil
+p.call(1,2)     # x,y=1,2:   2 lvalues, 2rvalues:          Print 12
+p.call(1,2,3)   # x,y=1,2,3: extra rvalues discarded:      Print 12
+p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>```
+</span><span class='line'>l = lambda {|x,y| print x,y }
+</span><span class='line'>l.call(1,2)     # This works
+</span><span class='line'>l.call(1)       # Wrong number of arguments
+</span><span class='line'>l.call(1,2,3)   # Wrong number of arguments
+</span><span class='line'>l.call([1,2])   # Wrong number of arguments
+</span><span class='line'>l.call(*[1,2])  # Works: explicit splat to unpack the array</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>In Ruby, procs and lambdas are closures.</li>
+<li>An object that is both an invocable function and a variable binding for that function.</li>
+<li><p>When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.</p></li>
+<li><p>One important difference between Method objects and Proc objects is that Method objects are not closures.</p></li>
 </ul>
 
 ]]></content>
