@@ -9,7 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="NERDTree简介 上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂 NERDTree是一个用于浏览文件系统的树形资源管理外挂, &hellip;">
+  <meta name="description" content="写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): ( ) [ ] { } &lt; &gt; ' "，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +69,219 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/21/master-vim-03-surround/">VIM练级日记03-配对外挂Surround</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-21T22:46:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/21/master-vim-03-surround/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): <code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>&lt;</code> <code>&gt;</code> <code>'</code> <code>"</code>，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.</p>
+
+<p>今天给大家介绍的这个外挂就是用来简化这些事情的,首先我们从安装开始说起</p>
+
+<h2>安装Surround</h2>
+
+<p>如果你已经知道怎么用Vundle管理VIM外挂,那么安装这个外挂非常简单(不知道Vundle? 请看<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>)</p>
+
+<p>在<a href="https://github.ocm">Github</a>上搜索打到surround这个外挂(我找到的是<a href="https://github.com/tpope/vim-surround">这个</a>)</p>
+
+<p>在<code>~/.vimrc</code>里添加一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'tpope/vim-surround'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打开VIM运行<code>:BundleInstall</code>,安装完成下面会有提示</p>
+
+<p>重启VIM,现在你就可以使用了</p>
+
+<h2>使用Surround</h2>
+
+<p>可以先看一下Surround自带的帮助,在VIM中输入<code>:help surround</code>,我这里也简单的总结一下</p>
+
+<h3>添加surrounding</h3>
+
+<h4>给一个单词添加</h4>
+
+<p>使用命令<code>ysiw</code> + <code>surrounding</code>,例如下面的例子,想要给<code>William</code>这个单词两边添加一个单引号,只需要将水标称到这个单词中,然后输入<code>ysiw'</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      ysiw'           'William' Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再多几个例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      ysiw"           "William" Herry
+</span><span class='line'>William Herry      ysiw*           *William* Herry
+</span><span class='line'>William Herry      ysiw)           (William) Herry
+</span><span class='line'>William Herry      ysiw(           ( William ) Herry
+</span><span class='line'>William Herry      ysiw&lt;html&gt;      &lt;html&gt;William&lt;/html&gt; Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可能已经注意到了使用<code>(</code>和<code>)</code>的不同,<code>{}</code>和<code>[]</code>也是一样的,使用左边的会多出一空格</p>
+
+<p>还有就是它也支持HTML的Tag(如<code>&lt;html&gt;&lt;/html&gt;</code>, <code>&lt;body&gt;&lt;/body&gt;</code>这些</p>
+
+<h4>给一整行添加</h4>
+
+<p>使用<code>yss</code> + <code>surrounging</code>,请看例子</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      yss"            "William Herry"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其它的类似,请自己做实验验证</p>
+
+<h4>给选中的区域添加</h4>
+
+<p>使用Visual模式选中后按<code>S</code> + <code>surrounding</code>,例如光标在<code>a</code>上,我按<code>Ctrl</code> + <code>v</code>再按4下<code>l</code>选中<code>am He</code>后按<code>S%</code>,就会得到下面的结果</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
+</span><span class='line'>William Herry      vllllS%         Willi%am He%rry"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>修改surrounding</h3>
+
+<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&hellip;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
+</span><span class='line'>"William" Herry       cs"'            'William' Herry
+</span><span class='line'>&lt;p&gt;William&lt;/p&gt; Herry  cst&lt;div&gt;        &lt;div&gt;William&lt;/div&gt; Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>删除surrounding</h3>
+
+<p>删除的时候也是分成两类的,使用<code>ds</code> + <code>surrounging</code>删除一般的surrounding,<code>dst</code>删除HTML的Tag</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
+</span><span class='line'>"william" herry       ds"'            william Herry
+</span><span class='line'>&lt;p&gt;william&lt;/p&gt; herry  dst             William Herry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>基本的使用就这些,一些高级的我自己还没搞清楚,比如加surrounding的时候自动缩进等等</p>
+
+<p>这里还有一个Youtube上的视频</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/5HF4jSyPpvs "></iframe></div>
+
+
+<h3>更新</h3>
+
+<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&hellip;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ci' ci" ci( ci[ ci{ ci&lt; - 更改这些配对标点符号中的内容
+</span><span class='line'>di' di" di( di[ di{ di&lt; - 删除这些配对标点符号中的内容
+</span><span class='line'>yi' yi" yi( yi[ yi{ yi&lt; - 复制这些配对标点符号中的内容
+</span><span class='line'>vi' vi" vi( vi[ vi{ vi&lt; - 选中这些配对标点符号中的内容</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果把上面的<code>i</code>改在<code>a</code>可以连配对标点一起操作</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/20/octopress-setup/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
+
+<p>这篇文档主要包括</p>
+
+<ul>
+<li>搭建Octopress</li>
+<li>将博客托管到Github上</li>
+<li>我对主题做的一些修改</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/20/octopress-setup/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -424,6 +637,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
       </li>
     
@@ -445,14 +666,6 @@
     
       <li class="post">
         <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
       </li>
     
   </ul>

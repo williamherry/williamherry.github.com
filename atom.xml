@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-10T14:24:29+08:00</updated>
+  <updated>2013-07-22T11:16:11+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,411 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Ruby Programming Language Notes]]></title>
+    <link href="http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/"/>
+    <updated>2013-07-22T11:14:00+08:00</updated>
+    <id>http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes</id>
+    <content type="html"><![CDATA[<ul>
+<li>Global variables are prefixed with $</li>
+<li>Instance variables are prefixed with @</li>
+<li>Class variables are prefixed with @@</li>
+<li>Constant begin with a capital letter</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/[Rr]uby/   # Matches "Ruby" or "ruby"
+</span><span class='line'>/\d{5}/     # Matches 5 consecutive digits
+</span><span class='line'>1..3        # All x where 1 &lt;= x &lt;= 3 # has equal both side
+</span><span class='line'>1...3       # All x where 1 &lt;= x &lt; 3</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Ruby case statement matches its expression against each of the possible cases using <code>===</code></p></li>
+<li><p>Ruby&rsquo;s strings are mutable, call freeze method to prevent any future modifications</p></li>
+<li><p>In Ruby world, only nil and false are false, anything else are true</p></li>
+<li><p><code>print</code> is almost same with <code>puts</code>, except it does not append a newline</p></li>
+<li><p><code>p</code> almost same with <code>puts</code>, except it use <code>inspect</code> rather than <code>to_s</code></p></li>
+<li><p>lexical</p></li>
+<li>punctuation</li>
+<li>syntactic</li>
+<li><p>arithmetic</p></li>
+<li><p>All numeric objects are immutable</p></li>
+<li><p>Integer division by zero causes a ZeroDivisionError to be thrown.</p></li>
+<li>Floating-point division by zero does not cause an error; it simple returns the value Infinity</li>
+<li><p>0.0/0.0 => NaN</p></li>
+<li><p><code>4**3**2</code> is same as <code>4**9</code> not <code>64**2</code></p></li>
+<li><p>even = (x[0] == 0)  # A number is even if the least-significat bit is 0</p></li>
+<li><p>&lsquo;a\b&rsquo; == &lsquo;a\b&rsquo;</p></li>
+<li><p>money = &ldquo;\u{20AC 20 A3 20 A5}&rdquo; # => &ldquo;€ £ ¥&rdquo;</p></li>
+<li><p>Run system command</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>`ls`
+</span><span class='line'>%x[ls]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>?A  # Character literal for the  ASCII character A
+/&ldquo;  # Character literal for the  ASCII character &rdquo;
+/?  # Character literal for the  ASCII character ?</p>
+
+<h1>not need any more</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = 0;
+</span><span class='line'>"#{a=a+1} " * 3   # returns "1 1 1", not "1 2 3"</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "hello"
+</span><span class='line'>s[index, length]
+</span><span class='line'>s[0, 2] # "he"
+</span><span class='line'>s[start_index..end_index]   # include end_index
+</span><span class='line'>s[start_index...end_index]  # not include end_index
+</span><span class='line'>s[/[aeiou]/] = '*'          # replace first vowel with an asterisk</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "¥1000"
+</span><span class='line'>s.each_char { |x| print "#{x} " } # Prints "¥ 1 0 0 0". Ruby 1.9
+</span><span class='line'>0.upto(s.size-1) { |i| print "#{s[i]} " }  # Inefficient with multibyte chars</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>words = %w[this is a test]  # Same as ['this', 'is', 'a', 'test']</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = [1, 1, 2, 2, 3, 3, 4]
+</span><span class='line'>b = [5, 5, 4, 4, 3, 3, 2]
+</span><span class='line'>a | b  # [1, 2, 3, 4, 5]: duplicates are removed
+</span><span class='line'>b | a  # [5, 4, 3, 2, 1]: elements are the same, but order is different
+</span><span class='line'>a & b  # [2, 3, 4]
+</span><span class='line'>b & a  # [4, 3, 2]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>equality</p></li>
+<li><p><code>equal?</code> method is defined by Object to test whether two values refer to exactly the same object</p></li>
+<li><p><code>==</code> in Object is just alias to equal? but most class redefine it</p></li>
+<li><p><code>!=</code> simple use <code>==</code> and inverts the result</p></li>
+<li><p><code>eql?</code> strict version of <code>==</code></p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 == 1.0    # true: Fixnum and Float objects can be ==
+</span><span class='line'>1.eql?(1.0) # false: but they are never eql!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>===</code> most use in case statement and:
+
+<ul>
+<li>Many classes, is the same as ==</li>
+<li>Range to test whether a value falls within the range</li>
+<li>Regexp to test whether a string matches the regular expression</li>
+<li>Class to test whether an object is an instance of that class</li>
+<li>In Ruby 1.9 Symbol to return true if the righthand operand is the same symbol as the left or if it is a string holding the same text</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(1..10) === 5  # true: 5 is in the range 1..10
+</span><span class='line'>/\d+/ === "123" # true: the string matches the regular expression
+</span><span class='line'>String === "s"  # true: "s" is an instance of the class String
+</span><span class='line'>:s === "s"      # true in Ruby 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><code>=~</code> pattern match(like Regexp)</p></li>
+<li><p><code>&lt;=&gt;</code></p>
+
+<ul>
+<li>Return -1 if its left operand is less than its right operand</li>
+<li>Return 0 if the two operands are equal</li>
+<li>Return 1 if the left operand is greater than the right operand</li>
+<li>Return nil if can not meaningfull compared</li>
+</ul>
+</li>
+<li><p>explicit</p></li>
+<li><p>to_s:
+return a human-readable representation of the object, suitable for end users</p></li>
+<li>inspect:
+is intended for debugging use, and should return a representation that is helpful to Ruby developers</li>
+<li><p>default inspect method, inherited from Object, simple calls to_s</p></li>
+<li><p>implicit</p></li>
+<li>invocation</li>
+<li>abbreviated</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># splat (*)
+</span><span class='line'>x, y = 1, *[2, 3] # Same as x, y, z = 1, 2, 3
+</span><span class='line'>x, *y = 1, 2, 3   # x = 1; y = [2, 3]
+</span><span class='line'>x, *y = 1, 2      # x = 1; y = [2]
+</span><span class='line'>x, *y = 1         # x = 1; y = []</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Ruby 1.9 only
+</span><span class='line'>*x, y = 1, 2, 3   # x = [1, 2]; y = 3
+</span><span class='line'>*x, y = 1, 2      # x=[1]; y = 2
+</span><span class='line'>*x, y = 1         # x = []; y = 1
+</span><span class='line'>
+</span><span class='line'>x, y *z = 1, *[2, 3, 4] # x = 1;y = 2; z=[3,4]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>&amp;&amp;</code> has higher precedence that <code>||</code></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 || 2 && nil  # =&gt; 1</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>and, or and not operators are low-precedence versions of &amp;&amp;, ||, and !
+they have lower precedence that the assignment operator</p></li>
+<li><p>and and or have the same precedence and not is just slightly higher</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>x || y && nil   # && is performed first   =&gt; x
+</span><span class='line'>x or y and nil  # evaluated left-to-right =&gt; nil</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>?:</code> operator is right-associative(same as **)</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a ? b : c ? d : e     # This expression ..
+</span><span class='line'>a ? b : (c ? d : e)   # is evaluated like this..
+</span><span class='line'>(a ? b : c) ? d : e   # NOT like this</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The loop variable or variables of a for loop are not local to the loop; they remain defined even after the loop exit. Similarly, new variables defined within the body of the loop continue to exist after the loop exits.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>squares = [1,2,3].collect {|x| x*x}   # =&gt; [1,4,9]
+</span><span class='line'>evens = (1..10).select {|x| x%2 == 0} # =&gt; [2,4,6,8,10]
+</span><span class='line'>odds = (1..10).reject {|x| x%2 == 0}  # =&gt; [1,3,5,7,9]</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>data = [2, 5, 3, 4]
+</span><span class='line'>sum = data.inject { |sum, x| sum + x }     # =&gt; 14    (1+5+3+4)
+</span><span class='line'>floatprod = data.inject(1.0) { |p,x| p*x } # =&gt; 120.0 (1.0*2*5*3*4)
+</span><span class='line'>max = data.inject { |m, x| m&gt;x ? m : x }   # =&gt; 5</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>implicit</li>
+<li><p>fundamental</p></li>
+<li><p>use return in a block will cause the method that use yield to call the block exit</p></li>
+<li><p>return value in block should use next</p></li>
+<li><p>blocks defined a new variable scope: variables created within a block exist only within that block and are undefined outside of the block</p></li>
+<li><p>the local variables in a method are available to any blocks within that method. so if a block assigns a value to a variable that is already defined outside of the block, this does not create a new block-local variable but instead assigns a new value to the already-existing variable.</p></li>
+<li><p>invocation</p></li>
+<li><p>an important difference between block parameters and method parameters is that block parameters are not allowed to have default values assigned as method parameters are.(seems not any more)</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[1,2,3].each {|x,y=10| print x*y }  # SyntaxError!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>intuitive</p></li>
+<li><p>return always causes the enclosing method to return. the enclosing method, also called the lexically enclosing method, is the method that the block appears inside of when you look at the source code</p></li>
+<li><p>note that unlike return, break never causes the lexically enclosing method to return. break can only appear within a lexically enclosing loop or within a block. using it in any other context causes a LocalJumpError</p></li>
+<li><p>manipulate</p></li>
+<li>represent</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[日期时间选择插件使用]]></title>
+    <link href="http://williamherry.github.com/blog/2013/07/21/datetimepicker-demo/"/>
+    <updated>2013-07-21T23:22:00+08:00</updated>
+    <id>http://williamherry.github.com/blog/2013/07/21/datetimepicker-demo</id>
+    <content type="html"><![CDATA[<p>以前做过这样的东西,花了好多时间,因为要选择到底用那个插件,还有好多插件要只有日期没有时间,今天做这样的东西又花了不少时间,决定记录下来,下一次就简单多了</p>
+
+<p>我使用的是<code>jQuery</code>的<code>datepicker</code>加上<a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a></p>
+
+<p>示例代码在这里: <a href="https://github.com/williamherry/datetimepicker-demo">datetimepicker-demo</a>,懒得看详细的步骤可以直接看代码</p>
+
+<p>效果类似这样:</p>
+
+<p><img src="http://williamherry.github.com/images/datetimepicker.png"></p>
+
+<ul>
+<li>首先创建项目</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new datetimepicker-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>然后我创建了一个叫activity的scaffold,插件会用到start_at这个字段上</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g scaffold activity title content:text start_at:datetime
+</span><span class='line'>rake db:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>下来我们要把需要的插件加进来,jquery-ui我用一个非常方便的gem: <a href="https://github.com/joliss/jquery-ui-rails">jquery-ui-rails</a>, 只要加到<code>Gemfile</code>里<code>gem jquery-ui-rails</code>,运行<code>bunder</code>就行了</p></li>
+<li><p><a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a>我是自己下载下来把需要的文件复制到项目的vender目录下,需要用到三个文件:<code>jquery-ui-timepicker-addon.js</code>, <code>jquery-ui-timepicker-addon.css</code>和<code>i18n</code>目录下的<code>jquery-ui-timepicker-zh-CN.js</code>, js文件复制到<code>vendor/assets/javascripts/</code>, css文件复制到<code>vendor/assets/stylesheets/</code></p></li>
+<li><p>需要的文件都加进来了,下面我们需要在include他们</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span>app/assets/javascripts/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery.ui.datepicker
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery.ui.slider
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>addon
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>zh<span class="p">-</span>CN
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/application.css</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'> *<span class="p">=</span> require jquery.ui.datepicker
+</span><span class='line'> *<span class="p">=</span> require jquery.ui.slider
+</span><span class='line'> *<span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>addon
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>准备工作都做完了,下来就是使用了</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>app/views/activities/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>  <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;field&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> <span class="k">f</span>.label :start_at %<span class="p">&gt;&lt;</span><span class="k">br</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> <span class="k">f</span>.text_field :start_at<span class="p">,</span> :id <span class="p">=&gt;</span> <span class="s2">&quot;datetimepicker&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/assets/javascripts/activities.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>$ <span class="p">-&gt;</span>
+</span><span class='line'>  $<span class="p">(</span><span class="s2">&quot;#datetimepicker&quot;</span><span class="p">)</span>.datetimepicker
+</span><span class='line'>    stepMinute: <span class="m">5</span>
+</span><span class='line'>    dateFormat: <span class="s2">&quot;yy-mm-dd&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更多参数和例子可以看<a href="http://trentrichardson.com/examples/timepicker/#tp-options">这里</a></p>
+
+<p>这样就算完成了,但是虽然加了那个i18n的文件,月和周的显示还是英文, 这可以直接在js文件里加,也可以在<code>vendor/assets/javascripts/jquery-ui-timepicker-zh-CN.js</code>中加上这两行</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/activities.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>  monthNames: [<span class="s1">&#39;一月&#39;</span><span class="p">,</span> <span class="s1">&#39;二月&#39;</span><span class="p">,</span> <span class="s1">&#39;三月&#39;</span><span class="p">,</span> <span class="s1">&#39;四月&#39;</span><span class="p">,</span> <span class="s1">&#39;五月&#39;</span><span class="p">,</span> <span class="s1">&#39;六月&#39;</span><span class="p">,</span> <span class="s1">&#39;七月&#39;</span><span class="p">,</span> <span class="s1">&#39;八月&#39;</span><span class="p">,</span> <span class="s1">&#39;九月&#39;</span><span class="p">,</span> <span class="s1">&#39;十月&#39;</span><span class="p">,</span> <span class="s1">&#39;十一月&#39;</span><span class="p">,</span> <span class="s1">&#39;十二月&#39;</span>]<span class="p">,</span>
+</span><span class='line'>  dayNamesMin: [<span class="s1">&#39;周日&#39;</span><span class="p">,</span> <span class="s1">&#39;周一&#39;</span><span class="p">,</span> <span class="s1">&#39;周二&#39;</span><span class="p">,</span> <span class="s1">&#39;周三&#39;</span><span class="p">,</span> <span class="s1">&#39;周四&#39;</span><span class="p">,</span> <span class="s1">&#39;周五&#39;</span><span class="p">,</span> <span class="s1">&#39;周六&#39;</span>]<span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>资源:</h3>
+
+<ul>
+<li><a href="https://github.com/joliss/jquery-ui-rails">jquery-ui-rails</a></li>
+<li><a href="http://jqueryui.com/datepicker/">jquery datepicker</a></li>
+<li><a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery Timepicker Addon</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[只允许上海的用户注册]]></title>
@@ -134,6 +539,10 @@
 <p>这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题</p>
 
 <p>更多<code>preserveAspectRatio</code>的信息请看<a href="http://www.w3.org/TR/SVG/coords.html">这里</a></p>
+
+<h2>更新</h2>
+
+<p>StackOverflow上对<a href="http://stackoverflow.com/questions/17540298/image-inside-svg-width-and-height-not-working-as-expected/17545343">这个问题</a>已经有人回答了,让图片按给定的高和宽拉伸只要把<code>preserveAspectRatio</code>设置成<code>none</code>就可以了</p>
 ]]></content>
   </entry>
   
@@ -2589,900 +2998,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 <h2>CtrlP使用</h2>
 
 <p>使用就非常简单了,打开VIM,按<code>Ctrl</code> + <code>P</code>, 输入想要打开的文件名,或者文件名的一部分,或者路径,自己试试吧</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[VIM练级日记03-配对外挂Surround]]></title>
-    <link href="http://williamherry.github.com/blog/2012/07/21/master-vim-03-surround/"/>
-    <updated>2012-07-21T22:46:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/07/21/master-vim-03-surround</id>
-    <content type="html"><![CDATA[<p>写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): <code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>&lt;</code> <code>&gt;</code> <code>'</code> <code>"</code>，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.</p>
-
-<p>今天给大家介绍的这个外挂就是用来简化这些事情的,首先我们从安装开始说起</p>
-
-<h2>安装Surround</h2>
-
-<p>如果你已经知道怎么用Vundle管理VIM外挂,那么安装这个外挂非常简单(不知道Vundle? 请看<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>)</p>
-
-<p>在<a href="https://github.ocm">Github</a>上搜索打到surround这个外挂(我找到的是<a href="https://github.com/tpope/vim-surround">这个</a>)</p>
-
-<p>在<code>~/.vimrc</code>里添加一行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'tpope/vim-surround'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打开VIM运行<code>:BundleInstall</code>,安装完成下面会有提示</p>
-
-<p>重启VIM,现在你就可以使用了</p>
-
-<h2>使用Surround</h2>
-
-<p>可以先看一下Surround自带的帮助,在VIM中输入<code>:help surround</code>,我这里也简单的总结一下</p>
-
-<h3>添加surrounding</h3>
-
-<h4>给一个单词添加</h4>
-
-<p>使用命令<code>ysiw</code> + <code>surrounding</code>,例如下面的例子,想要给<code>William</code>这个单词两边添加一个单引号,只需要将水标称到这个单词中,然后输入<code>ysiw'</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      ysiw'           'William' Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>再多几个例子</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      ysiw"           "William" Herry
-</span><span class='line'>William Herry      ysiw*           *William* Herry
-</span><span class='line'>William Herry      ysiw)           (William) Herry
-</span><span class='line'>William Herry      ysiw(           ( William ) Herry
-</span><span class='line'>William Herry      ysiw&lt;html&gt;      &lt;html&gt;William&lt;/html&gt; Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你可能已经注意到了使用<code>(</code>和<code>)</code>的不同,<code>{}</code>和<code>[]</code>也是一样的,使用左边的会多出一空格</p>
-
-<p>还有就是它也支持HTML的Tag(如<code>&lt;html&gt;&lt;/html&gt;</code>, <code>&lt;body&gt;&lt;/body&gt;</code>这些</p>
-
-<h4>给一整行添加</h4>
-
-<p>使用<code>yss</code> + <code>surrounging</code>,请看例子</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      yss"            "William Herry"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其它的类似,请自己做实验验证</p>
-
-<h4>给选中的区域添加</h4>
-
-<p>使用Visual模式选中后按<code>S</code> + <code>surrounding</code>,例如光标在<code>a</code>上,我按<code>Ctrl</code> + <code>v</code>再按4下<code>l</code>选中<code>am He</code>后按<code>S%</code>,就会得到下面的结果</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      vllllS%         Willi%am He%rry"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>修改surrounding</h3>
-
-<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&hellip;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
-</span><span class='line'>"William" Herry       cs"'            'William' Herry
-</span><span class='line'>&lt;p&gt;William&lt;/p&gt; Herry  cst&lt;div&gt;        &lt;div&gt;William&lt;/div&gt; Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>删除surrounding</h3>
-
-<p>删除的时候也是分成两类的,使用<code>ds</code> + <code>surrounging</code>删除一般的surrounding,<code>dst</code>删除HTML的Tag</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
-</span><span class='line'>"william" herry       ds"'            william Herry
-</span><span class='line'>&lt;p&gt;william&lt;/p&gt; herry  dst             William Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>基本的使用就这些,一些高级的我自己还没搞清楚,比如加surrounding的时候自动缩进等等</p>
-
-<p>这里还有一个Youtube上的视频</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/5HF4jSyPpvs "></iframe></div>
-
-
-<h3>更新</h3>
-
-<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&hellip;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ci' ci" ci( ci[ ci{ ci&lt; - 更改这些配对标点符号中的内容
-</span><span class='line'>di' di" di( di[ di{ di&lt; - 删除这些配对标点符号中的内容
-</span><span class='line'>yi' yi" yi( yi[ yi{ yi&lt; - 复制这些配对标点符号中的内容
-</span><span class='line'>vi' vi" vi( vi[ vi{ vi&lt; - 选中这些配对标点符号中的内容</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果把上面的<code>i</code>改在<code>a</code>可以连配对标点一起操作</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Octopress - 像黑客一样写博客]]></title>
-    <link href="http://williamherry.github.com/blog/2012/07/20/octopress-setup/"/>
-    <updated>2012-07-20T11:14:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/07/20/octopress-setup</id>
-    <content type="html"><![CDATA[<p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
-
-<p>这篇文档主要包括</p>
-
-<ul>
-<li>搭建Octopress</li>
-<li>将博客托管到Github上</li>
-<li>我对主题做的一些修改</li>
-</ul>
-
-
-<!-- more -->
-
-
-<h2>搭建Octopress</h2>
-
-<p>Octopress需要Git和Ruby 1.9.2,Git的安装比较简单,下面我们看一下Ruby1.9.2的安装(我的系统是Ubuntu12.04)</p>
-
-<h3>安装Ruby 1.9.2</h3>
-
-<p>可以有两种方法,RVM和rbenv,这里介绍rbenv的方法,因为RVM我没有成功(实际上安装Ruby1.9.2我花了好多时间)</p>
-
-<h4>首先安装rbenv</h4>
-
-<p>下载rbenv</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd
-</span><span class='line'>git clone git://github.com/sstephenson/rbenv.git .rbenv</span></code></pre></td></tr></table></div></figure>
-
-
-<p>将<code>～/.rbenv/bin</code>加到你的<code>$PATH</code>变量里以使你可以使用<code>rbenv</code>这个命令</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'export PATH="$HOME/.rbenv/bin:$PATH"' &gt;&gt; ~/.bash_profile
-</span><span class='line'>source ~/.bash_profile</span></code></pre></td></tr></table></div></figure>
-
-
-<p>添加rbenv init到你的shell以启用shims(什么东西我也不清楚)和自动补全功能</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'eval "$(rbenv init -)"' &gt;&gt; ~/.bash_profile</span></code></pre></td></tr></table></div></figure>
-
-
-<p>启动shell让<code>$PATH</code>的修改生效,现在可以使用rbenv了</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>exec $SHELL</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>安装Ruby 1.9.2</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rbenv install 1.9.2-p290
-</span><span class='line'>rbenv rehash</span></code></pre></td></tr></table></div></figure>
-
-
-<p>确实Ruby 1.9.2已经正确安装(如果没有最好不要继续进行)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ruby --version  # Should report Ruby 1.9.2</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>搭建Octopress</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git://github.com/imathis/octopress.git octopress
-</span><span class='line'>cd octopress    # If you use RVM, You'll be asked if you trust the .rvmrc file (say yes).
-</span><span class='line'>ruby --version  # Should report Ruby 1.9.2</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装依赖</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem install bundler
-</span><span class='line'>rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-</span><span class='line'>bundle install</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装默认Octopress主题</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake install</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Octopress的本地搭建工作已经完成,现在可以做一些简单的测试了</p>
-
-<p>创建一篇博文</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake new_post["first post"]</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会在<code>source/_posts</code>目录下创建一个以markdown为后缀的文件,打开编辑后保存(markdown语法请看<a href="http://equation85.github.com/blog/markdown-examples/">这里</a>)</p>
-
-<p>生成html文件</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake generate</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通过下面的命令就可以在本地预览一下效果了</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake preview</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在访问<a href="http://localhost:4000">http://localhost:4000</a>就可以看到新创建的页面了,是不是很漂亮:)</p>
-
-<h3>将博客部署到Github上去</h3>
-
-<p>主要参考的<a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">这篇博文</a></p>
-
-<p>Octopress可以托管到<a href="https://github.com">Github</a>,<a href="http://heroku.com">Heroku</a>或者自己有主机通过rsync部署到上面,rsync的方式我没有试过(我没有主机),我只试过Github和Heroku,个人感觉Heroku更好一点,添加自己的域名要比Github方便,但非常蛋疼的一点是Heroku好像被我们亲爱的祖国墙到了外面,所以只能用Github了</p>
-
-<p>要将Octopress托管到Github上需要在Github上有一个帐号,并且创建了个类似username.github.com的仓库(例如我的帐号名为<code>williamherry</code>,那么我就要创建一个名为<code>williamherry.github.com</code>的仓库),如果还没有点<a href="https://github.com/new">这里</a>创建一个</p>
-
-<p>Octopress提供了一些方便的工具来帮你完成托管到Github上的工作,只要在博客目录里执行<br/>
-<code>rake setup_github_pages</code>,当提示你的时候输入你前面创建的仓库的Git Url, 例如我的为<br/>
-<code>git@github.com:williamherry/williamherry.github.com.git</code></p>
-
-<p>注意: 下面命令中的<code>williamherry</code>和<code>username</code>需要换成你自己的Github帐号名</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ rake setup_github_pages
-</span><span class='line'>Enter the read/write url for your repository: git@github.com:williamherry/williamherry.github.com.git
-</span><span class='line'> 
-</span><span class='line'>Added remote git@github.com:williamherry/williamherry.github.com.git as origin
-</span><span class='line'>Set origin as default remote
-</span><span class='line'>Master branch renamed to 'source' for committing your blog source files
-</span><span class='line'>Initialized empty Git repository in /home/williamherry/source/octopress/_deploy/.git/
-</span><span class='line'>[master (root-commit) 2a4e9e7] Octopress init
-</span><span class='line'>1 files changed, 1 insertions(+), 0 deletions(-)
-</span><span class='line'>create mode 100644 index.html
-</span><span class='line'> 
-</span><span class='line'>---
-</span><span class='line'>## Now you can deploy to http://williamherry.github.com with `rake deploy` ##</span></code></pre></td></tr></table></div></figure>
-
-
-<p>那么上面的命令具体做了那些工作呢? 它把我们克隆来的博客指向了我们新的仓库,它还创建了一个<code>_deploy</code>目录来包含所有被部署的文件的新仓库,这个目录所指向的远程仓库和我们的<code>octopress</code>目录是同一样,但Checked out的分支是<code>master</code>.顺便说一下,我们现在在<code>source</code>分支</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ git remote -v
-</span><span class='line'>octopress    git://github.com/imathis/octopress.git (fetch)
-</span><span class='line'>octopress    git://github.com/imathis/octopress.git (push)
-</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (fetch)
-</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (push)
-</span><span class='line'> 
-</span><span class='line'>octopress$ git branch
-</span><span class='line'>* source
-</span><span class='line'> 
-</span><span class='line'>octopress$ cd _deploy/
-</span><span class='line'>octopress/_deploy$ git remote -v
-</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (fetch)
-</span><span class='line'>origin    git@github.com:williamherry/williamherry.github.com.git (push)
-</span><span class='line'> 
-</span><span class='line'>octopress/_deploy$ git branch
-</span><span class='line'>* master
-</span><span class='line'> 
-</span><span class='line'>octopress/_deploy$ cd ..
-</span><span class='line'> 
-</span><span class='line'>octopress$</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在我们部署到github之前,可以保存<code>source</code>并且把它推到Github上去,注意我们将要推的是<code>source</code>分支</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ git add .
-</span><span class='line'> 
-</span><span class='line'>octopress$ git commit -m "Initial blog post."
-</span><span class='line'>...
-</span><span class='line'> 
-</span><span class='line'>octopress$ git push origin source
-</span><span class='line'>Counting objects: 3927, done.
-</span><span class='line'>Compressing objects: 100% (1412/1412), done.
-</span><span class='line'>Writing objects: 100% (3927/3927), 910.08 KiB, done.
-</span><span class='line'>Total 3927 (delta 2257), reused 3848 (delta 2203)
-</span><span class='line'>To git@github.com:williamherry/williamherry.github.com.git
-</span><span class='line'>* [new branch]      source -&gt; source</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为了保存你的博客,每次改变你都要执行上面的命令</p>
-
-<p>接下来我们部署博客,它所做的是把所有<code>_deploy</code>下的东西推到<code>master</code>分支上去</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>octopress$ rake deploy
-</span><span class='line'> 
-</span><span class='line'>## Pushing generated _deploy website
-</span><span class='line'>Counting objects: 84, done.
-</span><span class='line'>Compressing objects: 100% (74/74), done.
-</span><span class='line'>Writing objects: 100% (84/84), 180.40 KiB, done.
-</span><span class='line'>Total 84 (delta 2), reused 0 (delta 0)
-</span><span class='line'>To git@github.com:williamherry/williamherry.github.com.git
-</span><span class='line'>* [new branch]      master -&gt; master</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一旦Github生成页面(通常一到两分钟)后你访问<code>http://username.github.com</code>应该就能看到自己的博客了.并且在<a href="https://github.com/username/username.github.com%E4%BD%A0%E5%BA%94%E8%AF%A5%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E4%BF%9D%E5%AD%98%E7%94%9F%E6%88%90%E7%9A%84%E9%A1%B5%E9%9D%A2%E6%96%87%E4%BB%B6%E7%9A%84">https://github.com/username/username.github.com%E4%BD%A0%E5%BA%94%E8%AF%A5%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E4%BF%9D%E5%AD%98%E7%94%9F%E6%88%90%E7%9A%84%E9%A1%B5%E9%9D%A2%E6%96%87%E4%BB%B6%E7%9A%84</a><code>master</code>分支和保存源码的<code>source</code>分支</p>
-
-<p>每次想部署都需要执行上面的命令</p>
-
-<p>如果你有一台新的电脑,你需要做的步骤和上面大体相同,但不是从头开始</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git@github.com:username/username.github.com.git
-</span><span class='line'>$ cd username.github.com
-</span><span class='line'>username.github.com$ git checkout source
-</span><span class='line'>username.github.com$ mkdir _deploy
-</span><span class='line'>username.github.com$ cd _deploy
-</span><span class='line'>username.github.com/_deploy$ git init
-</span><span class='line'>username.github.com/_deploy$ git remote add origin git@github.com:username/username.github.com.git
-</span><span class='line'>username.github.com/_deploy$ git pull origin master
-</span><span class='line'>username.github.com/_deploy$ cd ..
-</span><span class='line'>username.github.com$</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>添加自己的域名</h3>
-
-<p>如果你有自己的域名,可以很方便的绑定到自己的博客上</p>
-
-<p>首先创建一个<code>CNAME</code>文件里面写上你的域名</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'your-domain.com' &gt;&gt; source/CNAME
-</span><span class='line'>git add .
-</span><span class='line'>git commit -m 'add my own domain name'
-</span><span class='line'>git push origin source
-</span><span class='line'>rake generate
-</span><span class='line'>rake deploy</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后更新你的域名指向</p>
-
-<p>如果你使用一个二级域名(如&#8217;blog.williamherry.com&#8217;),你只要加一个<code>CNAME</code>指向<code>username.github.com</code>,如果你使用一个顶级域名,你需要加一条<code>A</code>记录指向<code>207.97.227.245</code></p>
-
-<p>注意:域名的修改需要一定的时间,所以耐心点</p>
-
-<h2>我对主题的修改</h2>
-
-<p>我的主题的修改主要参考的是<a href="http://melandri.net/2012/02/14/octopress-theme-customization/">这篇博文</a> (基本全抄他的,感谢它做了这么漂亮的修改)</p>
-
-<p>此外还参考了<a href="http://octopress.org/docs/theme/template/">Octopress: Theming &amp; Customization</a></p>
-
-<h3>修改导航</h3>
-
-<p>默认只有<code>Blog</code>和<code>Archives</code>,我在前面加了一个<code>Home</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mv source/index.html source/blog/index.html
-</span><span class='line'>rake new_page[index.html]</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你可以修改<code>source/index.html</code>,它将在主面显示,注意,这不是<code>markdown</code>文件</p>
-
-<p>你需要更新你的Rakefile文件以确实当你更新Octopress时你新的博客索引被保留下来(重要)</p>
-
-<figure class='code'><figcaption><span>vim Rakefile </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>...
-</span><span class='line'>blog_index_dir = 'source/blog'
-</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
-
-
-<p>修改导航加上<code>Home</code>并更新<code>Blog</code>的url</p>
-
-<figure class='code'><figcaption><span>vim source/_includes/custom/navigation.html </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;main-navigation&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog&quot;</span><span class="nt">&gt;</span>Blog<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog/archives&quot;</span><span class="nt">&gt;</span>Archives<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>修改字体</h3>
-
-<p>从<a href="http://google.com/webfonts">Google Webfonts</a>选择自己喜欢的字体,我比较喜欢<code>Delius</code>这个字体,需要改两个文件</p>
-
-<figure class='code'><figcaption><span>vim sass/custom/_fonts.scss </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="nv">$sans</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
-</span><span class='line'><span class="nv">$serif</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">serif</span><span class="p">;</span>
-</span><span class='line'><span class="na">$heading-font-family</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
-</span><span class='line'><span class="na">$header-title-font-family</span><span class="o">:</span> <span class="s2">&quot;Delius&quot;</span><span class="o">,</span> <span class="no">cursive</span><span class="o">,</span> <span class="n">Helvetica</span><span class="o">,</span> <span class="n">Arial</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>vim sass/_includes/custom/head.html </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- this font looks great --&gt;</span>
-</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&#39;http://fonts.googleapis.com/css?family=Delius&#39;</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">type=</span><span class="s">&#39;text/css&#39;</span><span class="nt">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>修改CSS样式</h3>
-
-<p>这个基本是抄别人的,我只是加了<code>ul</code>以让列表稍微靠右</p>
-
-<figure class='code'><figcaption><span>vim sass/cuscom/_style.scss </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="k">@font-face</span> <span class="p">{</span>
-</span><span class='line'>  <span class="na">font-family</span><span class="o">:</span> <span class="s2">&quot;League&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">src</span><span class="o">:</span> <span class="sx">url(&#39;/font/LeagueGothic.otf&#39;)</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">a</span><span class="nd">:visited</span><span class="o">,</span> <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="nd">:hover</span> <span class="p">{</span> <span class="na">color</span><span class="o">:</span> <span class="mh">#1863A1</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- main layout ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nt">html</span> <span class="p">{</span> <span class="na">background</span><span class="o">:</span> <span class="mh">#262C33</span> <span class="sx">url(&quot;/images/line-tile.png&quot;)</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="p">{</span> <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="p">{</span> <span class="na">background-image</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="o">&gt;</span> <span class="nt">div</span> <span class="p">{</span> <span class="na">background-image</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- header ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">background</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">padding</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.6</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">1</span><span class="kt">em</span> <span class="mi">0</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">2</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">padding-left</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">text-shadow</span><span class="o">:</span> <span class="nf">rgba</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="mf">.8</span><span class="p">)</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h2</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.5</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">-1</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">padding-left</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="p">{</span>
-</span><span class='line'>  <span class="na">padding-top</span><span class="o">:</span> <span class="mf">.15</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">padding-bottom</span><span class="o">:</span> <span class="mf">.15</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="nt">a</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="nt">form</span> <span class="nc">.search</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">padding</span><span class="o">:</span> <span class="mf">.2</span><span class="kt">em</span> <span class="mf">.3</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- Content ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="p">{</span>
-</span><span class='line'>  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span><span class="o">,</span> <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span> <span class="nt">a</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">color</span><span class="o">:</span> <span class="mh">#555555</span> <span class="nv">!important</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">h1</span> <span class="p">{</span> <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.8</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">h1</span> <span class="nt">span</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">color</span><span class="o">:</span> <span class="mh">#E0841B</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">article</span> <span class="nt">h2</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">h3</span><span class="o">,</span> <span class="nt">article</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nc">.blog-index</span> <span class="nt">article</span> <span class="nt">h1</span> <span class="nt">a</span><span class="nd">:hover</span><span class="p">{</span> <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">article</span> <span class="nt">p</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nt">text-align</span><span class="nd">:justify</span><span class="o">;</span>
-</span><span class='line'>  <span class="nt">margin-bottom</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">/</span><span class="err">\</span><span class="o">*</span> <span class="nt">-----</span> <span class="nt">Sidebar</span> <span class="nt">-----</span> <span class="err">\</span><span class="o">*/</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span> <span class="nt">section</span> <span class="nt">h1</span> <span class="p">{</span> <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.1</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span> <span class="nt">a</span> <span class="p">{</span> <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nc">.toggle-sidebar</span><span class="p">{</span><span class="na">display</span><span class="o">:</span> <span class="no">none</span><span class="p">;}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">ul</span><span class="nn">#gh</span><span class="err">\</span><span class="nt">_repos</span> <span class="o">&gt;</span> <span class="nt">li</span> <span class="o">&gt;</span> <span class="nt">a</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">display</span><span class="o">:</span> <span class="no">block</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* make list looks better */</span>
-</span><span class='line'><span class="nt">ul</span> <span class="p">{</span>
-</span><span class='line'>  <span class="na">margin-left</span><span class="o">:</span><span class="mi">18</span><span class="kt">px</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">aside</span><span class="nc">.sidebar</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">-moz-border-radius-topright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- Footer ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">border-radius</span><span class="o">:</span><span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- 404 ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nc">.notfound404</span> <span class="nt">article</span><span class="p">{</span>
-</span><span class='line'>  <span class="na">margin-left</span><span class="o">:</span> <span class="mi">0</span> <span class="nv">!important</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* ----- Media queries ----- */</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@media</span> <span class="nt">only</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">min-width</span><span class="nd">:</span> <span class="nt">550px</span><span class="o">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h1</span><span class="p">{</span>
-</span><span class='line'>      <span class="na">background</span><span class="o">:</span> <span class="sx">url(&quot;/favicon.png&quot;)</span> <span class="no">no-repeat</span> <span class="mi">0</span> <span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">padding-left</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">header</span> <span class="nt">h2</span> <span class="p">{</span> <span class="na">padding-left</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span> <span class="p">{</span> <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">3</span><span class="kt">em</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@media</span> <span class="nt">only</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">min-width</span><span class="nd">:</span> <span class="nt">1040px</span><span class="o">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">nav</span> <span class="p">{</span>
-</span><span class='line'>    <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>    <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>    <span class="na">border-radius</span><span class="o">:</span><span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>    <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">2</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">body</span> <span class="o">&gt;</span> <span class="nt">footer</span><span class="p">{</span>
-</span><span class='line'>      <span class="na">-moz-border-radius-bottomleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-moz-border-radius-bottomright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nn">#main</span><span class="p">{</span>
-</span><span class='line'>      <span class="na">-moz-border-radius-topleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-moz-border-radius-topright</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nn">#content</span><span class="p">{</span>
-</span><span class='line'>      <span class="na">-moz-border-radius-topleft</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">0</span><span class="mf">.4</span><span class="kt">em</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nn">#content</span> <span class="nc">.blog-index</span> <span class="nt">a</span><span class="o">[</span><span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;full-article&quot;</span><span class="o">]</span><span class="p">{</span>
-</span><span class='line'>      <span class="na">-webkit-border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">-moz-border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>      <span class="na">border-radius</span><span class="o">:</span> <span class="mi">6</span><span class="kt">px</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

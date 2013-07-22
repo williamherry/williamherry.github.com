@@ -9,7 +9,10 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="刚开始听到老板说这个需求的时候,我还傻呼呼一直在想要怎么得到所有上海的IP地址,都打算试着写爬虫去爬这些数据,事实上我只要判断一个客户端的IP是不是属于上海就行了,而这个动作可以由一些第三方提供的API来做,像百度就有提供这个的服务 转过弯来就比较简单了,我的方法在app/controller/ &hellip;">
+  <meta name="description" content="Global variables are prefixed with $
+Instance variables are prefixed with @
+Class variables are prefixed with @@
+Constant begin with a capital &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +72,469 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-22T11:14:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2013</time>
+        
+         | <a href="/blog/2013/07/22/the-ruby-programming-language-notes/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>Global variables are prefixed with $</li>
+<li>Instance variables are prefixed with @</li>
+<li>Class variables are prefixed with @@</li>
+<li>Constant begin with a capital letter</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/[Rr]uby/   # Matches "Ruby" or "ruby"
+</span><span class='line'>/\d{5}/     # Matches 5 consecutive digits
+</span><span class='line'>1..3        # All x where 1 &lt;= x &lt;= 3 # has equal both side
+</span><span class='line'>1...3       # All x where 1 &lt;= x &lt; 3</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Ruby case statement matches its expression against each of the possible cases using <code>===</code></p></li>
+<li><p>Ruby&rsquo;s strings are mutable, call freeze method to prevent any future modifications</p></li>
+<li><p>In Ruby world, only nil and false are false, anything else are true</p></li>
+<li><p><code>print</code> is almost same with <code>puts</code>, except it does not append a newline</p></li>
+<li><p><code>p</code> almost same with <code>puts</code>, except it use <code>inspect</code> rather than <code>to_s</code></p></li>
+<li><p>lexical</p></li>
+<li>punctuation</li>
+<li>syntactic</li>
+<li><p>arithmetic</p></li>
+<li><p>All numeric objects are immutable</p></li>
+<li><p>Integer division by zero causes a ZeroDivisionError to be thrown.</p></li>
+<li>Floating-point division by zero does not cause an error; it simple returns the value Infinity</li>
+<li><p>0.0/0.0 => NaN</p></li>
+<li><p><code>4**3**2</code> is same as <code>4**9</code> not <code>64**2</code></p></li>
+<li><p>even = (x[0] == 0)  # A number is even if the least-significat bit is 0</p></li>
+<li><p>&lsquo;a\b&rsquo; == &lsquo;a\b&rsquo;</p></li>
+<li><p>money = &ldquo;\u{20AC 20 A3 20 A5}&rdquo; # => &ldquo;€ £ ¥&rdquo;</p></li>
+<li><p>Run system command</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>`ls`
+</span><span class='line'>%x[ls]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>?A  # Character literal for the  ASCII character A
+/&ldquo;  # Character literal for the  ASCII character &rdquo;
+/?  # Character literal for the  ASCII character ?</p>
+
+<h1>not need any more</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = 0;
+</span><span class='line'>"#{a=a+1} " * 3   # returns "1 1 1", not "1 2 3"</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "hello"
+</span><span class='line'>s[index, length]
+</span><span class='line'>s[0, 2] # "he"
+</span><span class='line'>s[start_index..end_index]   # include end_index
+</span><span class='line'>s[start_index...end_index]  # not include end_index
+</span><span class='line'>s[/[aeiou]/] = '*'          # replace first vowel with an asterisk</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "¥1000"
+</span><span class='line'>s.each_char { |x| print "#{x} " } # Prints "¥ 1 0 0 0". Ruby 1.9
+</span><span class='line'>0.upto(s.size-1) { |i| print "#{s[i]} " }  # Inefficient with multibyte chars</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>words = %w[this is a test]  # Same as ['this', 'is', 'a', 'test']</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = [1, 1, 2, 2, 3, 3, 4]
+</span><span class='line'>b = [5, 5, 4, 4, 3, 3, 2]
+</span><span class='line'>a | b  # [1, 2, 3, 4, 5]: duplicates are removed
+</span><span class='line'>b | a  # [5, 4, 3, 2, 1]: elements are the same, but order is different
+</span><span class='line'>a & b  # [2, 3, 4]
+</span><span class='line'>b & a  # [4, 3, 2]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>equality</p></li>
+<li><p><code>equal?</code> method is defined by Object to test whether two values refer to exactly the same object</p></li>
+<li><p><code>==</code> in Object is just alias to equal? but most class redefine it</p></li>
+<li><p><code>!=</code> simple use <code>==</code> and inverts the result</p></li>
+<li><p><code>eql?</code> strict version of <code>==</code></p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 == 1.0    # true: Fixnum and Float objects can be ==
+</span><span class='line'>1.eql?(1.0) # false: but they are never eql!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>===</code> most use in case statement and:
+
+<ul>
+<li>Many classes, is the same as ==</li>
+<li>Range to test whether a value falls within the range</li>
+<li>Regexp to test whether a string matches the regular expression</li>
+<li>Class to test whether an object is an instance of that class</li>
+<li>In Ruby 1.9 Symbol to return true if the righthand operand is the same symbol as the left or if it is a string holding the same text</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(1..10) === 5  # true: 5 is in the range 1..10
+</span><span class='line'>/\d+/ === "123" # true: the string matches the regular expression
+</span><span class='line'>String === "s"  # true: "s" is an instance of the class String
+</span><span class='line'>:s === "s"      # true in Ruby 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><code>=~</code> pattern match(like Regexp)</p></li>
+<li><p><code>&lt;=&gt;</code></p>
+
+<ul>
+<li>Return -1 if its left operand is less than its right operand</li>
+<li>Return 0 if the two operands are equal</li>
+<li>Return 1 if the left operand is greater than the right operand</li>
+<li>Return nil if can not meaningfull compared</li>
+</ul>
+</li>
+<li><p>explicit</p></li>
+<li><p>to_s:
+return a human-readable representation of the object, suitable for end users</p></li>
+<li>inspect:
+is intended for debugging use, and should return a representation that is helpful to Ruby developers</li>
+<li><p>default inspect method, inherited from Object, simple calls to_s</p></li>
+<li><p>implicit</p></li>
+<li>invocation</li>
+<li>abbreviated</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># splat (*)
+</span><span class='line'>x, y = 1, *[2, 3] # Same as x, y, z = 1, 2, 3
+</span><span class='line'>x, *y = 1, 2, 3   # x = 1; y = [2, 3]
+</span><span class='line'>x, *y = 1, 2      # x = 1; y = [2]
+</span><span class='line'>x, *y = 1         # x = 1; y = []</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Ruby 1.9 only
+</span><span class='line'>*x, y = 1, 2, 3   # x = [1, 2]; y = 3
+</span><span class='line'>*x, y = 1, 2      # x=[1]; y = 2
+</span><span class='line'>*x, y = 1         # x = []; y = 1
+</span><span class='line'>
+</span><span class='line'>x, y *z = 1, *[2, 3, 4] # x = 1;y = 2; z=[3,4]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>&amp;&amp;</code> has higher precedence that <code>||</code></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 || 2 && nil  # =&gt; 1</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>and, or and not operators are low-precedence versions of &amp;&amp;, ||, and !
+they have lower precedence that the assignment operator</p></li>
+<li><p>and and or have the same precedence and not is just slightly higher</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>x || y && nil   # && is performed first   =&gt; x
+</span><span class='line'>x or y and nil  # evaluated left-to-right =&gt; nil</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>?:</code> operator is right-associative(same as **)</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a ? b : c ? d : e     # This expression ..
+</span><span class='line'>a ? b : (c ? d : e)   # is evaluated like this..
+</span><span class='line'>(a ? b : c) ? d : e   # NOT like this</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The loop variable or variables of a for loop are not local to the loop; they remain defined even after the loop exit. Similarly, new variables defined within the body of the loop continue to exist after the loop exits.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>squares = [1,2,3].collect {|x| x*x}   # =&gt; [1,4,9]
+</span><span class='line'>evens = (1..10).select {|x| x%2 == 0} # =&gt; [2,4,6,8,10]
+</span><span class='line'>odds = (1..10).reject {|x| x%2 == 0}  # =&gt; [1,3,5,7,9]</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>data = [2, 5, 3, 4]
+</span><span class='line'>sum = data.inject { |sum, x| sum + x }     # =&gt; 14    (1+5+3+4)
+</span><span class='line'>floatprod = data.inject(1.0) { |p,x| p*x } # =&gt; 120.0 (1.0*2*5*3*4)
+</span><span class='line'>max = data.inject { |m, x| m&gt;x ? m : x }   # =&gt; 5</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>implicit</li>
+<li><p>fundamental</p></li>
+<li><p>use return in a block will cause the method that use yield to call the block exit</p></li>
+<li><p>return value in block should use next</p></li>
+<li><p>blocks defined a new variable scope: variables created within a block exist only within that block and are undefined outside of the block</p></li>
+<li><p>the local variables in a method are available to any blocks within that method. so if a block assigns a value to a variable that is already defined outside of the block, this does not create a new block-local variable but instead assigns a new value to the already-existing variable.</p></li>
+<li><p>invocation</p></li>
+<li><p>an important difference between block parameters and method parameters is that block parameters are not allowed to have default values assigned as method parameters are.(seems not any more)</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[1,2,3].each {|x,y=10| print x*y }  # SyntaxError!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>intuitive</p></li>
+<li><p>return always causes the enclosing method to return. the enclosing method, also called the lexically enclosing method, is the method that the block appears inside of when you look at the source code</p></li>
+<li><p>note that unlike return, break never causes the lexically enclosing method to return. break can only appear within a lexically enclosing loop or within a block. using it in any other context causes a LocalJumpError</p></li>
+<li><p>manipulate</p></li>
+<li>represent</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-21T23:22:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2013</time>
+        
+         | <a href="/blog/2013/07/21/datetimepicker-demo/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以前做过这样的东西,花了好多时间,因为要选择到底用那个插件,还有好多插件要只有日期没有时间,今天做这样的东西又花了不少时间,决定记录下来,下一次就简单多了</p>
+
+<p>我使用的是<code>jQuery</code>的<code>datepicker</code>加上<a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a></p>
+
+<p>示例代码在这里: <a href="https://github.com/williamherry/datetimepicker-demo">datetimepicker-demo</a>,懒得看详细的步骤可以直接看代码</p>
+
+<p>效果类似这样:</p>
+
+<p><img src="/images/datetimepicker.png"></p>
+
+<ul>
+<li>首先创建项目</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new datetimepicker-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>然后我创建了一个叫activity的scaffold,插件会用到start_at这个字段上</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g scaffold activity title content:text start_at:datetime
+</span><span class='line'>rake db:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>下来我们要把需要的插件加进来,jquery-ui我用一个非常方便的gem: <a href="https://github.com/joliss/jquery-ui-rails">jquery-ui-rails</a>, 只要加到<code>Gemfile</code>里<code>gem jquery-ui-rails</code>,运行<code>bunder</code>就行了</p></li>
+<li><p><a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a>我是自己下载下来把需要的文件复制到项目的vender目录下,需要用到三个文件:<code>jquery-ui-timepicker-addon.js</code>, <code>jquery-ui-timepicker-addon.css</code>和<code>i18n</code>目录下的<code>jquery-ui-timepicker-zh-CN.js</code>, js文件复制到<code>vendor/assets/javascripts/</code>, css文件复制到<code>vendor/assets/stylesheets/</code></p></li>
+<li><p>需要的文件都加进来了,下面我们需要在include他们</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span>app/assets/javascripts/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery.ui.datepicker
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery.ui.slider
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>addon
+</span><span class='line'><span class="sr">//</span><span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>zh<span class="p">-</span>CN
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/application.css</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'> *<span class="p">=</span> require jquery.ui.datepicker
+</span><span class='line'> *<span class="p">=</span> require jquery.ui.slider
+</span><span class='line'> *<span class="p">=</span> require jquery<span class="p">-</span>ui<span class="p">-</span>timepicker<span class="p">-</span>addon
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>准备工作都做完了,下来就是使用了</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>app/views/activities/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>  <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;field&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> <span class="k">f</span>.label :start_at %<span class="p">&gt;&lt;</span><span class="k">br</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> <span class="k">f</span>.text_field :start_at<span class="p">,</span> :id <span class="p">=&gt;</span> <span class="s2">&quot;datetimepicker&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/assets/javascripts/activities.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>$ <span class="p">-&gt;</span>
+</span><span class='line'>  $<span class="p">(</span><span class="s2">&quot;#datetimepicker&quot;</span><span class="p">)</span>.datetimepicker
+</span><span class='line'>    stepMinute: <span class="m">5</span>
+</span><span class='line'>    dateFormat: <span class="s2">&quot;yy-mm-dd&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更多参数和例子可以看<a href="http://trentrichardson.com/examples/timepicker/#tp-options">这里</a></p>
+
+<p>这样就算完成了,但是虽然加了那个i18n的文件,月和周的显示还是英文, 这可以直接在js文件里加,也可以在<code>vendor/assets/javascripts/jquery-ui-timepicker-zh-CN.js</code>中加上这两行</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/activities.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>  monthNames: [<span class="s1">&#39;一月&#39;</span><span class="p">,</span> <span class="s1">&#39;二月&#39;</span><span class="p">,</span> <span class="s1">&#39;三月&#39;</span><span class="p">,</span> <span class="s1">&#39;四月&#39;</span><span class="p">,</span> <span class="s1">&#39;五月&#39;</span><span class="p">,</span> <span class="s1">&#39;六月&#39;</span><span class="p">,</span> <span class="s1">&#39;七月&#39;</span><span class="p">,</span> <span class="s1">&#39;八月&#39;</span><span class="p">,</span> <span class="s1">&#39;九月&#39;</span><span class="p">,</span> <span class="s1">&#39;十月&#39;</span><span class="p">,</span> <span class="s1">&#39;十一月&#39;</span><span class="p">,</span> <span class="s1">&#39;十二月&#39;</span>]<span class="p">,</span>
+</span><span class='line'>  dayNamesMin: [<span class="s1">&#39;周日&#39;</span><span class="p">,</span> <span class="s1">&#39;周一&#39;</span><span class="p">,</span> <span class="s1">&#39;周二&#39;</span><span class="p">,</span> <span class="s1">&#39;周三&#39;</span><span class="p">,</span> <span class="s1">&#39;周四&#39;</span><span class="p">,</span> <span class="s1">&#39;周五&#39;</span><span class="p">,</span> <span class="s1">&#39;周六&#39;</span>]<span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>资源:</h3>
+
+<ul>
+<li><a href="https://github.com/joliss/jquery-ui-rails">jquery-ui-rails</a></li>
+<li><a href="http://jqueryui.com/datepicker/">jquery datepicker</a></li>
+<li><a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery Timepicker Addon</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -245,6 +711,10 @@
 <p>这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题</p>
 
 <p>更多<code>preserveAspectRatio</code>的信息请看<a href="http://www.w3.org/TR/SVG/coords.html">这里</a></p>
+
+<h2>更新</h2>
+
+<p>StackOverflow上对<a href="http://stackoverflow.com/questions/17540298/image-inside-svg-width-and-height-not-working-as-expected/17545343">这个问题</a>已经有人回答了,让图片按给定的高和宽拉伸只要把<code>preserveAspectRatio</code>设置成<code>none</code>就可以了</p>
 </div>
   
   
@@ -1293,283 +1763,6 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-10T20:40:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/10/learning-git-resources/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>收集一下学习Git过程中用过的比较好的资料</p>
-
-<h2>ProGit</h2>
-
-<p>首先是Github的Scott Chacon写的一本叫ProGit的书,已经有人翻译成中文了.可能大多数人学习Git就是从这本书开始的</p>
-
-<p>中文版不知道有没有的买,英文版在亚马逊上的售价是357.90人民币.不过好在它可以在线读全部的内容,也可以下载pdf或其它流行的版本</p>
-
-<p><a href="http://git-scm.com/book">英文版在线读地址</a></p>
-
-<p><a href="http://ishare.iask.sina.com.cn/f/15315980.html">中文版下载地址</a></p>
-
-<h2>Git权威指南</h2>
-
-<p>还有一本国人写的书Git权威指南,比ProGit要深入全面,个人感觉值得一读.好像不能下载pdf版</p>
-
-<p><a href="http://www.worldhello.net/gotgit/">Git权威指南</a></p>
-
-<h2>Tech Talk: Linus Torvalds on Git</h2>
-
-<p>Git的作者,Linux之父Linus在Google的演讲,在演讲中他说出了这样的霸气测露的话</p>
-
-<blockquote><p>You can disagree with me as much as you want, but during this talk, by definition, anybody who disagrees is stupid and ugly, so keep that in mind</p></blockquote>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/4XpnKHJAok8 "></iframe></div>
-
-
-<h2>Introduction to Git with Scott Chacon of GitHub</h2>
-
-<p>这是ProGit的作者的演讲视频,语速很快,演讲用到的资料做的非常赞</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ZDR433b0HJY "></iframe></div>
-
-
-<h2>Advanced Git: Graphs, Hashes, and Compression, Oh My!</h2>
-
-<p>这是GitHub的另一个员工做的演讲,里面讲了一些非常底层的东西</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ig5E8CcdM9g "></iframe></div>
-
-
-<h2>Git and Github</h2>
-
-<p>这又是Github的另一个工程师的演讲视频,他里面用到一个小脚本可以让执行命令的同时看到变量,让人印象深刻.我还给他发邮件要这个小东西</p>
-
-<p>由于嵌入vimeo然插件不工作了,点<a href="https://vimeo.com/49444883">这里</a>观看</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/09/chef-lwrp/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>概述</h2>
-
-<p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
-
-<p>如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">apt_repository</span> <span class="s2">&quot;zenoss&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">uri</span> <span class="s2">&quot;http://dev.zenoss.org/deb&quot;</span>
-</span><span class='line'>  <span class="n">components</span> <span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="s2">&quot;stable&quot;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:add</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)</p>
-
-<p>这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: <a href="http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29">Lightweight Resources and Providers</a></p>
-
-<p>在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s2">&quot;vim&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">version</span> <span class="s2">&quot;1.16.1-1&quot;</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:install</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.</p>
-
-<p>那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是<code>yum -y install vim</code>或<code>apt-get install vim</code>.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象</p>
-
-<h2>文件位置</h2>
-
-<p>轻量级(或叫自定义)Resources和Providers分区从cookbook的<code>resources</code>和<code>providers</code>目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为<code>default.rb</code>.在这种情况下Resources和Providers的名字仅是cookbook的名字</p>
-
-<h3>例子</h3>
-
-<p>Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
-</span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
-</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
-</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
-</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
-</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Resources</h2>
-
-<p>前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的</p>
-
-<h2>Providers</h2>
-
-<p>Providers就是支持Resources的,它可以通过实例变量<code>@new_resource</code>做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了</p>
-
-<p>下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递</p>
-
-<h2>简单的例子</h2>
-
-<p>这个例子我们简单的封装一个内容Resource类型<code>user</code>得到一个LWRP</p>
-
-<p>首先我们利用knife命令创建cookbook的目录结构</p>
-
-<pre><code>knife cookbook create users
-</code></pre>
-
-<p>然后我们直接在resources目录下创建我们的resource</p>
-
-<figure class='code'><figcaption><span>vim users/resources/manage.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">actions</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:remove</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">attribute</span> <span class="ss">:user_name</span><span class="p">,</span> <span class="ss">:kind_of</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到</p>
-
-<p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
-
-<figure class='code'><figcaption><span>vim users/providers/manage.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">action</span> <span class="ss">:remove</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">action</span> <span class="ss">:remove</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">action</span> <span class="ss">:create</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">action</span> <span class="ss">:create</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们定义了两个动作,使用内置的Resource类型<code>user</code>来创建用户,利用<code>new_resource</code>得到从recipes中传来的用户名,最后更新状态</p>
-
-<p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
-
-<figure class='code'><figcaption><span>vim users/recipes/test.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">users_maange</span> <span class="s2">&quot;william&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">user_name</span> <span class="s2">&quot;william&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在就可以测试我们写的LWRP了</p>
-
-<pre><code>knife cookbook upload users
-knife node run list add client1.chef.com 'recipe[users::test]'
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1583,6 +1776,14 @@ knife node run list add client1.chef.com 'recipe[users::test]'
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
@@ -1606,14 +1807,6 @@ knife node run list add client1.chef.com 'recipe[users::test]'
     
       <li class="post">
         <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
       </li>
     
   </ul>

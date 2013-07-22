@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The Ruby Programming Language Notes - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="Global variables are prefixed with $
+Instance variables are prefixed with @
+Class variables are prefixed with @@
+Constant begin with a capital &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">The Ruby Programming Language Notes</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-22T11:14:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li>Global variables are prefixed with $</li>
+<li>Instance variables are prefixed with @</li>
+<li>Class variables are prefixed with @@</li>
+<li>Constant begin with a capital letter</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/[Rr]uby/   # Matches "Ruby" or "ruby"
+</span><span class='line'>/\d{5}/     # Matches 5 consecutive digits
+</span><span class='line'>1..3        # All x where 1 &lt;= x &lt;= 3 # has equal both side
+</span><span class='line'>1...3       # All x where 1 &lt;= x &lt; 3</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Ruby case statement matches its expression against each of the possible cases using <code>===</code></p></li>
+<li><p>Ruby&rsquo;s strings are mutable, call freeze method to prevent any future modifications</p></li>
+<li><p>In Ruby world, only nil and false are false, anything else are true</p></li>
+<li><p><code>print</code> is almost same with <code>puts</code>, except it does not append a newline</p></li>
+<li><p><code>p</code> almost same with <code>puts</code>, except it use <code>inspect</code> rather than <code>to_s</code></p></li>
+<li><p>lexical</p></li>
+<li>punctuation</li>
+<li>syntactic</li>
+<li><p>arithmetic</p></li>
+<li><p>All numeric objects are immutable</p></li>
+<li><p>Integer division by zero causes a ZeroDivisionError to be thrown.</p></li>
+<li>Floating-point division by zero does not cause an error; it simple returns the value Infinity</li>
+<li><p>0.0/0.0 => NaN</p></li>
+<li><p><code>4**3**2</code> is same as <code>4**9</code> not <code>64**2</code></p></li>
+<li><p>even = (x[0] == 0)  # A number is even if the least-significat bit is 0</p></li>
+<li><p>&lsquo;a\b&rsquo; == &lsquo;a\b&rsquo;</p></li>
+<li><p>money = &ldquo;\u{20AC 20 A3 20 A5}&rdquo; # => &ldquo;€ £ ¥&rdquo;</p></li>
+<li><p>Run system command</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>`ls`
+</span><span class='line'>%x[ls]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>?A  # Character literal for the  ASCII character A
+/&ldquo;  # Character literal for the  ASCII character &rdquo;
+/?  # Character literal for the  ASCII character ?</p>
+
+<h1>not need any more</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = 0;
+</span><span class='line'>"#{a=a+1} " * 3   # returns "1 1 1", not "1 2 3"</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "hello"
+</span><span class='line'>s[index, length]
+</span><span class='line'>s[0, 2] # "he"
+</span><span class='line'>s[start_index..end_index]   # include end_index
+</span><span class='line'>s[start_index...end_index]  # not include end_index
+</span><span class='line'>s[/[aeiou]/] = '*'          # replace first vowel with an asterisk</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>s = "¥1000"
+</span><span class='line'>s.each_char { |x| print "#{x} " } # Prints "¥ 1 0 0 0". Ruby 1.9
+</span><span class='line'>0.upto(s.size-1) { |i| print "#{s[i]} " }  # Inefficient with multibyte chars</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>words = %w[this is a test]  # Same as ['this', 'is', 'a', 'test']</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a = [1, 1, 2, 2, 3, 3, 4]
+</span><span class='line'>b = [5, 5, 4, 4, 3, 3, 2]
+</span><span class='line'>a | b  # [1, 2, 3, 4, 5]: duplicates are removed
+</span><span class='line'>b | a  # [5, 4, 3, 2, 1]: elements are the same, but order is different
+</span><span class='line'>a & b  # [2, 3, 4]
+</span><span class='line'>b & a  # [4, 3, 2]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>equality</p></li>
+<li><p><code>equal?</code> method is defined by Object to test whether two values refer to exactly the same object</p></li>
+<li><p><code>==</code> in Object is just alias to equal? but most class redefine it</p></li>
+<li><p><code>!=</code> simple use <code>==</code> and inverts the result</p></li>
+<li><p><code>eql?</code> strict version of <code>==</code></p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 == 1.0    # true: Fixnum and Float objects can be ==
+</span><span class='line'>1.eql?(1.0) # false: but they are never eql!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>===</code> most use in case statement and:
+
+<ul>
+<li>Many classes, is the same as ==</li>
+<li>Range to test whether a value falls within the range</li>
+<li>Regexp to test whether a string matches the regular expression</li>
+<li>Class to test whether an object is an instance of that class</li>
+<li>In Ruby 1.9 Symbol to return true if the righthand operand is the same symbol as the left or if it is a string holding the same text</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(1..10) === 5  # true: 5 is in the range 1..10
+</span><span class='line'>/\d+/ === "123" # true: the string matches the regular expression
+</span><span class='line'>String === "s"  # true: "s" is an instance of the class String
+</span><span class='line'>:s === "s"      # true in Ruby 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p><code>=~</code> pattern match(like Regexp)</p></li>
+<li><p><code>&lt;=&gt;</code></p>
+
+<ul>
+<li>Return -1 if its left operand is less than its right operand</li>
+<li>Return 0 if the two operands are equal</li>
+<li>Return 1 if the left operand is greater than the right operand</li>
+<li>Return nil if can not meaningfull compared</li>
+</ul>
+</li>
+<li><p>explicit</p></li>
+<li><p>to_s:
+return a human-readable representation of the object, suitable for end users</p></li>
+<li>inspect:
+is intended for debugging use, and should return a representation that is helpful to Ruby developers</li>
+<li><p>default inspect method, inherited from Object, simple calls to_s</p></li>
+<li><p>implicit</p></li>
+<li>invocation</li>
+<li>abbreviated</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># splat (*)
+</span><span class='line'>x, y = 1, *[2, 3] # Same as x, y, z = 1, 2, 3
+</span><span class='line'>x, *y = 1, 2, 3   # x = 1; y = [2, 3]
+</span><span class='line'>x, *y = 1, 2      # x = 1; y = [2]
+</span><span class='line'>x, *y = 1         # x = 1; y = []</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Ruby 1.9 only
+</span><span class='line'>*x, y = 1, 2, 3   # x = [1, 2]; y = 3
+</span><span class='line'>*x, y = 1, 2      # x=[1]; y = 2
+</span><span class='line'>*x, y = 1         # x = []; y = 1
+</span><span class='line'>
+</span><span class='line'>x, y *z = 1, *[2, 3, 4] # x = 1;y = 2; z=[3,4]</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>&amp;&amp;</code> has higher precedence that <code>||</code></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1 || 2 && nil  # =&gt; 1</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>and, or and not operators are low-precedence versions of &amp;&amp;, ||, and !
+they have lower precedence that the assignment operator</p></li>
+<li><p>and and or have the same precedence and not is just slightly higher</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>x || y && nil   # && is performed first   =&gt; x
+</span><span class='line'>x or y and nil  # evaluated left-to-right =&gt; nil</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>?:</code> operator is right-associative(same as **)</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a ? b : c ? d : e     # This expression ..
+</span><span class='line'>a ? b : (c ? d : e)   # is evaluated like this..
+</span><span class='line'>(a ? b : c) ? d : e   # NOT like this</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The loop variable or variables of a for loop are not local to the loop; they remain defined even after the loop exit. Similarly, new variables defined within the body of the loop continue to exist after the loop exits.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>squares = [1,2,3].collect {|x| x*x}   # =&gt; [1,4,9]
+</span><span class='line'>evens = (1..10).select {|x| x%2 == 0} # =&gt; [2,4,6,8,10]
+</span><span class='line'>odds = (1..10).reject {|x| x%2 == 0}  # =&gt; [1,3,5,7,9]</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>data = [2, 5, 3, 4]
+</span><span class='line'>sum = data.inject { |sum, x| sum + x }     # =&gt; 14    (1+5+3+4)
+</span><span class='line'>floatprod = data.inject(1.0) { |p,x| p*x } # =&gt; 120.0 (1.0*2*5*3*4)
+</span><span class='line'>max = data.inject { |m, x| m&gt;x ? m : x }   # =&gt; 5</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>implicit</li>
+<li><p>fundamental</p></li>
+<li><p>use return in a block will cause the method that use yield to call the block exit</p></li>
+<li><p>return value in block should use next</p></li>
+<li><p>blocks defined a new variable scope: variables created within a block exist only within that block and are undefined outside of the block</p></li>
+<li><p>the local variables in a method are available to any blocks within that method. so if a block assigns a value to a variable that is already defined outside of the block, this does not create a new block-local variable but instead assigns a new value to the already-existing variable.</p></li>
+<li><p>invocation</p></li>
+<li><p>an important difference between block parameters and method parameters is that block parameters are not allowed to have default values assigned as method parameters are.(seems not any more)</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[1,2,3].each {|x,y=10| print x*y }  # SyntaxError!</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>intuitive</p></li>
+<li><p>return always causes the enclosing method to return. the enclosing method, also called the lexically enclosing method, is the method that the block appears inside of when you look at the source code</p></li>
+<li><p>note that unlike return, break never causes the lexically enclosing method to return. break can only appear within a lexically enclosing loop or within a block. using it in any other context causes a LocalJumpError</p></li>
+<li><p>manipulate</p></li>
+<li>represent</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-22T11:14:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/" data-via="williamherry" data-counturl="http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/21/datetimepicker-demo/" title="Previous Post: 日期时间选择插件使用">&laquo; 日期时间选择插件使用</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/09/image-grayscale-for-ie10/">IE10下图片灰度处理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/';
+        var disqus_url = 'http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

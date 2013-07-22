@@ -9,7 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法 安装 首先安装必要的软件 yum -y install git 添加用户 useradd --system --shell /bin/bash --create-home git 设置密码 passwd &hellip;">
+  <meta name="description" content="收集一下学习Git过程中用过的比较好的资料 ProGit 首先是Github的Scott Chacon写的一本叫ProGit的书,已经有人翻译成中文了.可能大多数人学习Git就是从这本书开始的 中文版不知道有没有的买,英文版在亚马逊上的售价是357.90人民币.不过好在它可以在线读全部的内容, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +69,283 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/10/learning-git-resources/">Git学习资料收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-10T20:40:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/10/learning-git-resources/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>收集一下学习Git过程中用过的比较好的资料</p>
+
+<h2>ProGit</h2>
+
+<p>首先是Github的Scott Chacon写的一本叫ProGit的书,已经有人翻译成中文了.可能大多数人学习Git就是从这本书开始的</p>
+
+<p>中文版不知道有没有的买,英文版在亚马逊上的售价是357.90人民币.不过好在它可以在线读全部的内容,也可以下载pdf或其它流行的版本</p>
+
+<p><a href="http://git-scm.com/book">英文版在线读地址</a></p>
+
+<p><a href="http://ishare.iask.sina.com.cn/f/15315980.html">中文版下载地址</a></p>
+
+<h2>Git权威指南</h2>
+
+<p>还有一本国人写的书Git权威指南,比ProGit要深入全面,个人感觉值得一读.好像不能下载pdf版</p>
+
+<p><a href="http://www.worldhello.net/gotgit/">Git权威指南</a></p>
+
+<h2>Tech Talk: Linus Torvalds on Git</h2>
+
+<p>Git的作者,Linux之父Linus在Google的演讲,在演讲中他说出了这样的霸气测露的话</p>
+
+<blockquote><p>You can disagree with me as much as you want, but during this talk, by definition, anybody who disagrees is stupid and ugly, so keep that in mind</p></blockquote>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/4XpnKHJAok8 "></iframe></div>
+
+
+<h2>Introduction to Git with Scott Chacon of GitHub</h2>
+
+<p>这是ProGit的作者的演讲视频,语速很快,演讲用到的资料做的非常赞</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ZDR433b0HJY "></iframe></div>
+
+
+<h2>Advanced Git: Graphs, Hashes, and Compression, Oh My!</h2>
+
+<p>这是GitHub的另一个员工做的演讲,里面讲了一些非常底层的东西</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/ig5E8CcdM9g "></iframe></div>
+
+
+<h2>Git and Github</h2>
+
+<p>这又是Github的另一个工程师的演讲视频,他里面用到一个小脚本可以让执行命令的同时看到变量,让人印象深刻.我还给他发邮件要这个小东西</p>
+
+<p>由于嵌入vimeo然插件不工作了,点<a href="https://vimeo.com/49444883">这里</a>观看</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/09/chef-lwrp/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>概述</h2>
+
+<p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
+
+<p>如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">apt_repository</span> <span class="s2">&quot;zenoss&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">uri</span> <span class="s2">&quot;http://dev.zenoss.org/deb&quot;</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="s2">&quot;stable&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:add</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)</p>
+
+<p>这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: <a href="http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29">Lightweight Resources and Providers</a></p>
+
+<p>在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s2">&quot;vim&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">version</span> <span class="s2">&quot;1.16.1-1&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:install</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.</p>
+
+<p>那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是<code>yum -y install vim</code>或<code>apt-get install vim</code>.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象</p>
+
+<h2>文件位置</h2>
+
+<p>轻量级(或叫自定义)Resources和Providers分区从cookbook的<code>resources</code>和<code>providers</code>目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为<code>default.rb</code>.在这种情况下Resources和Providers的名字仅是cookbook的名字</p>
+
+<h3>例子</h3>
+
+<p>Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Resources</h2>
+
+<p>前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的</p>
+
+<h2>Providers</h2>
+
+<p>Providers就是支持Resources的,它可以通过实例变量<code>@new_resource</code>做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了</p>
+
+<p>下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递</p>
+
+<h2>简单的例子</h2>
+
+<p>这个例子我们简单的封装一个内容Resource类型<code>user</code>得到一个LWRP</p>
+
+<p>首先我们利用knife命令创建cookbook的目录结构</p>
+
+<pre><code>knife cookbook create users
+</code></pre>
+
+<p>然后我们直接在resources目录下创建我们的resource</p>
+
+<figure class='code'><figcaption><span>vim users/resources/manage.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">actions</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:remove</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">attribute</span> <span class="ss">:user_name</span><span class="p">,</span> <span class="ss">:kind_of</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到</p>
+
+<p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
+
+<figure class='code'><figcaption><span>vim users/providers/manage.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">action</span> <span class="ss">:remove</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:remove</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">action</span> <span class="ss">:create</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作,使用内置的Resource类型<code>user</code>来创建用户,利用<code>new_resource</code>得到从recipes中传来的用户名,最后更新状态</p>
+
+<p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
+
+<figure class='code'><figcaption><span>vim users/recipes/test.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">users_maange</span> <span class="s2">&quot;william&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user_name</span> <span class="s2">&quot;william&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试我们写的LWRP了</p>
+
+<pre><code>knife cookbook upload users
+knife node run list add client1.chef.com 'recipe[users::test]'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1671,219 +1948,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/21/master-vim-03-surround/">VIM练级日记03-配对外挂Surround</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-21T22:46:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/21/master-vim-03-surround/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): <code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>&lt;</code> <code>&gt;</code> <code>'</code> <code>"</code>，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率.</p>
-
-<p>今天给大家介绍的这个外挂就是用来简化这些事情的,首先我们从安装开始说起</p>
-
-<h2>安装Surround</h2>
-
-<p>如果你已经知道怎么用Vundle管理VIM外挂,那么安装这个外挂非常简单(不知道Vundle? 请看<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>)</p>
-
-<p>在<a href="https://github.ocm">Github</a>上搜索打到surround这个外挂(我找到的是<a href="https://github.com/tpope/vim-surround">这个</a>)</p>
-
-<p>在<code>~/.vimrc</code>里添加一行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'tpope/vim-surround'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打开VIM运行<code>:BundleInstall</code>,安装完成下面会有提示</p>
-
-<p>重启VIM,现在你就可以使用了</p>
-
-<h2>使用Surround</h2>
-
-<p>可以先看一下Surround自带的帮助,在VIM中输入<code>:help surround</code>,我这里也简单的总结一下</p>
-
-<h3>添加surrounding</h3>
-
-<h4>给一个单词添加</h4>
-
-<p>使用命令<code>ysiw</code> + <code>surrounding</code>,例如下面的例子,想要给<code>William</code>这个单词两边添加一个单引号,只需要将水标称到这个单词中,然后输入<code>ysiw'</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      ysiw'           'William' Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>再多几个例子</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      ysiw"           "William" Herry
-</span><span class='line'>William Herry      ysiw*           *William* Herry
-</span><span class='line'>William Herry      ysiw)           (William) Herry
-</span><span class='line'>William Herry      ysiw(           ( William ) Herry
-</span><span class='line'>William Herry      ysiw&lt;html&gt;      &lt;html&gt;William&lt;/html&gt; Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你可能已经注意到了使用<code>(</code>和<code>)</code>的不同,<code>{}</code>和<code>[]</code>也是一样的,使用左边的会多出一空格</p>
-
-<p>还有就是它也支持HTML的Tag(如<code>&lt;html&gt;&lt;/html&gt;</code>, <code>&lt;body&gt;&lt;/body&gt;</code>这些</p>
-
-<h4>给一整行添加</h4>
-
-<p>使用<code>yss</code> + <code>surrounging</code>,请看例子</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      yss"            "William Herry"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其它的类似,请自己做实验验证</p>
-
-<h4>给选中的区域添加</h4>
-
-<p>使用Visual模式选中后按<code>S</code> + <code>surrounding</code>,例如光标在<code>a</code>上,我按<code>Ctrl</code> + <code>v</code>再按4下<code>l</code>选中<code>am He</code>后按<code>S%</code>,就会得到下面的结果</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text           Command         New text
-</span><span class='line'>William Herry      vllllS%         Willi%am He%rry"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>修改surrounding</h3>
-
-<p>修改的时候是把surrounding分成两类的,一类是像<code>'</code>,<code>"</code>&hellip;这样的,修改时使用命令<code>cs</code> + <code>现在的surrounding</code> + <code>要修改成的surrounding</code>,一类是HTML的Tag,如<code>&lt;div&gt;&lt;/div&gt;</code>这样的,修改时使用<code>cst</code> + <code>要修改成的Tag</code>.修改时水标需要移动到surrounding内</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
-</span><span class='line'>"William" Herry       cs"'            'William' Herry
-</span><span class='line'>&lt;p&gt;William&lt;/p&gt; Herry  cst&lt;div&gt;        &lt;div&gt;William&lt;/div&gt; Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>删除surrounding</h3>
-
-<p>删除的时候也是分成两类的,使用<code>ds</code> + <code>surrounging</code>删除一般的surrounding,<code>dst</code>删除HTML的Tag</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Old text              Command         New text
-</span><span class='line'>"william" herry       ds"'            william Herry
-</span><span class='line'>&lt;p&gt;william&lt;/p&gt; herry  dst             William Herry</span></code></pre></td></tr></table></div></figure>
-
-
-<p>基本的使用就这些,一些高级的我自己还没搞清楚,比如加surrounding的时候自动缩进等等</p>
-
-<p>这里还有一个Youtube上的视频</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/5HF4jSyPpvs "></iframe></div>
-
-
-<h3>更新</h3>
-
-<p>选中,更改,删除和复制引号(<code>'</code> <code>"</code> <code>{</code>&hellip;.)内的内容是VIM原生支持的,不需要什么外挂,记住下面的就够了</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ci' ci" ci( ci[ ci{ ci&lt; - 更改这些配对标点符号中的内容
-</span><span class='line'>di' di" di( di[ di{ di&lt; - 删除这些配对标点符号中的内容
-</span><span class='line'>yi' yi" yi( yi[ yi{ yi&lt; - 复制这些配对标点符号中的内容
-</span><span class='line'>vi' vi" vi( vi[ vi{ vi&lt; - 选中这些配对标点符号中的内容</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果把上面的<code>i</code>改在<code>a</code>可以连配对标点一起操作</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/20/octopress-setup/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
-
-<p>这篇文档主要包括</p>
-
-<ul>
-<li>搭建Octopress</li>
-<li>将博客托管到Github上</li>
-<li>我对主题做的一些修改</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/20/octopress-setup/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1899,6 +1963,14 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
@@ -1922,14 +1994,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     
       <li class="post">
         <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a>
       </li>
     
   </ul>
