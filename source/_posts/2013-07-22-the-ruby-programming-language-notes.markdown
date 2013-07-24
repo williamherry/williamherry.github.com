@@ -416,3 +416,54 @@ l.call(*[1,2])  # Works: explicit splat to unpack the array
 - When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.
 
 - One important difference between Method objects and Proc objects is that Method objects are not closures.
+
+- encapsulated
+
+- In addition to being automatically invoked by Point.new, the initialize method is automatically made private. An object can call initialize on itself, but you cannot explicitly call initialize on p to reinitialize its state.
+
+- coerce
+
+```
+Point::NEGATIVE_UNIT_X = Point.new(-1,0)
+```
+
+- Class Instance Variables
+  - An instance variable used inside a class definition but outside an instance method definition
+  - Class instance variables cannot be used from instance methods
+
+- Define Class
+
+```
+class Point
+  ...
+  def Point.sum(*points)
+  ...
+  end
+end
+```
+
+```
+class Point
+  ...
+  def self.sum(*points)
+    ...
+  end
+end
+```
+
+```
+class << Point
+  def sum(*points)
+    ...
+  end
+end
+```
+
+```
+class Point
+  class << self
+    ...
+  end
+end
+```
+
