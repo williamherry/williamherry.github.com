@@ -467,3 +467,76 @@ class Point
 end
 ```
 
+
+- Method are normally public unless they are explicitly declared to be private or protected. One exception if the initialize method, which is always implicityly private.
+
+- Another exception is any "global" method declared outside of a class definition -- those methods are defined as private instance methods of Object.
+
+- A public method can be invoked from anywhere -- where are no restrictions on its use.
+
+- A private method is internal to the implementation of a class, and it can only be called by other instance methods of the class (or, as we'll see later, its subclasses).
+
+- Private methods are implicitly invoked on self, and may not be explicitly invoked on an object.
+
+- If m is a private method, then you must invoke it in functional style as m. You cannot write o.m or even self.m
+
+- A protected method is like a private method in that it can only be invoked from within the implementation of a class or its subclasses. It differs from a private method in that it may be explicit invocatioin on self.
+
+- A protected method can be used, for example, to define an accessor that allows instances of a class to share internal state with each other, but does not allow users of the class to access that state.
+
+- Protected methods are the least commonly defined and also the most difficult to understand. The rule about when a protected method can be invoked can be more formally described as follows: a protected method defined by a class C may be invoked on an object o by a method in the object p if and only if the classes of o and p are both subclasses of, or equal to, the class C.
+
+- One of the important things to understand about object-oriented programming and subclassing is that when methods are invoked, they are looked up dynamically so that the appropriate definition or redefinition of the method is found. That is, method invocations are not bound statically at the time they are parsed, but rather, are looked up at the time they are executed.
+
+- If you use super as a bare keyword -- with no arguments and no parentheses -- then all of the arguments that were passwd to the current method are passed to the superclass method.
+
+- Ruby's instance variables are not inherited and have nothing to do with the inheritance mechanism. The reason that they sometimes appear to be inherited is that instance variables are created by the methods that first assign values to them, and those methods are often inherited or chainned.
+
+```
+class Point3D < Point
+  def initialize(x,y,z)
+    super(x,y)
+    @z = z;
+  end
+
+  def to_s
+    "(#@x, #@y, #@z)"
+  end
+end
+```
+
+- In this code, Point3D defines an initialize method that chains tothe initialize method of its superclas.. The chained method assigns values to the variables @x and @y, which makes those variables come into existence for a particular instance of Point3D
+
+- Class variables are inherited
+
+```
+class A
+  @@value = 1
+  def A.vaue; @@value; end
+end
+print A.value
+class B < A; @@value = 2; end
+print A.value
+class C < A; @@value = 3; end
+print B.value
+```
+
+- The important difference between constants and methods is that constants are looked up in the lexical scope of the place they are used before they are looked up in the inheritance hierarchy
+
+- Another way that new objects come into existence is as a result of the dup and clone methods. These methods allocate a new instance of the class of the object on whhich they are invoked. They then copy all the instance variables and the taintedness of the receiver object to the newly allocated object.
+
+- clone takes this copying a step further that dup -- it also copies singleton methods of the receiver object and freezes the copy object if the original is frozen.
+
+- A third way that objects are created is when Marshal.load is called to re-create object previously marshaled (or "serialized") with Marshal.dump.
+
+- A singleton is a class that has only a single instance
+
+- A singleton method is a method added to a single object rather than to a class of objects
+
+- A module cannot be instantiated, and it cannot be subclassed
+
+- Modules are used as namespeces and as mixins
+
+- Just as a class object is an instance of the Class class, a module object is an instance of the Module class. Class is a subclass of Module. This means that all classes are modules, but not all modules are classes.
+
+- Class can be used as namespaces, just as modules can. Class cannot, however, be used as mixins.
