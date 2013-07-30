@@ -1,0 +1,552 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>omniauth-github使用示例 - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+
+  
+  <meta name="description" content="这篇文档简单记录一下使用omniauth-github的过程 首先新建项目: 1
+rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把bootstrap也进来: 在Gemfile里加上bootstrap-sass然后运行bundle
+在app/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Omniauth-github使用示例</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T11:57:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>这篇文档简单记录一下使用omniauth-github的过程</p>
+
+<p>首先新建项目:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new omniauth-github-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了让示例看起来不是很难看,我会把bootstrap也进来:</p>
+
+<ul>
+<li>在Gemfile里加上<code>bootstrap-sass</code>然后运行bundle</li>
+<li>在<code>app/assets/javascripts/application.js</code>加上<code>//= require bootstrap</code></li>
+<li>在<code>app/assets/stylesheets/application.css</code>加上<code>*= require bootstrap</code></li>
+</ul>
+
+
+<p>下一步把<code>omniauth-github</code>Gem加进来:
+&ndash; 在Gemfile里加上<code>omniauth-github</code>并执行bundle
+&ndash; 新建文件<code>config/initializers/omniauth.rb</code>包含以下内容</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Rails.application.config.middleware.use OmniAuth::Builder do
+</span><span class='line'>  provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于<code>ENV['GITHUB_KEY']</code>和<code>ENV['GITHUB_SECRET']</code>,需要在github上新建一个application,得到的<code>Client ID</code>和<code>Client Secret</code>就是对应的这两个东西,可以把他们写到<code>~/.bashrc</code>里面</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export GITHUB_KEY='your client id'
+</span><span class='line'>export GITHUB_SECRET='your client secret'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还要注意你新建application的时候<code>The full URL to your application's homepage</code>和<code>Your application's callback URL</code>对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填<code>http://localhost:3000/auth/github</code>和<code>http://localhost:3000/auth/github/callback</code></p>
+
+<p>下面我们需要在页面上加一个通过github登录的link,我直接写到layout里并加上一些div让bootstrap起作用</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>body<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar navbar-fixed-top&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar-inner&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>        <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>          <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>        <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在访问还看不到我们新加的内容,因为没有指定root,rails访问到的还是静态的index页面</p>
+
+<p>演示方便我们把root改为<code>application#index</code>并加上需要的action和view</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>root <span class="s1">&#39;application#index&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> <span class="k">index</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">mkdir</span> app<span class="sr">/views/</span>application/
+</span><span class='line'>touch app<span class="sr">/views/</span>application/<span class="k">index</span>.html.erb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在应该能看到这个link了,点一下如果看类似<code>No route matches [GET] "/auth/github/callback"</code>说明已经去github做验证并把结果返回回来了</p>
+
+<p>下一步我们需要验证完的回调</p>
+
+<p>从上面的错误信息可以看到回调地址是<code>/auth/github/callback</code>, 所以我们在routes中加一行</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;/auth/:provider/callback&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#create&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后建立controller和action</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> controller sessions create
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你想看看返回的数据什么样子,可以这样写sessions#create</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
+</span><span class='line'>  raise env[<span class="s1">&#39;omniauth.auth&#39;</span>].to_yaml
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样点登录的link就会把返回的信息显示在页面上</p>
+
+<p>得到返回数据怎么处理就看个人需要了,你可能会想建一个表保存返回的数据, 这里我们建立users表来保存用户的nickname,由于github的nickname就是用户名,是唯一的,但是考虑到以后可能会加入其它的认证如twitter,nickname就可能冲突了,所以我们还加个provider</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> scaffold <span class="nb">User</span> nickname provider
+</span><span class='line'>rake db:migrate
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有了保存数据的地方,我们就可以处理返回的验证了</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
+</span><span class='line'>  auth <span class="p">=</span> request.env[<span class="s2">&quot;omniauth.auth&quot;</span>]
+</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  session[:user_id] <span class="p">=</span> user.id
+</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed in!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>把<code>find_by_omniauth</code>方法放到了model里,它也很简单,能找到就返回,找不到就创建</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> self.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_provider_and_nickname<span class="p">(</span>auth[<span class="s2">&quot;provider&quot;</span>]<span class="p">,</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]<span class="p">)</span>
+</span><span class='line'>  user ? user : <span class="nb">User</span>.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">def</span> self.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  create<span class="p">!</span> <span class="k">do</span> <span class="p">|</span>user<span class="p">|</span>
+</span><span class='line'>    user.provider <span class="p">=</span> auth[<span class="s2">&quot;provider&quot;</span>]
+</span><span class='line'>    user.nickname <span class="p">=</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要修改一下layout才可以看到登录成功的提示</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span> style<span class="p">=</span><span class="s2">&quot;margin-top: 60px;&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% flash.each <span class="k">do</span> <span class="p">|</span>name<span class="p">,</span> msg<span class="p">|</span> %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;alert alert-&lt;%= name == :notice ? &quot;</span>success<span class="s2">&quot; : &quot;</span>error<span class="s2">&quot; %&gt;&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span><span class="k">a</span> class<span class="p">=</span><span class="s2">&quot;close&quot;</span> data<span class="p">-</span>dismiss<span class="p">=</span><span class="s2">&quot;alert&quot;</span><span class="p">&gt;</span><span class="k">x</span><span class="p">&lt;</span>/<span class="k">a</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>%<span class="p">=</span> msg  %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>%<span class="p">=</span> yield %<span class="p">&gt;</span>
+</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在登录已经成功了,我们还需要修改一下github登录的link,让它登录后显示用户名和logout</p>
+
+<p>首先我们需要定义一个帮助方法来判断用户有没登录</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>class ApplicationController <span class="p">&lt;</span> ActionController::Base
+</span><span class='line'>
+</span><span class='line'>  protect_from_forgery with: :exception
+</span><span class='line'>  helper_method :current_user
+</span><span class='line'>
+</span><span class='line'>  private
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">def</span> current_user
+</span><span class='line'>      @current_user <span class="p">||=</span> <span class="nb">User</span>.find<span class="p">(</span>session[:user_id]<span class="p">)</span> <span class="k">if</span> session[:user_id]
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后定义一条logout的路由</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;signout&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#destroy&quot;</span><span class="p">,</span> :<span class="k">as</span> <span class="p">=&gt;</span> <span class="s2">&quot;signout&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以及对应的Action</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> destroy
+</span><span class='line'>  session[:user_id] <span class="p">=</span> nil
+</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed out!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后修改layout</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">if</span> current_user %<span class="p">&gt;</span>
+</span><span class='line'>    Welcome <span class="p">&lt;</span>%<span class="p">=</span> current_user.nickname %<span class="p">&gt;!</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Sign out&quot;</span><span class="p">,</span> signout_path %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">else</span> %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
+</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>基本上这样就算完成了</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T11:57:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/" data-via="williamherry" data-counturl="http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/29/ruby-slash-rails-tips-collection/" title="Previous Post: Ruby/Rails小技巧收集">&laquo; Ruby/Rails小技巧收集</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/09/image-grayscale-for-ie10/">IE10下图片灰度处理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/';
+        var disqus_url = 'http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

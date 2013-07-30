@@ -9,7 +9,9 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="写程序时,尤其在C/C++程序中,有大量的配对的符号(surrounding): ( ) [ ] { } &lt; &gt; ' "，另外标记语言(如XML)更是由无数的配对标记组成.如果能够快速地处理这些surroundings，就能大大提升编程的效率. &hellip;">
+  <meta name="description" content="Octopress已经可以使用最新的ruby-1.9.3了,每次安装都会遇到一些问题,自己又记不住,每次都要Google,所以在这里简单的记录一下 首先安装curl 1
+sudo apt-get -y install curl 安装rvm 1
+curl -L https://get.rvm.io &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +71,204 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/29/install-ruby-with-rvm/">用rvm安装ruby-1.9.3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-29T19:47:00+08:00" pubdate data-updated="true">Aug 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/29/install-ruby-with-rvm/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Octopress已经可以使用最新的ruby-1.9.3了,每次安装都会遇到一些问题,自己又记不住,每次都要Google,所以在这里简单的记录一下</p>
+
+<p>首先安装curl</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get -y install curl</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装rvm</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L https://get.rvm.io | bash -s stable</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这时你还不能执行rvm这个命令,需要重新打开一个终端或者<code>source ~/.bashrc</code></p>
+
+<p>安装依赖包</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rvm requirements</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出中会看到类似这样的一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Additional Dependencies:
+</span><span class='line'># For Ruby / Ruby HEAD (MRI, Rubinius, & REE), install the following:
+</span><span class='line'>  ruby: /usr/bin/apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>按提示安装这些依赖包</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装<code>python-dev</code>,不然<code>rake generate</code>的时候会报<code>Could not open library 'lib.so'</code>的错</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install python-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你要使用<code>tk</code>,安装ruby前安装<code>tk-dev</code>可以省去好多麻烦</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install tk-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要使用rails,安装这些可以省去好多麻烦</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install build-essential git-core curl libmysqlclient-dev nodejs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后安装ruby</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rvm install 1.9.3</span></code></pre></td></tr></table></div></figure>
+
+
+<p>指定默认使用1.9.3</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>source ~/.rvm/scripts/rvm
+</span><span class='line'>rvm use 1.9.3 --default</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打完收工</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/25/master-vim-04-ctrlp/">VIM练级日记04-文件搜索CtrlP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-25T15:36:00+08:00" pubdate data-updated="true">Aug 25<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/25/master-vim-04-ctrlp/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>CtrlP简介</h2>
+
+<p>你可能觉得前面介绍的NERDTree外挂非常好用,但当你过用今天要介绍的这个外挂后,可能NERDTree你就会很少用了</p>
+
+<p>简单的说,CtrlP可以让你以搜索的方式打开文件,你可以输入完整的文件名,或者文件名的一部分,或者路径的一部分,它会帮你自动匹配,如果唯一,就可以回车打开了</p>
+
+<p>看一下效果(可以在图片上右键<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/vim/vim-ctrlp.png"></p>
+
+<h2>CtrlP安装</h2>
+
+<p>使用Vundle管理VIM外挂,安装就非常简单了,打开<code>~/.vimrc</code>文件加入一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'kien/ctrlp.vim'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>保存退出VIM,在命令行执行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim +BundleInstall +qa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装已经完成了,可以做一些配置(来自eddie-vim: <a href="https://github.cim/kaochenlong/eddie-vim">https://github.cim/kaochenlong/eddie-vim</a>)</p>
+
+<figure class='code'><figcaption><span>vi .vim/plugin/settings/CtrlP.vim </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">noremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;&lt;</span>C<span class="p">-</span>U<span class="p">&gt;</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'><span class="nb">nnoremap</span> <span class="p">&lt;</span>C<span class="p">-</span>W<span class="p">&gt;</span><span class="k">u</span> :CtrlPMRU<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_custom_ignore <span class="p">=</span> <span class="s1">&#39;\.git$\|\.hg$\|\.svn$\|.rvm$&#39;</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_working_path_mode<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_bottom<span class="p">=</span><span class="m">1</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_max_height<span class="p">=</span><span class="m">15</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_match_window_reversed<span class="p">=</span><span class="m">0</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_mruf_max<span class="p">=</span><span class="m">500</span>
+</span><span class='line'><span class="k">let</span> <span class="k">g</span>:ctrlp_follow_symlinks<span class="p">=</span><span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>CtrlP使用</h2>
+
+<p>使用就非常简单了,打开VIM,按<code>Ctrl</code> + <code>P</code>, 输入想要打开的文件名,或者文件名的一部分,或者路径,自己试试吧</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -637,6 +837,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
       </li>
     
@@ -658,14 +866,6 @@
     
       <li class="post">
         <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
       </li>
     
   </ul>

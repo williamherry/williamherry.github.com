@@ -9,10 +9,9 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Global variables are prefixed with $
-Instance variables are prefixed with @
-Class variables are prefixed with @@
-Constant begin with a capital &hellip;">
+  <meta name="description" content="这篇文档简单记录一下使用omniauth-github的过程 首先新建项目: 1
+rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把bootstrap也进来: 在Gemfile里加上bootstrap-sass然后运行bundle
+在app/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,6 +71,364 @@ Constant begin with a capital &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/29/omniauth-github-demo/">Omniauth-github使用示例</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T11:57:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/07/29/omniauth-github-demo/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这篇文档简单记录一下使用omniauth-github的过程</p>
+
+<p>首先新建项目:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new omniauth-github-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了让示例看起来不是很难看,我会把bootstrap也进来:</p>
+
+<ul>
+<li>在Gemfile里加上<code>bootstrap-sass</code>然后运行bundle</li>
+<li>在<code>app/assets/javascripts/application.js</code>加上<code>//= require bootstrap</code></li>
+<li>在<code>app/assets/stylesheets/application.css</code>加上<code>*= require bootstrap</code></li>
+</ul>
+
+
+<p>下一步把<code>omniauth-github</code>Gem加进来:
+&ndash; 在Gemfile里加上<code>omniauth-github</code>并执行bundle
+&ndash; 新建文件<code>config/initializers/omniauth.rb</code>包含以下内容</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Rails.application.config.middleware.use OmniAuth::Builder do
+</span><span class='line'>  provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于<code>ENV['GITHUB_KEY']</code>和<code>ENV['GITHUB_SECRET']</code>,需要在github上新建一个application,得到的<code>Client ID</code>和<code>Client Secret</code>就是对应的这两个东西,可以把他们写到<code>~/.bashrc</code>里面</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export GITHUB_KEY='your client id'
+</span><span class='line'>export GITHUB_SECRET='your client secret'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还要注意你新建application的时候<code>The full URL to your application's homepage</code>和<code>Your application's callback URL</code>对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填<code>http://localhost:3000/auth/github</code>和<code>http://localhost:3000/auth/github/callback</code></p>
+
+<p>下面我们需要在页面上加一个通过github登录的link,我直接写到layout里并加上一些div让bootstrap起作用</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>body<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar navbar-fixed-top&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar-inner&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>        <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>          <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>        <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在访问还看不到我们新加的内容,因为没有指定root,rails访问到的还是静态的index页面</p>
+
+<p>演示方便我们把root改为<code>application#index</code>并加上需要的action和view</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>root <span class="s1">&#39;application#index&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> <span class="k">index</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">mkdir</span> app<span class="sr">/views/</span>application/
+</span><span class='line'>touch app<span class="sr">/views/</span>application/<span class="k">index</span>.html.erb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在应该能看到这个link了,点一下如果看类似<code>No route matches [GET] "/auth/github/callback"</code>说明已经去github做验证并把结果返回回来了</p>
+
+<p>下一步我们需要验证完的回调</p>
+
+<p>从上面的错误信息可以看到回调地址是<code>/auth/github/callback</code>, 所以我们在routes中加一行</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;/auth/:provider/callback&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#create&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后建立controller和action</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> controller sessions create
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你想看看返回的数据什么样子,可以这样写sessions#create</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
+</span><span class='line'>  raise env[<span class="s1">&#39;omniauth.auth&#39;</span>].to_yaml
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样点登录的link就会把返回的信息显示在页面上</p>
+
+<p>得到返回数据怎么处理就看个人需要了,你可能会想建一个表保存返回的数据, 这里我们建立users表来保存用户的nickname,由于github的nickname就是用户名,是唯一的,但是考虑到以后可能会加入其它的认证如twitter,nickname就可能冲突了,所以我们还加个provider</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> scaffold <span class="nb">User</span> nickname provider
+</span><span class='line'>rake db:migrate
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有了保存数据的地方,我们就可以处理返回的验证了</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
+</span><span class='line'>  auth <span class="p">=</span> request.env[<span class="s2">&quot;omniauth.auth&quot;</span>]
+</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  session[:user_id] <span class="p">=</span> user.id
+</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed in!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>把<code>find_by_omniauth</code>方法放到了model里,它也很简单,能找到就返回,找不到就创建</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> self.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_provider_and_nickname<span class="p">(</span>auth[<span class="s2">&quot;provider&quot;</span>]<span class="p">,</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]<span class="p">)</span>
+</span><span class='line'>  user ? user : <span class="nb">User</span>.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">def</span> self.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
+</span><span class='line'>  create<span class="p">!</span> <span class="k">do</span> <span class="p">|</span>user<span class="p">|</span>
+</span><span class='line'>    user.provider <span class="p">=</span> auth[<span class="s2">&quot;provider&quot;</span>]
+</span><span class='line'>    user.nickname <span class="p">=</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要修改一下layout才可以看到登录成功的提示</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span> style<span class="p">=</span><span class="s2">&quot;margin-top: 60px;&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% flash.each <span class="k">do</span> <span class="p">|</span>name<span class="p">,</span> msg<span class="p">|</span> %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;alert alert-&lt;%= name == :notice ? &quot;</span>success<span class="s2">&quot; : &quot;</span>error<span class="s2">&quot; %&gt;&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span><span class="k">a</span> class<span class="p">=</span><span class="s2">&quot;close&quot;</span> data<span class="p">-</span>dismiss<span class="p">=</span><span class="s2">&quot;alert&quot;</span><span class="p">&gt;</span><span class="k">x</span><span class="p">&lt;</span>/<span class="k">a</span><span class="p">&gt;</span>
+</span><span class='line'>      <span class="p">&lt;</span>%<span class="p">=</span> msg  %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>%<span class="p">=</span> yield %<span class="p">&gt;</span>
+</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在登录已经成功了,我们还需要修改一下github登录的link,让它登录后显示用户名和logout</p>
+
+<p>首先我们需要定义一个帮助方法来判断用户有没登录</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>class ApplicationController <span class="p">&lt;</span> ActionController::Base
+</span><span class='line'>
+</span><span class='line'>  protect_from_forgery with: :exception
+</span><span class='line'>  helper_method :current_user
+</span><span class='line'>
+</span><span class='line'>  private
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">def</span> current_user
+</span><span class='line'>      @current_user <span class="p">||=</span> <span class="nb">User</span>.find<span class="p">(</span>session[:user_id]<span class="p">)</span> <span class="k">if</span> session[:user_id]
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后定义一条logout的路由</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;signout&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#destroy&quot;</span><span class="p">,</span> :<span class="k">as</span> <span class="p">=&gt;</span> <span class="s2">&quot;signout&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以及对应的Action</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> destroy
+</span><span class='line'>  session[:user_id] <span class="p">=</span> nil
+</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed out!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后修改layout</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">if</span> current_user %<span class="p">&gt;</span>
+</span><span class='line'>    Welcome <span class="p">&lt;</span>%<span class="p">=</span> current_user.nickname %<span class="p">&gt;!</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Sign out&quot;</span><span class="p">,</span> signout_path %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">else</span> %<span class="p">&gt;</span>
+</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
+</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
+</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>基本上这样就算完成了</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T11:43:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow</p>
+
+<h3>jQuery on的用法</h3>
+
+<p>on的基本用法为:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(selector1).on 'event', 'selector2', -&gt;
+</span><span class='line'>  ...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我遇到的问题是对通过ajax加载的部分on不起作用,解决办法是确保selector1不是通过ajax加载的</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -646,7 +1003,236 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
 <li>An object that is both an invocable function and a variable binding for that function.</li>
 <li><p>When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.</p></li>
 <li><p>One important difference between Method objects and Proc objects is that Method objects are not closures.</p></li>
+<li><p>encapsulated</p></li>
+<li><p>In addition to being automatically invoked by Point.new, the initialize method is automatically made private. An object can call initialize on itself, but you cannot explicitly call initialize on p to reinitialize its state.</p></li>
+<li><p>coerce</p></li>
 </ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Point::NEGATIVE_UNIT_X = Point.new(-1,0)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Class Instance Variables</p>
+
+<ul>
+<li>An instance variable used inside a class definition but outside an instance method definition</li>
+<li>Class instance variables cannot be used from instance methods</li>
+</ul>
+</li>
+<li><p>Define Class</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  ...
+</span><span class='line'>  def Point.sum(*points)
+</span><span class='line'>  ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  ...
+</span><span class='line'>  def self.sum(*points)
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class &lt;&lt; Point
+</span><span class='line'>  def sum(*points)
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  class &lt;&lt; self
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Method are normally public unless they are explicitly declared to be private or protected. One exception if the initialize method, which is always implicityly private.</p></li>
+<li><p>Another exception is any &ldquo;global&rdquo; method declared outside of a class definition &mdash; those methods are defined as private instance methods of Object.</p></li>
+<li><p>A public method can be invoked from anywhere &mdash; where are no restrictions on its use.</p></li>
+<li><p>A private method is internal to the implementation of a class, and it can only be called by other instance methods of the class (or, as we&rsquo;ll see later, its subclasses).</p></li>
+<li><p>Private methods are implicitly invoked on self, and may not be explicitly invoked on an object.</p></li>
+<li><p>If m is a private method, then you must invoke it in functional style as m. You cannot write o.m or even self.m</p></li>
+<li><p>A protected method is like a private method in that it can only be invoked from within the implementation of a class or its subclasses. It differs from a private method in that it may be explicit invocatioin on self.</p></li>
+<li><p>A protected method can be used, for example, to define an accessor that allows instances of a class to share internal state with each other, but does not allow users of the class to access that state.</p></li>
+<li><p>Protected methods are the least commonly defined and also the most difficult to understand. The rule about when a protected method can be invoked can be more formally described as follows: a protected method defined by a class C may be invoked on an object o by a method in the object p if and only if the classes of o and p are both subclasses of, or equal to, the class C.</p></li>
+<li><p>One of the important things to understand about object-oriented programming and subclassing is that when methods are invoked, they are looked up dynamically so that the appropriate definition or redefinition of the method is found. That is, method invocations are not bound statically at the time they are parsed, but rather, are looked up at the time they are executed.</p></li>
+<li><p>If you use super as a bare keyword &mdash; with no arguments and no parentheses &mdash; then all of the arguments that were passwd to the current method are passed to the superclass method.</p></li>
+<li><p>Ruby&rsquo;s instance variables are not inherited and have nothing to do with the inheritance mechanism. The reason that they sometimes appear to be inherited is that instance variables are created by the methods that first assign values to them, and those methods are often inherited or chainned.</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point3D &lt; Point
+</span><span class='line'>  def initialize(x,y,z)
+</span><span class='line'>    super(x,y)
+</span><span class='line'>    @z = z;
+</span><span class='line'>  end
+</span><span class='line'>
+</span><span class='line'>  def to_s
+</span><span class='line'>    "(#@x, #@y, #@z)"
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>In this code, Point3D defines an initialize method that chains tothe initialize method of its superclas.. The chained method assigns values to the variables @x and @y, which makes those variables come into existence for a particular instance of Point3D</p></li>
+<li><p>Class variables are inherited</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A
+</span><span class='line'>  @@value = 1
+</span><span class='line'>  def A.vaue; @@value; end
+</span><span class='line'>end
+</span><span class='line'>print A.value
+</span><span class='line'>class B &lt; A; @@value = 2; end
+</span><span class='line'>print A.value
+</span><span class='line'>class C &lt; A; @@value = 3; end
+</span><span class='line'>print B.value</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>The important difference between constants and methods is that constants are looked up in the lexical scope of the place they are used before they are looked up in the inheritance hierarchy</p></li>
+<li><p>Another way that new objects come into existence is as a result of the dup and clone methods. These methods allocate a new instance of the class of the object on whhich they are invoked. They then copy all the instance variables and the taintedness of the receiver object to the newly allocated object.</p></li>
+<li><p>clone takes this copying a step further that dup &mdash; it also copies singleton methods of the receiver object and freezes the copy object if the original is frozen.</p></li>
+<li><p>A third way that objects are created is when Marshal.load is called to re-create object previously marshaled (or &ldquo;serialized&rdquo;) with Marshal.dump.</p></li>
+<li><p>A singleton is a class that has only a single instance</p></li>
+<li><p>A singleton method is a method added to a single object rather than to a class of objects</p></li>
+<li><p>A module cannot be instantiated, and it cannot be subclassed</p></li>
+<li><p>Modules are used as namespeces and as mixins</p></li>
+<li><p>Just as a class object is an instance of the Class class, a module object is an instance of the Module class. Class is a subclass of Module. This means that all classes are modules, but not all modules are classes.</p></li>
+<li><p>Class can be used as namespaces, just as modules can. Class cannot, however, be used as mixins.</p></li>
+<li><p>The inclusion of a module affects the type-checking method is_a? and the switch-equality operator ===. For example, String mixes in the Comparable module and, in Ruby 1.8, also mixes in the Enumerable module:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"text".is_a? Comparable  # =&gt; true
+</span><span class='line'>Enumerable === "text"    # =&gt; true in Ruby 1.8, false in 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note that instance_of? only checks the class of its receiver, not superclasses or modules, so the following is false:</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"text".instance_of? Comparable  # =&gt; false</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Although every class is a module, the include method does not allow a class to be included within another class. The arguments to include must be modules declared with module, not classes</p></li>
+<li><p>If you want to create a module like Math or Kernel (after included, call method without module name), define you methods as instance methods of the module. Then use module_function to convert those methods to &ldquo;module functions.&rdquo;</p></li>
+<li><p>In addition to loading source code, require can also load binary extensions to Ruby.</p></li>
+<li><p>load expects a complete filename including an extension. require is usually passed a library name, with no extension, rather than a filename. In that case, it searches for a file that has the library name as its base name and an appropriate source or native library extension. If a directory contains both an .rb source file and a binary extension file, require will load the source file instead of the binary file.</p></li>
+<li><p>load can load the same file multiple times. require tries to prevent multiple loads of the same file. require keeps track of the files that have been loaded by appending them to the global array $&ldquo; (also known as $LOADED_FEATURES). load does not do this.</p></li>
+<li><p>load loads the specified file at the current $SAFE level. require loads the specified library with $SAFE set to 0, even if the code that called require has a higher value for that variable. In theory, therefore, it should be safe for require to load files with a reduced $SAFE level.</p></li>
+<li><p>Files loaded with load or require are executed in a new top-level scope that is different from the one in which load or require was invoked. The loaded file can see all global variables and constants that have been defined at the time it is loaded, but it does not have access to the local scope from which the load was initiated</p></li>
+<li><p>The local variables defined in the scope from which load or require is invoked are not visible to the loaded file.</p></li>
+<li>Any local variables created by the loaded file are discarded once the load is complete; they are never visible outside the file in which they are defined.</li>
+<li>At the start of the loaded file, the value of self is always the main object, just as it is when the Ruby interpreter starts running. That is, invoking load or require whthin a method invocation does not propagate the receiver object to the loaded file.</li>
+<li><p>The current module nesting is ignored within the loaded file. You cannot, fir example, open a class and load a file of method definitions. The file will be precessed in a top-level scope, not inside any class or module.</p></li>
+<li><p>Ruby method lookup or method name resolution ( o.m )</p>
+
+<ul>
+<li>First, it checkes the eigenclass of o for singleton methods name m.</li>
+<li>If no method m is found in the eigenclass, Ruby searches the class of o for an instance method named m.</li>
+<li>If no method m is found in the class, Ruby searches the instance methods of any modules included by the class of o. If that class includes more that one module, then they are searched in the reverse of the order in which they were included. That is the most recently included module is searched first.</li>
+<li>If no instance method m is found in the class of o or in its modules, then the search moves up the inheritance hierarchy to the superclass. Steps 2 and 3 are repeated for each class in the inheritance hierarchy until each ancestor class and its included modules have ben searched.</li>
+<li>If no method named m is found after completing the search, then a method named method_missing is invoked instand. In order to find an appropriate definition of this method, the name resolution algorithm start over at step 1. The Kernel module a default implementation of method_messing, so this second pass of name resolution is guranteed to succeed.</li>
+</ul>
+</li>
+<li><p>Class objects are special: they have superclasses.</p></li>
+<li><p>The eigenclasses of class objects are also special: they have superclasses, too.</p></li>
+<li><p>refection</p></li>
+<li>introspection</li>
+<li>examine</li>
+<li><p>malicious</p></li>
+<li><p>Note that eval evaluates its code in a temporary scope. eval can alter the value of instance variables that already exist. But any new instance variables it defines are local to the invocation of eval and cease to exist when it returns. (It is as if the evaluated code is run in the body of a block &mdash; variables local to a block do not exist outside the block)</p></li>
+<li><p>synonym</p></li>
+<li><p>It is important to understand that define_method is private. You must be inside the class or module you want to use it on in order to call it:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Add an instance method named m to class with body b
+</span><span class='line'>def add_method(c, m, &b)
+</span><span class='line'>  c.class_eval {
+</span><span class='line'>    define_method(m, &b)
+</span><span class='line'>  }
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>add_method(String, :greet) { "Hello, " + self }
+</span><span class='line'>
+</span><span class='line'>"world".greet # =&gt; "Hello, world"</span></code></pre></td></tr></table></div></figure>
+
+
 
 </div>
   
@@ -1453,581 +2039,6 @@ A stub with an expectations that the method gets called.</p></blockquote>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/12/proxy-chef-server-with-nginx/">使用Nginx+SSL代理chef-server</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-12T21:09:00+08:00" pubdate data-updated="true">Oct 12<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/12/proxy-chef-server-with-nginx/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>说明</h2>
-
-<p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
-
-<p>这里使用的系统是centos,应该也适用于其它的发行版</p>
-
-<p>这里假设你已经配置好了chef-server,在整个过程中都不需要对chef-server做修改(你可能会想到让chef-server只监听在127.0.0.1上)</p>
-
-<h2>安装Nginx</h2>
-
-<pre><code>yum -y install nginx
-</code></pre>
-
-<h2>生成自签名证书</h2>
-
-<pre><code>mkdir -p /etc/ssl/nginx
-cd /etc/ssl/nginx
-openssl genrsa -out chef-server.pem 2048
-openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # 回车后按提示填一堆乱七八糟的东西
-</code></pre>
-
-<h2>修改nginx配置文件</h2>
-
-<p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
-
-<figure class='code'><figcaption><span>vim</span><a href='/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#######################################################################</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># This is the main Nginx configuration file.</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># More information about the configuration options is available on</span>
-</span><span class='line'><span class="c">#   * the English wiki - http://wiki.nginx.org/Main</span>
-</span><span class='line'><span class="c">#   * the Russian documentation - http://sysoev.ru/nginx/</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#######################################################################</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># Main Module - directives that cover basic functionality</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpMainModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>user              nginx;
-</span><span class='line'>worker_processes  1;
-</span><span class='line'>
-</span><span class='line'>error_log  /var/log/nginx/error.log;
-</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  notice;</span>
-</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  info;</span>
-</span><span class='line'>
-</span><span class='line'>pid        /var/run/nginx.pid;
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># Events Module</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpEventsModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>events <span class="o">{</span>
-</span><span class='line'>    worker_connections  1024;
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># HTTP Core Module</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpCoreModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>http <span class="o">{</span>
-</span><span class='line'>    include       /etc/nginx/mime.types;
-</span><span class='line'>    default_type  application/octet-stream;
-</span><span class='line'>
-</span><span class='line'>    log_format  main  <span class="s1">&#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;</span>
-</span><span class='line'>                      <span class="s1">&#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;</span>
-</span><span class='line'>                      <span class="s1">&#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;</span>;
-</span><span class='line'>
-</span><span class='line'>    access_log  /var/log/nginx/access.log  main;
-</span><span class='line'>
-</span><span class='line'>    sendfile        on;
-</span><span class='line'>    <span class="c">#tcp_nopush     on;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#keepalive_timeout  0;</span>
-</span><span class='line'>    keepalive_timeout  65;
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#gzip  on;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Load config files from the /etc/nginx/conf.d directory</span>
-</span><span class='line'>    <span class="c"># The default server is in conf.d/default.conf</span>
-</span><span class='line'>    include /etc/nginx/conf.d/*.conf;
-</span><span class='line'>    upstream chef-server <span class="o">{</span>
-</span><span class='line'>      server 127.0.0.1:4000;
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    server <span class="o">{</span>
-</span><span class='line'>        listen 443 ssl;
-</span><span class='line'>
-</span><span class='line'>        server_name 192.168.122.44;
-</span><span class='line'>        root /var/lib/chef/rack/api/public;
-</span><span class='line'>
-</span><span class='line'>        ssl_certificate     /etc/ssl/nginx/chef-server.crt;
-</span><span class='line'>        ssl_certificate_key /etc/ssl/nginx/chef-server.key;
-</span><span class='line'>
-</span><span class='line'>        location / <span class="o">{</span>
-</span><span class='line'>            try_files <span class="nv">$uri</span> @backend;
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        location @backend <span class="o">{</span>
-</span><span class='line'>            proxy_set_header X-Forwarded-Proto <span class="s1">&#39;https&#39;</span>;
-</span><span class='line'>            proxy_set_header Host <span class="nv">$server_name</span>;
-</span><span class='line'>            proxy_pass http://chef-server;
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>检查配置文件并启动服务</h2>
-
-<pre><code>nginx -t
-/etc/init.d/nginx start
-</code></pre>
-
-<h2>修改client使用新的地址</h2>
-
-<figure class='code'><figcaption><span>vim</span><a href='/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
-</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>vim ~/.chef/knife.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
-</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-10T21:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/10/chef-attributes/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
-
-<h2>概述</h2>
-
-<p><img src="/images/chef/attributes.jpg"></p>
-
-<p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
-
-<h2>属性类型和优先级</h2>
-
-<p><img src="/images/chef/attribute-priority-stack.png"></p>
-
-<p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
-
-<ul>
-<li>automatic</li>
-<li>override</li>
-<li>normal</li>
-<li>default</li>
-</ul>
-
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p>Chef没有提供任何方式去修改自动属性(automatic),因为Ohai下次运行的时候回覆盖你做的任何修改.检验<a href="http://wiki.opscode.com/display/chef/Automatic+Attributes">自动属性</a>看有那些保留的命名</p>
-
-<h2>属性的持久性</h2>
-
-<p><em>每一次chef-client运行的开始,默认属性,覆盖属性和自动属性会被完全重置</em></p>
-
-<p>然后会利用当前的cookbooks, recipes, roles, environment和Ohai数据重新组建</p>
-
-<p>所以,一量recipe, role或environment从一个node移除并且chef-client在这个node上运行,那么在cookbook的attribute文件,roles, recipes或environments里设置的default和override属性会消失</p>
-
-<p><em>Normal属性不会被重置</em></p>
-
-<p>而是,第一次chef-client运行,任何以JSON文件形式传递给node的新属性会被合并到node中已经存在的normal属性中(使用<a href="http://wiki.opscode.com/display/chef/Deep+Merge">Deep Merge</a>)</p>
-
-<p>这就意味着,任何在recipe或cookbook中定义的normal属性会仍然存在,即使是cookbook或role已经从node的run list移除后</p>
-
-<h2>设置属性</h2>
-
-<p>属性可以在下面的对象中设置</p>
-
-<ul>
-<li>cookbooks</li>
-<li>environments (Chef 0.10.0 or above only)</li>
-<li>roles</li>
-<li>nodes</li>
-</ul>
-
-
-<h3>优先级</h3>
-
-<p><em>属性的优先级从低到高排列在下面</em></p>
-
-<ul>
-<li>attributes文件中定义的default属性</li>
-<li>environment中定义的default属性</li>
-<li>role中定义的default属性</li>
-<li>直接在node的recipe中定义的default属性</li>
-<li>attributes文件中定义的normal或set属性</li>
-<li>直接在node的recipe中定义的normal或set属性</li>
-<li>attributes文件中定义的override属性</li>
-<li>role中定义的override属性</li>
-<li>environment中定义的override属性</li>
-<li>直接在node的recipe中定义的override属性</li>
-<li>Ohai产生的automatic属性</li>
-</ul>
-
-
-<p>在attributes文件里定义的default属性有最低的优先级. Ohai生成的automatic属性有最高的优先级</p>
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p><a href="http://wiki.opscode.com/display/chef/Setting+Attributes+%28Examples%29">这里</a>有例子</p>
-
-<h2>Cookbook中定义属性</h2>
-
-<p>Cookbook的属性文件可以在cookbook的attributes子目录中找到.他们在Node对象的上下文中运算并且使用Node的方法设置属性的值</p>
-
-<p>来自Oposcode的Apache cookbook中的例子</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>属性也可以在recipe中设置,但这时<code>node.</code>就不能省略了</p>
-
-<h3>Cookbook设置属性的方法</h3>
-
-<p>使用下面的方法在cookbook的attributes文件或recipe中设置属性.他们对应到和他们名字相同的属性类型(set是normal的一个别名)</p>
-
-<ul>
-<li>override</li>
-<li>default</li>
-<li>normal(or set)</li>
-</ul>
-
-
-<h3>Cookbook中属性文件的加载顺序</h3>
-
-<p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会在继续处理当前属性之前首先加载<code>rails/attributes/defaults.rb</code></p>
-
-<p>双冒号的写法也适用于<code>include_attribute</code></p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会加载rails cookbook中的<code>attributes/tunables.rb</code>文件</p>
-
-<h3>从Recipes中重新加载Attribute文件</h3>
-
-<p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
-
-<figure class='code'><figcaption><span>reloading attributes from recipes </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s1">&#39;iptables&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:create</span><span class="p">,</span> <span class="s1">&#39;ruby_block[try_firewall_again]&#39;</span><span class="p">,</span> <span class="ss">:immediately</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">ruby_block</span> <span class="s1">&#39;try_firewall_again&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">block</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">node</span><span class="o">.</span><span class="n">load_attribute_by_short_filename</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>访问属性的方法</h3>
-
-<p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">listen_ports</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用哪个只是风格问题,你可能会在检索属性的值的时候看到</p>
-
-<h2>Environment中设置属性</h2>
-
-<p><em>Environment中可以设置default和override属性</em></p>
-
-<p>这可以在Environment的Ruby DSL文件里(分别)通过default_attributes和<code>override_attributes</code>方法设置,或者在Environment的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些这个Environment特别有属性.例如在&#8221;production&#8221;环境和&#8221;staging&#8221;环境外部负载均衡器的公共DNS可能会不一样</p>
-
-<h2>在Role中定义属性</h2>
-
-<p><em>在Role中只可以设置default和override属性,不能设置normal属性.</em>这可以在Role的Ruby DSL文件里(分别)通过<code>default_attributes</code>和<code>override_attributes</code>方法设置,或者在Role的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些各个Role不同的属性.例如一个<code>php_apache2_server</code>的role可能会和<code>mod_perl_apche2_server</code>使用不同的优化参数</p>
-
-<h2>在Node中定义属性</h2>
-
-<p>最终,Node对象可以直接被修改以设置属性.通常会设置normal优先级的属性.可以通过使用knife工具直接编辑node,或者通过WebUI.或者通过传递JSON数据给Node进行设置</p>
-
-<h3>JSON属性</h3>
-
-<p>你可以使用JSON文件指定Node的属性,它们会以normal的优先级添加到Node</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>chef-client --help
-</span><span class='line'>[...]
-</span><span class='line'>    -j JSON_ATTRIBS                  Load attributes from a JSON file or URL
-</span><span class='line'>        --json-attributes</span></code></pre></td></tr></table></div></figure>
-
-
-<p>例如.设置Apache监听不同的端口</p>
-
-<figure class='code'><figcaption><span>JSON attribute example </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>记住.通过JSON文件传递的属性会和Node已经保存的属性合并并且没有办法覆盖,但是如果有冲突,从JSON文件传递的属性会最终被使用</p>
-
-<h3>Automatic属性</h3>
-
-<p>这第四种属性不能被修改,因为你做的任何修改都会在下一次运行时被Ohai数据覆盖</p>
-
-<h2>如果使用属性</h2>
-
-<ul>
-<li><p>属性的优势</p>
-
-<ul>
-<li>为应用程序跨平台的抽象例如配置文件的路径</li>
-<li>优化参数的默认值例如给处理器多少内存或开启多少个进程</li>
-<li>任何其它你想要在Chef运行之间保留(在Node的数据)的信息</li>
-</ul>
-</li>
-</ul>
-
-
-<h3>使用的最佳实践</h3>
-
-<p><em>属性优先级的通用模式是在cookbooks和roles中使用default属性</em></p>
-
-<ul>
-<li>如果你要改变一个特定Node的值,使用normal属性</li>
-<li>Overrides属性是指roles可以强制设定一个特定的属性,即使Node已经有相应的属性</li>
-</ul>
-
-
-<p>肯定有其它的使用方式,但上面的模式是设计的初衷</p>
-
-<h3>设置同一优先级的属性</h3>
-
-<p><em>一个通用的使用案例是在cookbook的attribute文件中设置default属性,并且在role中以不同的值设置相同的default属性.</em>在这种情况下,role中的属性会被<a href="http://wiki.opscode.com/display/chef/Deep+Merge">deep merged</a>到来自attribute文件中的属性顶端.如果有冲突,在role中设置的属性会被使用.</p>
-
-<h3>只有在这个属性没有值的时候才设置</h3>
-
-<p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
-
-<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&mdash;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2041,6 +2052,14 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
@@ -2064,14 +2083,6 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
     
       <li class="post">
         <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
       </li>
     
   </ul>

@@ -643,7 +643,236 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
 <li>An object that is both an invocable function and a variable binding for that function.</li>
 <li><p>When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.</p></li>
 <li><p>One important difference between Method objects and Proc objects is that Method objects are not closures.</p></li>
+<li><p>encapsulated</p></li>
+<li><p>In addition to being automatically invoked by Point.new, the initialize method is automatically made private. An object can call initialize on itself, but you cannot explicitly call initialize on p to reinitialize its state.</p></li>
+<li><p>coerce</p></li>
 </ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Point::NEGATIVE_UNIT_X = Point.new(-1,0)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Class Instance Variables</p>
+
+<ul>
+<li>An instance variable used inside a class definition but outside an instance method definition</li>
+<li>Class instance variables cannot be used from instance methods</li>
+</ul>
+</li>
+<li><p>Define Class</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  ...
+</span><span class='line'>  def Point.sum(*points)
+</span><span class='line'>  ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  ...
+</span><span class='line'>  def self.sum(*points)
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class &lt;&lt; Point
+</span><span class='line'>  def sum(*points)
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
+</span><span class='line'>  class &lt;&lt; self
+</span><span class='line'>    ...
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Method are normally public unless they are explicitly declared to be private or protected. One exception if the initialize method, which is always implicityly private.</p></li>
+<li><p>Another exception is any &ldquo;global&rdquo; method declared outside of a class definition &mdash; those methods are defined as private instance methods of Object.</p></li>
+<li><p>A public method can be invoked from anywhere &mdash; where are no restrictions on its use.</p></li>
+<li><p>A private method is internal to the implementation of a class, and it can only be called by other instance methods of the class (or, as we&rsquo;ll see later, its subclasses).</p></li>
+<li><p>Private methods are implicitly invoked on self, and may not be explicitly invoked on an object.</p></li>
+<li><p>If m is a private method, then you must invoke it in functional style as m. You cannot write o.m or even self.m</p></li>
+<li><p>A protected method is like a private method in that it can only be invoked from within the implementation of a class or its subclasses. It differs from a private method in that it may be explicit invocatioin on self.</p></li>
+<li><p>A protected method can be used, for example, to define an accessor that allows instances of a class to share internal state with each other, but does not allow users of the class to access that state.</p></li>
+<li><p>Protected methods are the least commonly defined and also the most difficult to understand. The rule about when a protected method can be invoked can be more formally described as follows: a protected method defined by a class C may be invoked on an object o by a method in the object p if and only if the classes of o and p are both subclasses of, or equal to, the class C.</p></li>
+<li><p>One of the important things to understand about object-oriented programming and subclassing is that when methods are invoked, they are looked up dynamically so that the appropriate definition or redefinition of the method is found. That is, method invocations are not bound statically at the time they are parsed, but rather, are looked up at the time they are executed.</p></li>
+<li><p>If you use super as a bare keyword &mdash; with no arguments and no parentheses &mdash; then all of the arguments that were passwd to the current method are passed to the superclass method.</p></li>
+<li><p>Ruby&rsquo;s instance variables are not inherited and have nothing to do with the inheritance mechanism. The reason that they sometimes appear to be inherited is that instance variables are created by the methods that first assign values to them, and those methods are often inherited or chainned.</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Point3D &lt; Point
+</span><span class='line'>  def initialize(x,y,z)
+</span><span class='line'>    super(x,y)
+</span><span class='line'>    @z = z;
+</span><span class='line'>  end
+</span><span class='line'>
+</span><span class='line'>  def to_s
+</span><span class='line'>    "(#@x, #@y, #@z)"
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>In this code, Point3D defines an initialize method that chains tothe initialize method of its superclas.. The chained method assigns values to the variables @x and @y, which makes those variables come into existence for a particular instance of Point3D</p></li>
+<li><p>Class variables are inherited</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A
+</span><span class='line'>  @@value = 1
+</span><span class='line'>  def A.vaue; @@value; end
+</span><span class='line'>end
+</span><span class='line'>print A.value
+</span><span class='line'>class B &lt; A; @@value = 2; end
+</span><span class='line'>print A.value
+</span><span class='line'>class C &lt; A; @@value = 3; end
+</span><span class='line'>print B.value</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>The important difference between constants and methods is that constants are looked up in the lexical scope of the place they are used before they are looked up in the inheritance hierarchy</p></li>
+<li><p>Another way that new objects come into existence is as a result of the dup and clone methods. These methods allocate a new instance of the class of the object on whhich they are invoked. They then copy all the instance variables and the taintedness of the receiver object to the newly allocated object.</p></li>
+<li><p>clone takes this copying a step further that dup &mdash; it also copies singleton methods of the receiver object and freezes the copy object if the original is frozen.</p></li>
+<li><p>A third way that objects are created is when Marshal.load is called to re-create object previously marshaled (or &ldquo;serialized&rdquo;) with Marshal.dump.</p></li>
+<li><p>A singleton is a class that has only a single instance</p></li>
+<li><p>A singleton method is a method added to a single object rather than to a class of objects</p></li>
+<li><p>A module cannot be instantiated, and it cannot be subclassed</p></li>
+<li><p>Modules are used as namespeces and as mixins</p></li>
+<li><p>Just as a class object is an instance of the Class class, a module object is an instance of the Module class. Class is a subclass of Module. This means that all classes are modules, but not all modules are classes.</p></li>
+<li><p>Class can be used as namespaces, just as modules can. Class cannot, however, be used as mixins.</p></li>
+<li><p>The inclusion of a module affects the type-checking method is_a? and the switch-equality operator ===. For example, String mixes in the Comparable module and, in Ruby 1.8, also mixes in the Enumerable module:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"text".is_a? Comparable  # =&gt; true
+</span><span class='line'>Enumerable === "text"    # =&gt; true in Ruby 1.8, false in 1.9</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note that instance_of? only checks the class of its receiver, not superclasses or modules, so the following is false:</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"text".instance_of? Comparable  # =&gt; false</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Although every class is a module, the include method does not allow a class to be included within another class. The arguments to include must be modules declared with module, not classes</p></li>
+<li><p>If you want to create a module like Math or Kernel (after included, call method without module name), define you methods as instance methods of the module. Then use module_function to convert those methods to &ldquo;module functions.&rdquo;</p></li>
+<li><p>In addition to loading source code, require can also load binary extensions to Ruby.</p></li>
+<li><p>load expects a complete filename including an extension. require is usually passed a library name, with no extension, rather than a filename. In that case, it searches for a file that has the library name as its base name and an appropriate source or native library extension. If a directory contains both an .rb source file and a binary extension file, require will load the source file instead of the binary file.</p></li>
+<li><p>load can load the same file multiple times. require tries to prevent multiple loads of the same file. require keeps track of the files that have been loaded by appending them to the global array $&ldquo; (also known as $LOADED_FEATURES). load does not do this.</p></li>
+<li><p>load loads the specified file at the current $SAFE level. require loads the specified library with $SAFE set to 0, even if the code that called require has a higher value for that variable. In theory, therefore, it should be safe for require to load files with a reduced $SAFE level.</p></li>
+<li><p>Files loaded with load or require are executed in a new top-level scope that is different from the one in which load or require was invoked. The loaded file can see all global variables and constants that have been defined at the time it is loaded, but it does not have access to the local scope from which the load was initiated</p></li>
+<li><p>The local variables defined in the scope from which load or require is invoked are not visible to the loaded file.</p></li>
+<li>Any local variables created by the loaded file are discarded once the load is complete; they are never visible outside the file in which they are defined.</li>
+<li>At the start of the loaded file, the value of self is always the main object, just as it is when the Ruby interpreter starts running. That is, invoking load or require whthin a method invocation does not propagate the receiver object to the loaded file.</li>
+<li><p>The current module nesting is ignored within the loaded file. You cannot, fir example, open a class and load a file of method definitions. The file will be precessed in a top-level scope, not inside any class or module.</p></li>
+<li><p>Ruby method lookup or method name resolution ( o.m )</p>
+
+<ul>
+<li>First, it checkes the eigenclass of o for singleton methods name m.</li>
+<li>If no method m is found in the eigenclass, Ruby searches the class of o for an instance method named m.</li>
+<li>If no method m is found in the class, Ruby searches the instance methods of any modules included by the class of o. If that class includes more that one module, then they are searched in the reverse of the order in which they were included. That is the most recently included module is searched first.</li>
+<li>If no instance method m is found in the class of o or in its modules, then the search moves up the inheritance hierarchy to the superclass. Steps 2 and 3 are repeated for each class in the inheritance hierarchy until each ancestor class and its included modules have ben searched.</li>
+<li>If no method named m is found after completing the search, then a method named method_missing is invoked instand. In order to find an appropriate definition of this method, the name resolution algorithm start over at step 1. The Kernel module a default implementation of method_messing, so this second pass of name resolution is guranteed to succeed.</li>
+</ul>
+</li>
+<li><p>Class objects are special: they have superclasses.</p></li>
+<li><p>The eigenclasses of class objects are also special: they have superclasses, too.</p></li>
+<li><p>refection</p></li>
+<li>introspection</li>
+<li>examine</li>
+<li><p>malicious</p></li>
+<li><p>Note that eval evaluates its code in a temporary scope. eval can alter the value of instance variables that already exist. But any new instance variables it defines are local to the invocation of eval and cease to exist when it returns. (It is as if the evaluated code is run in the body of a block &mdash; variables local to a block do not exist outside the block)</p></li>
+<li><p>synonym</p></li>
+<li><p>It is important to understand that define_method is private. You must be inside the class or module you want to use it on in order to call it:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Add an instance method named m to class with body b
+</span><span class='line'>def add_method(c, m, &b)
+</span><span class='line'>  c.class_eval {
+</span><span class='line'>    define_method(m, &b)
+</span><span class='line'>  }
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>add_method(String, :greet) { "Hello, " + self }
+</span><span class='line'>
+</span><span class='line'>"world".greet # =&gt; "Hello, world"</span></code></pre></td></tr></table></div></figure>
+
+
 
 </div>
 
@@ -687,6 +916,8 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
         <a class="basic-alignment left" href="/blog/2013/07/21/datetimepicker-demo/" title="Previous Post: 日期时间选择插件使用">&laquo; 日期时间选择插件使用</a>
       
       
+        <a class="basic-alignment right" href="/blog/2013/07/29/ruby-slash-rails-tips-collection/" title="Next Post: Ruby/Rails小技巧收集">Ruby/Rails小技巧收集 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -704,6 +935,14 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
@@ -727,14 +966,6 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
     
       <li class="post">
         <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/05/rvm-rake-cron-ubuntu/">最简单的在crontab中执行rake命令的方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a>
       </li>
     
   </ul>
