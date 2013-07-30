@@ -99,3 +99,98 @@ end
 
 这样点登录的link就会把返回的信息显示在页面上
 
+得到返回数据怎么处理就看个人需要了,你可能会想建一个表保存返回的数据, 这里我们建立users表来保存用户的nickname,由于github的nickname就是用户名,是唯一的,但是考虑到以后可能会加入其它的认证如twitter,nickname就可能冲突了,所以我们还加个provider
+
+```
+rails g scaffold User nickname provider
+rake db:migrate
+
+```
+
+有了保存数据的地方,我们就可以处理返回的验证了
+
+def create
+  auth = request.env["omniauth.auth"]
+  user = User.find_by_omniauth(auth)
+  session[:user_id] = user.id
+  redirect_to root_url, :notice => "Signed in!"
+end
+```
+
+把`find_by_omniauth`方法放到了model里,它也很简单,能找到就返回,找不到就创建
+
+```
+def self.find_by_omniauth(auth)
+  user = User.find_by_provider_and_nickname(auth["provider"], auth["info"]["nickname"])
+  user ? user : User.create_with_omniauth(auth)
+end
+
+def self.create_with_omniauth(auth)
+  create! do |user|
+    user.provider = auth["provider"]
+    user.nickname = auth["info"]["nickname"]
+  end
+end
+```
+
+需要修改一下layout才可以看到登录成功的提示
+
+``` vim app/views/layouts/application.html.erb
+<div class="container" style="margin-top: 60px;">
+  <% flash.each do |name, msg| %>
+    <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
+      <a class="close" data-dismiss="alert">x</a>
+      <%= msg  %>
+    </div>
+  <% end %>
+  <%= yield %>
+</div>
+```
+
+现在登录已经成功了,我们还需要修改一下github登录的link,让它登录后显示用户名和logout
+
+首先我们需要定义一个帮助方法来判断用户有没登录
+
+``` vim app/controllers/application_controller.rb
+class ApplicationController < ActionController::Base
+
+  protect_from_forgery with: :exception
+  helper_method :current_user
+
+  private
+
+    def current_user
+      @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    end
+end
+```
+
+然后定义一条logout的路由
+
+```
+get "signout" => "sessions#destroy", :as => "signout"
+```
+
+以及对应的Action
+
+```
+def destroy
+  session[:user_id] = nil
+  redirect_to root_url, :notice => "Signed out!"
+end
+```
+
+最后修改layout
+
+```
+<div class="user-nav pull-right">
+  <% if current_user %>
+    Welcome <%= current_user.nickname %>!
+    <%= link_to "Sign out", signout_path %>
+  <% else %>
+    <%= link_to "Github Login", "/auth/github" %>
+  <% end %>
+</div>
+```
+
+基本上这样就算完成了

@@ -585,3 +585,27 @@ Enumerable === "text"    # => true in Ruby 1.8, false in 1.9
 - The eigenclasses of class objects are also special: they have superclasses, too.
 
 - refection
+- introspection
+- examine
+- malicious
+
+- Note that eval evaluates its code in a temporary scope. eval can alter the value of instance variables that already exist. But any new instance variables it defines are local to the invocation of eval and cease to exist when it returns. (It is as if the evaluated code is run in the body of a block -- variables local to a block do not exist outside the block)
+
+- synonym
+
+- It is important to understand that define_method is private. You must be inside the class or module you want to use it on in order to call it:
+
+```
+# Add an instance method named m to class with body b
+def add_method(c, m, &b)
+  c.class_eval {
+    define_method(m, &b)
+  }
+end
+
+add_method(String, :greet) { "Hello, " + self }
+
+"world".greet # => "Hello, world"
+```
+
+
