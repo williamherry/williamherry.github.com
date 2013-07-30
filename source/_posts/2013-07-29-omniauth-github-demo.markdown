@@ -8,6 +8,8 @@ categories:
 
 这篇文档简单记录一下使用omniauth-github的过程
 
+这里有个能跑的代码可以clone看看效果[omniauth-github-demo](https://github.com/williamherry/omniauth-github-demo)
+
 首先新建项目:
 
 ```
@@ -36,6 +38,8 @@ end
 export GITHUB_KEY='your client id'
 export GITHUB_SECRET='your client secret'
 ```
+
+别忘了source这个文件或重新打开一个终端让显示生效
 
 还要注意你新建application的时候`The full URL to your application's homepage`和`Your application's callback URL`对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填`http://localhost:3000/auth/github`和`http://localhost:3000/auth/github/callback`
 
