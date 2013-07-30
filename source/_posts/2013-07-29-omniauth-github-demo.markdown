@@ -109,6 +109,7 @@ rake db:migrate
 
 有了保存数据的地方,我们就可以处理返回的验证了
 
+```
 def create
   auth = request.env["omniauth.auth"]
   user = User.find_by_omniauth(auth)
