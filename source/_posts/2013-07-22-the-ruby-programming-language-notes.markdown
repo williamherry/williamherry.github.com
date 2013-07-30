@@ -540,3 +540,48 @@ print B.value
 - Just as a class object is an instance of the Class class, a module object is an instance of the Module class. Class is a subclass of Module. This means that all classes are modules, but not all modules are classes.
 
 - Class can be used as namespaces, just as modules can. Class cannot, however, be used as mixins.
+
+- The inclusion of a module affects the type-checking method is_a? and the switch-equality operator ===. For example, String mixes in the Comparable module and, in Ruby 1.8, also mixes in the Enumerable module:
+
+```
+"text".is_a? Comparable  # => true
+Enumerable === "text"    # => true in Ruby 1.8, false in 1.9
+```
+
+- Note that instance_of? only checks the class of its receiver, not superclasses or modules, so the following is false:
+
+```
+"text".instance_of? Comparable  # => false
+```
+
+- Although every class is a module, the include method does not allow a class to be included within another class. The arguments to include must be modules declared with module, not classes
+
+- If you want to create a module like Math or Kernel (after included, call method without module name), define you methods as instance methods of the module. Then use module_function to convert those methods to "module functions."
+
+- In addition to loading source code, require can also load binary extensions to Ruby.
+
+- load expects a complete filename including an extension. require is usually passed a library name, with no extension, rather than a filename. In that case, it searches for a file that has the library name as its base name and an appropriate source or native library extension. If a directory contains both an .rb source file and a binary extension file, require will load the source file instead of the binary file.
+
+- load can load the same file multiple times. require tries to prevent multiple loads of the same file. require keeps track of the files that have been loaded by appending them to the global array $" (also known as $LOADED_FEATURES). load does not do this.
+
+- load loads the specified file at the current $SAFE level. require loads the specified library with $SAFE set to 0, even if the code that called require has a higher value for that variable. In theory, therefore, it should be safe for require to load files with a reduced $SAFE level.
+
+- Files loaded with load or require are executed in a new top-level scope that is different from the one in which load or require was invoked. The loaded file can see all global variables and constants that have been defined at the time it is loaded, but it does not have access to the local scope from which the load was initiated
+
+- The local variables defined in the scope from which load or require is invoked are not visible to the loaded file.
+- Any local variables created by the loaded file are discarded once the load is complete; they are never visible outside the file in which they are defined.
+- At the start of the loaded file, the value of self is always the main object, just as it is when the Ruby interpreter starts running. That is, invoking load or require whthin a method invocation does not propagate the receiver object to the loaded file.
+- The current module nesting is ignored within the loaded file. You cannot, fir example, open a class and load a file of method definitions. The file will be precessed in a top-level scope, not inside any class or module.
+
+- Ruby method lookup or method name resolution ( o.m )
+
+  - First, it checkes the eigenclass of o for singleton methods name m.
+  - If no method m is found in the eigenclass, Ruby searches the class of o for an instance method named m.
+  - If no method m is found in the class, Ruby searches the instance methods of any modules included by the class of o. If that class includes more that one module, then they are searched in the reverse of the order in which they were included. That is the most recently included module is searched first.
+  - If no instance method m is found in the class of o or in its modules, then the search moves up the inheritance hierarchy to the superclass. Steps 2 and 3 are repeated for each class in the inheritance hierarchy until each ancestor class and its included modules have ben searched.
+  - If no method named m is found after completing the search, then a method named method_missing is invoked instand. In order to find an appropriate definition of this method, the name resolution algorithm start over at step 1. The Kernel module a default implementation of method_messing, so this second pass of name resolution is guranteed to succeed.
+
+- Class objects are special: they have superclasses.
+- The eigenclasses of class objects are also special: they have superclasses, too.
+
+- refection
