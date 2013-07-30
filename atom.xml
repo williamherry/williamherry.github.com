@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-07-31T03:32:09+08:00</updated>
+  <updated>2013-07-31T04:00:44+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -19,6 +19,8 @@
     <updated>2013-07-29T11:57:00+08:00</updated>
     <id>http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo</id>
     <content type="html"><![CDATA[<p>这篇文档简单记录一下使用omniauth-github的过程</p>
+
+<p>这里有个能跑的代码可以clone看看效果<a href="https://github.com/williamherry/omniauth-github-demo">omniauth-github-demo</a></p>
 
 <p>首先新建项目:</p>
 
@@ -54,6 +56,8 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>export GITHUB_KEY='your client id'
 </span><span class='line'>export GITHUB_SECRET='your client secret'</span></code></pre></td></tr></table></div></figure>
 
+
+<p>别忘了source这个文件或重新打开一个终端让显示生效</p>
 
 <p>还要注意你新建application的时候<code>The full URL to your application's homepage</code>和<code>Your application's callback URL</code>对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填<code>http://localhost:3000/auth/github</code>和<code>http://localhost:3000/auth/github/callback</code></p>
 

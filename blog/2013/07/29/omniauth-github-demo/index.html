@@ -9,9 +9,8 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="这篇文档简单记录一下使用omniauth-github的过程 首先新建项目: 1
-rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把bootstrap也进来: 在Gemfile里加上bootstrap-sass然后运行bundle
-在app/ &hellip;">
+  <meta name="description" content="这篇文档简单记录一下使用omniauth-github的过程 这里有个能跑的代码可以clone看看效果omniauth-github-demo 首先新建项目: 1
+rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把bootstrap也进来: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -101,6 +100,8 @@ rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把
 
 <div class="entry-content"><p>这篇文档简单记录一下使用omniauth-github的过程</p>
 
+<p>这里有个能跑的代码可以clone看看效果<a href="https://github.com/williamherry/omniauth-github-demo">omniauth-github-demo</a></p>
+
 <p>首先新建项目:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -135,6 +136,8 @@ rails new omniauth-github-demo 为了让示例看起来不是很难看,我会把
 </pre></td><td class='code'><pre><code class=''><span class='line'>export GITHUB_KEY='your client id'
 </span><span class='line'>export GITHUB_SECRET='your client secret'</span></code></pre></td></tr></table></div></figure>
 
+
+<p>别忘了source这个文件或重新打开一个终端让显示生效</p>
 
 <p>还要注意你新建application的时候<code>The full URL to your application's homepage</code>和<code>Your application's callback URL</code>对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填<code>http://localhost:3000/auth/github</code>和<code>http://localhost:3000/auth/github/callback</code></p>
 
