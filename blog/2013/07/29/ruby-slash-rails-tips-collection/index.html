@@ -112,6 +112,20 @@ $(selector1).on 'event', 'selector2', -&gt; ... &hellip;">
 
 
 <p>我遇到的问题是对通过ajax加载的部分on不起作用,解决办法是确保selector1不是通过ajax加载的</p>
+
+<h3>simple_form和bootstrap一起使用的问题</h3>
+
+<p>simple_form和bootstrap一起使用的时候我遇到的问题是simple_form生成的html没有加进去bootstrap的Class,看不到bootstrap样式加到table的效果,解决办法是在Gemfile里给simple_form指定版本,Rails 4是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form', "~&gt; 3.0.0.rc"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rails 3是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form, "~&gt; 2.1.0"</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
