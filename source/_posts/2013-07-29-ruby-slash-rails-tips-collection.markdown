@@ -32,3 +32,5 @@ Rails 3是
 ```
 gem 'simple_form, "~> 2.1.0"
 ```
+
+### Rails 4 要使用remote: true的方法执行js需要在action里加上`render layout: false`
