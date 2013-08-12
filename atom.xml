@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.com/atom.xml" rel="self"/>
   <link href="http://williamherry.github.com/"/>
-  <updated>2013-08-02T02:32:30+08:00</updated>
+  <updated>2013-08-12T14:41:05+08:00</updated>
   <id>http://williamherry.github.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -328,6 +328,8 @@
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form, "~&gt; 2.1.0"</span></code></pre></td></tr></table></div></figure>
 
+
+<h3>Rails 4 要使用remote: true的方法执行js需要在action里加上<code>render layout: false</code></h3>
 ]]></content>
   </entry>
   
@@ -1109,7 +1111,8 @@ p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
 </span><span class='line'>"world".greet # =&gt; "Hello, world"</span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>t = Time.utc(2000, 12, 31, 23, 59, 59, 999999)
+t.year   # => 2000</p>
 ]]></content>
   </entry>
   
