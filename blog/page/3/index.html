@@ -9,9 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Octopress已经可以使用最新的ruby-1.9.3了,每次安装都会遇到一些问题,自己又记不住,每次都要Google,所以在这里简单的记录一下 首先安装curl 1
-sudo apt-get -y install curl 安装rvm 1
-curl -L https://get.rvm.io &hellip;">
+  <meta name="description" content="以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西 首先看一下效果图( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ curl -L https://get.rvm.io &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.github.com/blog/page/3/">
+  <link rel="canonical" href="http://williamherry.github.io/blog/page/3/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -55,7 +53,7 @@ curl -L https://get.rvm.io &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:williamherry.github.com" />
+    <input type="hidden" name="q" value="site:williamherry.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -71,6 +69,145 @@ curl -L https://get.rvm.io &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/29/weechat-irc-client/">Weechat-命令行下的IRC客户端工具</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-29T20:15:00+08:00" pubdate data-updated="true">Aug 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/29/weechat-irc-client/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西</p>
+
+<p>首先看一下效果图(右键图形选择<code>view image</code>可以看到高清大图哦):</p>
+
+<p><img src="/images/weechat/weechat.png"></p>
+
+<p>在Ubuntu下安装非常简单</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install weechat</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装完之后运行<code>weechat-curses</code>就可以打开软件了</p>
+
+<p>在软件下方的输入框里输入<code>/connect freenode</code>就可连接到freenode的服务器,输入<code>/join #ruby</code>就可以加入到<code>#ruby</code>群组里了</p>
+
+<p>你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:</p>
+
+<p>自动连接到freenode</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autoconnect on</span></code></pre></td></tr></table></div></figure>
+
+
+<p>设置nicks,username,realname</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.nicks "nickname"
+</span><span class='line'>/set irc.server.freenode.username "username"
+</span><span class='line'>/set irc.server.freenode.realname "realname"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自动认证nickname</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.command "/msg nickserv identify xxxxxx"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自动加入群组</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autojoin "#channel1,#channel2"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用<code>Ctrl + P</code>和<code>Ctrl + N</code>来切换,聊天的内容不能通过滚动鼠标滚轮来查看(可以了,看更新),需要按<code>PageUp</code>和<code>PageDown</code></p>
+
+<p>更多的高级的使用可以看它的<a href="http://www.weechat.org/doc/">手册页</a></p>
+
+<h2>更新</h2>
+
+<h3>使用weechat会有连不上freenode的问题</h3>
+
+<p>解决办法是端口改成8001</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.addresses "chat.freenode.net/8001"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>加入鼠标然支持</h3>
+
+<p>启动鼠标支持</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/moune enable</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>启动weechat的时候就支持鼠标</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.mouse on</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>屏蔽无关信息</h3>
+
+<p>经常会有一些<code>aaa join the channel, bbb leave this channel</code>等的信息,屏蔽的方法是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/filter add irc_smart *,!*weechat* irc_smart_filter *</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>去掉用户发言前面的时间</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.buffer_time_format  &quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>让给自己的信息在桌面上显示</h3>
+
+<p>只要安装一个插件然后重启weechat就可以了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
+</span><span class='line'><span class="n">wget</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -837,6 +974,10 @@ curl -L https://get.rvm.io &hellip;">
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
       </li>
     
@@ -862,10 +1003,6 @@ curl -L https://get.rvm.io &hellip;">
     
       <li class="post">
         <a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
       </li>
     
   </ul>
@@ -910,7 +1047,7 @@ curl -L https://get.rvm.io &hellip;">
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - William Herry -
+  Copyright &copy; 2014 - William Herry -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

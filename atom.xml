@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[William's Blog with Octopress]]></title>
-  <link href="http://williamherry.github.com/atom.xml" rel="self"/>
-  <link href="http://williamherry.github.com/"/>
-  <updated>2013-08-12T14:41:05+08:00</updated>
-  <id>http://williamherry.github.com/</id>
+  <link href="http://williamherry.github.io/atom.xml" rel="self"/>
+  <link href="http://williamherry.github.io/"/>
+  <updated>2014-01-01T18:03:16+08:00</updated>
+  <id>http://williamherry.github.io/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
     
@@ -14,10 +14,139 @@
 
   
   <entry>
+    <title type="html"><![CDATA[2014年规划]]></title>
+    <link href="http://williamherry.github.io/blog/2014/01/01/2014-plans/"/>
+    <updated>2014-01-01T11:52:00+08:00</updated>
+    <id>http://williamherry.github.io/blog/2014/01/01/2014-plans</id>
+    <content type="html"><![CDATA[<p>2013年已经在昨天划上的句号,回想过去的这一年,真的可以说收获很多:</p>
+
+<ul>
+<li>毕业两年换了三个工作,终于在去年找到了自己满意的工作,同事个个都是高手,一周还能打两次蓝球</li>
+<li>终于用上了梦寐以求苹果电脑,虽然是公司配的不是自己买的,虽然Mac OSX系统没有想象中的好</li>
+<li>其实最重要的是去年这一年大部分时间是过的比较开心的,快乐一直是我追求的最终目标</li>
+</ul>
+
+
+<p>当然去年没有做好的事情也非常多,这里就不拿出来一一示众,没有做好的原因都是自己在各方面都不够成熟强大,接下来的这一年还需要花很多的时候去修行</p>
+
+<p>今天是2014年的每一天,正好简单列一下对这一年自己的规划,一些希望能够完成的事情.为了提高可行性,每一项都分解成小步骤</p>
+
+<ul>
+<li>今天完成这个规划</li>
+<li>学习吉他
+
+<ul>
+<li>首先需要买一把吉他</li>
+<li>学会&lt;&lt;她来听我的演唱会>>的弹唱</li>
+</ul>
+</li>
+<li>读Rails源码,以问题的方式去读而不是从头一个文件一个文件的读,那样肯定完成不了
+
+<ul>
+<li>列一些关于Rails如果实现的并且三兴趣的小问题,如:
+
+<ul>
+<li>Rails启动过程</li>
+<li>请求的处理过程</li>
+</ul>
+</li>
+<li>通过查看源代友找到答案</li>
+<li>写博客记录下来</li>
+</ul>
+</li>
+<li>可以轻松唱A2
+
+<ul>
+<li>练习Brett Manning的Singing Success</li>
+<li>练习Brett Manning的Mastering Vibrato</li>
+<li>练习Brett Manning的Mastering Mix</li>
+<li>重复以上步骤走到达到目标</li>
+</ul>
+</li>
+<li>见一次大海
+
+<ul>
+<li>找到最这里最近的海在哪里</li>
+<li>查找路线</li>
+<li>找假期或请假去</li>
+</ul>
+</li>
+<li>突破英语口语
+
+<ul>
+<li>前半年继续用百词斩学单词,四级已经快学完了,之后背六级,再之后托福或雅思</li>
+<li>后半年可以考虑参加口语培训班</li>
+</ul>
+</li>
+<li>早起累计超过一百天
+
+<ul>
+<li>早起后在Twiter上记录方便以后统计.完成后就可以放肆的熬夜和赖床了(第一天就睡到11点,不是好的预兆呀)</li>
+</ul>
+</li>
+<li>学习佛教经典
+
+<ul>
+<li>先把已经买的相关的书看完:
+
+<ul>
+<li>读佛即是拜佛:六祖慧能传(已看完)</li>
+<li>读佛即是拜佛:真实的唐僧</li>
+<li>读佛即是拜佛:弥勒佛传</li>
+<li>读佛即是拜佛:地藏菩萨传</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>写5篇技术含量比较高的博客</li>
+<li>进一步深入了解Linux
+
+<ul>
+<li>现在对Linux的了解还是停在两年前的水平,现在还没想好可行的方案,有可能会是
+
+<ul>
+<li>读源代码,可以从openSUSE中的已经用Ruby重写了的yast开始</li>
+<li>玩开源硬件(目前一点兴趣都没有)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>读很多年前就想读但由于各种原因一直没有开始的几本书(都比较厚,可能没太多的时间,能读一本算一本了)
+
+<ul>
+<li>算法导论</li>
+<li>代码大全</li>
+<li>编译原理(龙书)</li>
+</ul>
+</li>
+<li>进一步深入了解工作中遇到的或者自己感兴趣的技术或语言
+
+<ul>
+<li>Javascript
+
+<ul>
+<li>把买的犀牛书看完,不然太浪费了</li>
+</ul>
+</li>
+<li>Erlang
+
+<ul>
+<li>把豆瓣上买的Erlang程序设计看完,不然太浪费了(豆瓣阅读真TM的烂)</li>
+<li>把已经买的Erlang/OTP并发编程实战看完,不然太浪费了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[omniauth-github使用示例]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/29/omniauth-github-demo/"/>
     <updated>2013-07-29T11:57:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/29/omniauth-github-demo</id>
+    <id>http://williamherry.github.io/blog/2013/07/29/omniauth-github-demo</id>
     <content type="html"><![CDATA[<p>这篇文档简单记录一下使用omniauth-github的过程</p>
 
 <p>这里有个能跑的代码可以clone看看效果<a href="https://github.com/williamherry/omniauth-github-demo">omniauth-github-demo</a></p>
@@ -298,9 +427,9 @@
   
   <entry>
     <title type="html"><![CDATA[Ruby/Rails小技巧收集]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/29/ruby-slash-rails-tips-collection/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/29/ruby-slash-rails-tips-collection/"/>
     <updated>2013-07-29T11:43:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/29/ruby-slash-rails-tips-collection</id>
+    <id>http://williamherry.github.io/blog/2013/07/29/ruby-slash-rails-tips-collection</id>
     <content type="html"><![CDATA[<p>收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow</p>
 
 <h3>jQuery on的用法</h3>
@@ -335,9 +464,9 @@
   
   <entry>
     <title type="html"><![CDATA[The Ruby Programming Language Notes]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/22/the-ruby-programming-language-notes/"/>
     <updated>2013-07-22T11:14:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/22/the-ruby-programming-language-notes</id>
+    <id>http://williamherry.github.io/blog/2013/07/22/the-ruby-programming-language-notes</id>
     <content type="html"><![CDATA[<ul>
 <li>Global variables are prefixed with $</li>
 <li>Instance variables are prefixed with @</li>
@@ -1118,9 +1247,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[日期时间选择插件使用]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/21/datetimepicker-demo/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/21/datetimepicker-demo/"/>
     <updated>2013-07-21T23:22:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/21/datetimepicker-demo</id>
+    <id>http://williamherry.github.io/blog/2013/07/21/datetimepicker-demo</id>
     <content type="html"><![CDATA[<p>以前做过这样的东西,花了好多时间,因为要选择到底用那个插件,还有好多插件要只有日期没有时间,今天做这样的东西又花了不少时间,决定记录下来,下一次就简单多了</p>
 
 <p>我使用的是<code>jQuery</code>的<code>datepicker</code>加上<a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a></p>
@@ -1129,7 +1258,7 @@ t.year   # => 2000</p>
 
 <p>效果类似这样:</p>
 
-<p><img src="http://williamherry.github.com/images/datetimepicker.png"></p>
+<p><img src="http://williamherry.github.io/images/datetimepicker.png"></p>
 
 <ul>
 <li>首先创建项目</li>
@@ -1235,9 +1364,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[只允许上海的用户注册]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/10/allow-ip-from-shanghai-do-something/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/10/allow-ip-from-shanghai-do-something/"/>
     <updated>2013-07-10T13:33:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/10/allow-ip-from-shanghai-do-something</id>
+    <id>http://williamherry.github.io/blog/2013/07/10/allow-ip-from-shanghai-do-something</id>
     <content type="html"><![CDATA[<p>刚开始听到老板说这个需求的时候,我还傻呼呼一直在想要怎么得到所有上海的IP地址,都打算试着写爬虫去爬这些数据,事实上我只要判断一个客户端的IP是不是属于上海就行了,而这个动作可以由一些第三方提供的API来做,像百度就有提供这个的服务</p>
 
 <p>转过弯来就比较简单了,我的方法在<code>app/controller/application_controller.rb</code>文件里加一个helper方法</p>
@@ -1305,9 +1434,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[IE10下图片灰度处理]]></title>
-    <link href="http://williamherry.github.com/blog/2013/07/09/image-grayscale-for-ie10/"/>
+    <link href="http://williamherry.github.io/blog/2013/07/09/image-grayscale-for-ie10/"/>
     <updated>2013-07-09T17:18:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/07/09/image-grayscale-for-ie10</id>
+    <id>http://williamherry.github.io/blog/2013/07/09/image-grayscale-for-ie10</id>
     <content type="html"><![CDATA[<p>其它浏览器或版本的图片灰度处理可以看<a href="http://www.karlhorky.com/2012/06/cross-browser-image-grayscale-with-css.html">这里</a></p>
 
 <p>上面的方法对IE10是没有效果的,Google了好久发现只有用svg才对IE10才有作用,想知道svg是什么请看<a href="http://www.w3school.com.cn/svg/svg_intro.asp">这里</a></p>
@@ -1349,7 +1478,7 @@ t.year   # => 2000</p>
 
 <p>还用上面的例子,它会把图片按比较放到和短的边一样, 这里是100X1000,然后把100X100的框放中间,多余的裁掉,剩下的就是显示的部分</p>
 
-<p><img src="http://williamherry.github.com/images/svg/preverse-aspect-ratio.svg"></p>
+<p><img src="http://williamherry.github.io/images/svg/preverse-aspect-ratio.svg"></p>
 
 <p>这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题</p>
 
@@ -1363,9 +1492,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[理解测试中的stub和mock]]></title>
-    <link href="http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock/"/>
+    <link href="http://williamherry.github.io/blog/2013/05/13/understand-stub-and-mock/"/>
     <updated>2013-05-13T16:46:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/05/13/understand-stub-and-mock</id>
+    <id>http://williamherry.github.io/blog/2013/05/13/understand-stub-and-mock</id>
     <content type="html"><![CDATA[<p>刚开始学习<code>rspec</code>的时候,<code>stub</code>和<code>mock</code>理解起来有点困难,听了<code>Terry</code>和<code>aNdReW</code>的讲解后,对它们的理解深入多了,在此表示感谢</p>
 
 <p>先从<code>stub</code>说起,什么是<code>stub</code>呢,<code>CodeSchool</code>给出这样的定义:</p>
@@ -1461,7 +1590,7 @@ A stub with an expectations that the method gets called.</p></blockquote>
 
 <p>你可能会想为什么要这样写,这是因为我们仅仅是要测试<code>decapitate</code>这个方法确实调用了<code>weapon.slice</code>, 可以把<code>decapitate</code>想成下面的黑盒,我们蹲在图中的A点,等着看它会不会去调用<code>weapon.slice</code></p>
 
-<p><img src="http://williamherry.github.com/images/test/test_outgoing.jpg"></p>
+<p><img src="http://williamherry.github.io/images/test/test_outgoing.jpg"></p>
 
 <p>这个图是<code>Sandi Metz</code>在<code>RailsConf 2013</code>上的演讲<code>The Magic Tricks of Testing</code></p>
 
@@ -1475,9 +1604,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[openSUSE 12.3 安装完后需要做的事情]]></title>
-    <link href="http://williamherry.github.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
+    <link href="http://williamherry.github.io/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
     <updated>2013-03-23T02:36:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
+    <id>http://williamherry.github.io/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
     <content type="html"><![CDATA[<p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
 
 <p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
@@ -1552,9 +1681,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[最简单的在crontab中执行rake命令的方法]]></title>
-    <link href="http://williamherry.github.com/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
+    <link href="http://williamherry.github.io/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
     <updated>2013-02-05T11:26:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
+    <id>http://williamherry.github.io/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
     <content type="html"><![CDATA[<p>stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在<a href="http://www.wyliethomas.com/blog/2011/08/24/rvm-rake-and-cron-on-ubuntu/">这里</a></p>
 
 <p>方法很简单,在crontab中可以定义环境变量</p>
@@ -1577,9 +1706,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Rails图片上传]]></title>
-    <link href="http://williamherry.github.com/blog/2013/01/25/rails-image-upload/"/>
+    <link href="http://williamherry.github.io/blog/2013/01/25/rails-image-upload/"/>
     <updated>2013-01-25T22:27:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2013/01/25/rails-image-upload</id>
+    <id>http://williamherry.github.io/blog/2013/01/25/rails-image-upload</id>
     <content type="html"><![CDATA[<p>好久没有更新这个了,竟然连<code>rake new_post['title']</code>都忘记了还得查文档,看来以后还是得时不时的写点</p>
 
 <p>这里简单记录一下Rails中如何处理图片上传,我们选择<a href="https://github.com/jnicklas/carrierwave">CarrierWave</a>这个gem来处理上传的文件,由于重点是处理图片上传,所以我们会使用scaffolding生成一个article的CURD,把图片绑定给它(一个article有一个图片)</p>
@@ -1713,9 +1842,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[使用Nginx+SSL代理chef-server]]></title>
-    <link href="http://williamherry.github.com/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
+    <link href="http://williamherry.github.io/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
     <updated>2012-10-12T21:09:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/10/12/proxy-chef-server-with-nginx</id>
+    <id>http://williamherry.github.io/blog/2012/10/12/proxy-chef-server-with-nginx</id>
     <content type="html"><![CDATA[<h2>说明</h2>
 
 <p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
@@ -1741,7 +1870,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
 
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1936,7 +2065,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <h2>修改client使用新的地址</h2>
 
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
@@ -1963,20 +2092,20 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之Arrtibutes]]></title>
-    <link href="http://williamherry.github.com/blog/2012/10/10/chef-attributes/"/>
+    <link href="http://williamherry.github.io/blog/2012/10/10/chef-attributes/"/>
     <updated>2012-10-10T21:42:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/10/10/chef-attributes</id>
+    <id>http://williamherry.github.io/blog/2012/10/10/chef-attributes</id>
     <content type="html"><![CDATA[<p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
 
 <h2>概述</h2>
 
-<p><img src="http://williamherry.github.com/images/chef/attributes.jpg"></p>
+<p><img src="http://williamherry.github.io/images/chef/attributes.jpg"></p>
 
 <p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
 
 <h2>属性类型和优先级</h2>
 
-<p><img src="http://williamherry.github.com/images/chef/attribute-priority-stack.png"></p>
+<p><img src="http://williamherry.github.io/images/chef/attribute-priority-stack.png"></p>
 
 <p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
 
@@ -2230,9 +2359,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Git学习资料收集]]></title>
-    <link href="http://williamherry.github.com/blog/2012/10/10/learning-git-resources/"/>
+    <link href="http://williamherry.github.io/blog/2012/10/10/learning-git-resources/"/>
     <updated>2012-10-10T20:40:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/10/10/learning-git-resources</id>
+    <id>http://williamherry.github.io/blog/2012/10/10/learning-git-resources</id>
     <content type="html"><![CDATA[<p>收集一下学习Git过程中用过的比较好的资料</p>
 
 <h2>ProGit</h2>
@@ -2284,9 +2413,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之LWRP]]></title>
-    <link href="http://williamherry.github.com/blog/2012/10/09/chef-lwrp/"/>
+    <link href="http://williamherry.github.io/blog/2012/10/09/chef-lwrp/"/>
     <updated>2012-10-09T20:18:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/10/09/chef-lwrp</id>
+    <id>http://williamherry.github.io/blog/2012/10/09/chef-lwrp</id>
     <content type="html"><![CDATA[<h2>概述</h2>
 
 <p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
@@ -2449,9 +2578,9 @@ knife node run list add client1.chef.com 'recipe[users::test]'
   
   <entry>
     <title type="html"><![CDATA[安装配置Git服务器Gitolite]]></title>
-    <link href="http://williamherry.github.com/blog/2012/10/03/install-gitolite/"/>
+    <link href="http://williamherry.github.io/blog/2012/10/03/install-gitolite/"/>
     <updated>2012-10-03T18:38:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/10/03/install-gitolite</id>
+    <id>http://williamherry.github.io/blog/2012/10/03/install-gitolite</id>
     <content type="html"><![CDATA[<p>Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法</p>
 
 <h3>安装</h3>
@@ -2615,9 +2744,9 @@ fatal: The remote end hung up unexpectedly
   
   <entry>
     <title type="html"><![CDATA[virt相关命令总结]]></title>
-    <link href="http://williamherry.github.com/blog/2012/09/14/virt-releated-command/"/>
+    <link href="http://williamherry.github.io/blog/2012/09/14/virt-releated-command/"/>
     <updated>2012-09-14T09:35:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/09/14/virt-releated-command</id>
+    <id>http://williamherry.github.io/blog/2012/09/14/virt-releated-command</id>
     <content type="html"><![CDATA[<p>在CentOS下面多部分命令都是有包<code>libguestfs-tools-c</code>提供,所以,首先需要安装它</p>
 
 <h2>virt-ls</h2>
@@ -3096,9 +3225,9 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
   
   <entry>
     <title type="html"><![CDATA[定制Linux发行版(CentOS-6.2)]]></title>
-    <link href="http://williamherry.github.com/blog/2012/09/09/customize-centos-iso/"/>
+    <link href="http://williamherry.github.io/blog/2012/09/09/customize-centos-iso/"/>
     <updated>2012-09-09T01:18:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/09/09/customize-centos-iso</id>
+    <id>http://williamherry.github.io/blog/2012/09/09/customize-centos-iso</id>
     <content type="html"><![CDATA[<p>主要内容:</p>
 
 <ul>
@@ -3256,22 +3385,22 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
   
   <entry>
     <title type="html"><![CDATA[fcitx在Ubuntu12.04上Crash的解决办法]]></title>
-    <link href="http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash/"/>
+    <link href="http://williamherry.github.io/blog/2012/09/02/ubuntu-fcitx-crash/"/>
     <updated>2012-09-02T12:34:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/09/02/ubuntu-fcitx-crash</id>
+    <id>http://williamherry.github.io/blog/2012/09/02/ubuntu-fcitx-crash</id>
     <content type="html"><![CDATA[<p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
 
 <p>好像有点太短了,怎么办呢?粘张图片吧</p>
 
-<p><img src="http://williamherry.github.com/images/fcitx/fcitx.png"></p>
+<p><img src="http://williamherry.github.io/images/fcitx/fcitx.png"></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Chef问题及小知识汇总(持续更新)]]></title>
-    <link href="http://williamherry.github.com/blog/2012/08/31/chef-tips/"/>
+    <link href="http://williamherry.github.io/blog/2012/08/31/chef-tips/"/>
     <updated>2012-08-31T09:00:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/08/31/chef-tips</id>
+    <id>http://williamherry.github.io/blog/2012/08/31/chef-tips</id>
     <content type="html"><![CDATA[<p>Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了</p>
 
 <h2>Centos6.2下Chef-server的安装</h2>
@@ -3375,7 +3504,7 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 
 <p>首先我们定义这个属性</p>
 
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.com/var/chef/cookbooks/mysql/attributes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/var/chef/cookbooks/mysql/attributes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">ipaddress</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -3562,116 +3691,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 </span></code></pre></td></tr></table></div></figure>
 
 
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Weechat-命令行下的IRC客户端工具]]></title>
-    <link href="http://williamherry.github.com/blog/2012/08/29/weechat-irc-client/"/>
-    <updated>2012-08-29T20:15:00+08:00</updated>
-    <id>http://williamherry.github.com/blog/2012/08/29/weechat-irc-client</id>
-    <content type="html"><![CDATA[<p>以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西</p>
-
-<p>首先看一下效果图(右键图形选择<code>view image</code>可以看到高清大图哦):</p>
-
-<p><img src="http://williamherry.github.com/images/weechat/weechat.png"></p>
-
-<p>在Ubuntu下安装非常简单</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install weechat</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装完之后运行<code>weechat-curses</code>就可以打开软件了</p>
-
-<p>在软件下方的输入框里输入<code>/connect freenode</code>就可连接到freenode的服务器,输入<code>/join #ruby</code>就可以加入到<code>#ruby</code>群组里了</p>
-
-<p>你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:</p>
-
-<p>自动连接到freenode</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autoconnect on</span></code></pre></td></tr></table></div></figure>
-
-
-<p>设置nicks,username,realname</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.nicks "nickname"
-</span><span class='line'>/set irc.server.freenode.username "username"
-</span><span class='line'>/set irc.server.freenode.realname "realname"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自动认证nickname</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.command "/msg nickserv identify xxxxxx"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自动加入群组</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autojoin "#channel1,#channel2"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用<code>Ctrl + P</code>和<code>Ctrl + N</code>来切换,聊天的内容不能通过滚动鼠标滚轮来查看(可以了,看更新),需要按<code>PageUp</code>和<code>PageDown</code></p>
-
-<p>更多的高级的使用可以看它的<a href="http://www.weechat.org/doc/">手册页</a></p>
-
-<h2>更新</h2>
-
-<h3>使用weechat会有连不上freenode的问题</h3>
-
-<p>解决办法是端口改成8001</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.addresses "chat.freenode.net/8001"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>加入鼠标然支持</h3>
-
-<p>启动鼠标支持</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/moune enable</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>启动weechat的时候就支持鼠标</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.mouse on</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>屏蔽无关信息</h3>
-
-<p>经常会有一些<code>aaa join the channel, bbb leave this channel</code>等的信息,屏蔽的方法是</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/filter add irc_smart *,!*weechat* irc_smart_filter *</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>去掉用户发言前面的时间</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.buffer_time_format  &quot;&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>让给自己的信息在桌面上显示</h3>
-
-<p>只要安装一个插件然后重启weechat就可以了</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
-</span><span class='line'><span class="n">wget</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
-</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>

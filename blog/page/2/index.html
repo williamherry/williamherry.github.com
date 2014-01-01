@@ -9,7 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="说明 本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据 这里使用的系统是centos,应该也适用于其它的发行版 这里假设你已经配置好了chef-server,在整个过程中都不需要对chef-server做修改(你可能会想到让chef- &hellip;">
+  <meta name="description" content="好久没有更新这个了,竟然连rake new_post['title']都忘记了还得查文档,看来以后还是得时不时的写点 这里简单记录一下Rails中如何处理图片上传,我们选择CarrierWave这个gem来处理上传的文件,由于重点是处理图片上传, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.github.com/blog/page/2/">
+  <link rel="canonical" href="http://williamherry.github.io/blog/page/2/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -53,7 +53,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:williamherry.github.com" />
+    <input type="hidden" name="q" value="site:williamherry.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -69,6 +69,171 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/25/rails-image-upload/">Rails图片上传</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-25T22:27:00+08:00" pubdate data-updated="true">Jan 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/01/25/rails-image-upload/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>好久没有更新这个了,竟然连<code>rake new_post['title']</code>都忘记了还得查文档,看来以后还是得时不时的写点</p>
+
+<p>这里简单记录一下Rails中如何处理图片上传,我们选择<a href="https://github.com/jnicklas/carrierwave">CarrierWave</a>这个gem来处理上传的文件,由于重点是处理图片上传,所以我们会使用scaffolding生成一个article的CURD,把图片绑定给它(一个article有一个图片)</p>
+
+<p>首先我们创建一个Rails项目</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new image-upload-demo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后用脚手架生成article</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd image-upload-demo
+</span><span class='line'>rails g scaffold article title:string content:text</span></code></pre></td></tr></table></div></figure>
+
+
+<p>执行migration生成数据库表结构</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake db:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>rails s</code>启动服务,访问<code>http://localhost:3000/articles</code>检查有没错误</p>
+
+<p>如果没有问题,下一步我们就可以设定CarrierWave了,首先是安装,在Gemfile里添加一行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'carrierwave'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后执行<code>bundle install</code>进行安装,然后用下面的命令创建uploader</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g uploader photo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会创建<code>app/uploaders/photo_uploader.rb</code>这个文件,carrierwave的一些设定都在这个文件里面,我们目前先不做更改,只使用默认配置</p>
+
+<p>接着我们给article表加一个字段来存储文件信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g migration AddPhotoToArticles photo:string</span></code></pre></td></tr></table></div></figure>
+
+
+<p>别忘了执行<code>rake db:migrate</code>生成表结构</p>
+
+<p>然后的article的model里加入调用carrierwave的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/models/article.rb
+</span><span class='line'>class Article &lt; ActiveRecord::Base
+</span><span class='line'>  attr_accessible :content, :title, :photo
+</span><span class='line'>
+</span><span class='line'>  mount_uploader :photo, PhotoUploader
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>别忘了把<code>photo</code>也加到<code>attr_accessible</code>里哦
+这样Model和数据库就可以处理上传上来的文件了,接下来在view里加入上传图片的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/views/articles/_form.html.erb
+</span><span class='line'>&lt;%= form_for(@article, :html =&gt; {:multipart =&gt; true}) do |f| %&gt;
+</span><span class='line'>...
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;%= f.label :title %&gt;&lt;br /&gt;
+</span><span class='line'>    &lt;%= f.text_field :title %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;%= f.label :content %&gt;&lt;br /&gt;
+</span><span class='line'>    &lt;%= f.text_area :content %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="field"&gt;
+</span><span class='line'>    &lt;label&gt;My Photo&lt;/label&gt;
+</span><span class='line'>    &lt;%= f.file_field :photo %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>  &lt;div class="actions"&gt;
+</span><span class='line'>    &lt;%= f.submit %&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关键在form_for中添加<code>:html =&gt; {:multipart =&gt; true}</code>,现在就可以使用上传的功能了,并且上传的图片可以简单的使用<code>&lt;%= image_tag @article.photo %&gt;</code>来调用,我们再在显示的view里加入显示图片的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># app/views/articles/show.html.erb
+</span><span class='line'>...
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;
+</span><span class='line'>  &lt;b&gt;Photo:&lt;/b&gt;
+</span><span class='line'>  &lt;%= image_tag @article.photo %&gt;
+</span><span class='line'>&lt;/p&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试了</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2186,145 +2351,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/29/weechat-irc-client/">Weechat-命令行下的IRC客户端工具</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-29T20:15:00+08:00" pubdate data-updated="true">Aug 29<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/29/weechat-irc-client/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>以前一直用XChat做为IRC的客户端工具,最近无意中发现了这个命令行下面的工具,一般这样的博客都会说XChat怎么怎么的不好,所以开始用这个新东西,但是,我还真说不出XChat那里不好了,都是非常优秀的软件,如果你喜欢尝试新东西,或者钟情于命令行,可以试试这个东西</p>
-
-<p>首先看一下效果图(右键图形选择<code>view image</code>可以看到高清大图哦):</p>
-
-<p><img src="/images/weechat/weechat.png"></p>
-
-<p>在Ubuntu下安装非常简单</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install weechat</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装完之后运行<code>weechat-curses</code>就可以打开软件了</p>
-
-<p>在软件下方的输入框里输入<code>/connect freenode</code>就可连接到freenode的服务器,输入<code>/join #ruby</code>就可以加入到<code>#ruby</code>群组里了</p>
-
-<p>你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:</p>
-
-<p>自动连接到freenode</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autoconnect on</span></code></pre></td></tr></table></div></figure>
-
-
-<p>设置nicks,username,realname</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.nicks "nickname"
-</span><span class='line'>/set irc.server.freenode.username "username"
-</span><span class='line'>/set irc.server.freenode.realname "realname"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自动认证nickname</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.command "/msg nickserv identify xxxxxx"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自动加入群组</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.autojoin "#channel1,#channel2"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>知道这些估计就差不多了,还有就是可以同时加入到多个Channel里,用<code>Ctrl + P</code>和<code>Ctrl + N</code>来切换,聊天的内容不能通过滚动鼠标滚轮来查看(可以了,看更新),需要按<code>PageUp</code>和<code>PageDown</code></p>
-
-<p>更多的高级的使用可以看它的<a href="http://www.weechat.org/doc/">手册页</a></p>
-
-<h2>更新</h2>
-
-<h3>使用weechat会有连不上freenode的问题</h3>
-
-<p>解决办法是端口改成8001</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/set irc.server.freenode.addresses "chat.freenode.net/8001"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>加入鼠标然支持</h3>
-
-<p>启动鼠标支持</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/moune enable</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>启动weechat的时候就支持鼠标</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.mouse on</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>屏蔽无关信息</h3>
-
-<p>经常会有一些<code>aaa join the channel, bbb leave this channel</code>等的信息,屏蔽的方法是</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/filter add irc_smart *,!*weechat* irc_smart_filter *</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>去掉用户发言前面的时间</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/set weechat.look.buffer_time_format  &quot;&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>让给自己的信息在桌面上显示</h3>
-
-<p>只要安装一个插件然后重启weechat就可以了</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
-</span><span class='line'><span class="n">wget</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2340,6 +2366,10 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
@@ -2367,10 +2397,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     
       <li class="post">
         <a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a>
       </li>
     
   </ul>
@@ -2415,7 +2441,7 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - William Herry -
+  Copyright &copy; 2014 - William Herry -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
