@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.io/atom.xml" rel="self"/>
   <link href="http://williamherry.github.io/"/>
-  <updated>2014-01-27T11:24:17+08:00</updated>
+  <updated>2014-02-15T22:17:41+08:00</updated>
   <id>http://williamherry.github.io/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,985 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Chef Ohai源码学习]]></title>
+    <link href="http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code/"/>
+    <updated>2014-02-11T08:28:00+08:00</updated>
+    <id>http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code</id>
+    <content type="html"><![CDATA[<p>接触Chef以来一直对Ohai很感兴趣,它收集的系统信息非常全面,很好奇它是怎么收集的,现在终于有时间学习了</p>
+
+<h3>目标</h3>
+
+<p>搞清楚Ohai是如何收集到某一项系统消息的,如IP地址</p>
+
+<h3>环境搭建</h3>
+
+<p>使用<code>gem install ohai</code>安装ohai和它的依赖,然后下载ohai的源码</p>
+
+<pre><code>git clone https://github.com/opscode/ohai.git
+</code></pre>
+
+<p>可以直接在源码目录通过<code>./bin/ohai</code>运行<code>ohai</code>,这样可以对源码做一些修改(添加调试代码)然后马上运行查看效果,而不用去找它的源码安装到系统的位置</p>
+
+<p>还可以使用<code>pry</code>进行单步调试: <code>gem install pry</code>安装<code>pry</code>,的要调试的代码前面加上<code>binding.pry</code>,在该文件前面加上<code>require 'pry'</code></p>
+
+<h3>查看源码过程</h3>
+
+<p>首先找到入口,当然就是<code>bin/ohai</code>文件了,我们需要关系的只有一行</p>
+
+<figure class='code'><figcaption><span>bin/ohai</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">run</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们在看一下<code>Ohai::Application</code>的定义,我们感兴趣的是<code>run</code>方法的定义</p>
+
+<figure class='code'><figcaption><span>lib/ohai/application.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run</span>
+</span><span class='line'>  <span class="n">configure_ohai</span>
+</span><span class='line'>  <span class="n">configure_logging</span>
+</span><span class='line'>  <span class="n">run_application</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里前两个方法我们目前不关心,看一下<code>run_application</code>方法的定义</p>
+
+<figure class='code'><figcaption><span>lib/ohai/application.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run_application</span>
+</span><span class='line'>  <span class="n">ohai</span> <span class="o">=</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:System</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ohai</span><span class="o">.</span><span class="n">all_plugins</span><span class="p">(</span><span class="vi">@attributes</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@attributes</span>
+</span><span class='line'>    <span class="vi">@attributes</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="n">ohai</span><span class="o">.</span><span class="n">attributes_print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">ohai</span><span class="o">.</span><span class="n">json_pretty_print</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过加调试代码发现这里的<code>@attributes</code>是nil,所以这里的代码可以简化为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">ohai</span> <span class="o">=</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:System</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">ohai</span><span class="o">.</span><span class="n">all_plugins</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">ohai</span><span class="o">.</span><span class="n">json_pretty_print</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下来去看<code>Ohai::System</code>的定义</p>
+
+<p>首先我们看一下<code>json_pretty_print</code>的定义</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">json_pretty_print</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="ss">Yajl</span><span class="p">:</span><span class="ss">:Encoder</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:pretty</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">item</span> <span class="o">||</span> <span class="vi">@data</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它只是把<code>@data</code>的数据格式化后输出,所以我们推测实际收集的动作是发生在<code>all_plugins</code>方法里</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">all_plugins</span><span class="p">(</span><span class="n">attribute_filter</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># Reset the system when all_plugins is called since this function</span>
+</span><span class='line'>  <span class="c1"># can be run multiple times in order to pick up any changes in the</span>
+</span><span class='line'>  <span class="c1"># config or plugins with Chef.</span>
+</span><span class='line'>  <span class="n">reset_system</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">load_plugins</span>
+</span><span class='line'>  <span class="n">run_plugins</span><span class="p">(</span><span class="kp">true</span><span class="p">,</span> <span class="n">attribute_filter</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>reset_system</code>方法里只是初始化了一些实例变量,其中包括<code>@loader</code>它<code>@runner</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@loader</span> <span class="o">=</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Loader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'><span class="vi">@runner</span> <span class="o">=</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Runner</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里把<code>self</code>传了进去,这里的<code>self</code>就就<code>Ohai::System</code>的实例,我们看一下loader如何处理</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@controller</span> <span class="o">=</span> <span class="n">controller</span>
+</span><span class='line'>  <span class="vi">@v6_plugin_classes</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>  <span class="vi">@v7_plugin_classes</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>loader把<code>Ohai::System</code>的实例保存到了实例变量<code>@controller</code>中</p>
+
+<p><code>load_plugins</code>方法只有一行,调用了<code>@loader</code>的<code>load_all</code>方法,我们看一下这个方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_all</span>
+</span><span class='line'>  <span class="n">plugin_files_by_dir</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">plugin_file</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">load_plugin_class</span><span class="p">(</span><span class="n">plugin_file</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">plugin_file</span><span class="o">.</span><span class="n">plugin_root</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_v6_plugins</span>
+</span><span class='line'>  <span class="n">collect_v7_plugins</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看一下<code>plugin_files_by_dir</code>的定义</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">plugin_files_by_dir</span>
+</span><span class='line'>  <span class="nb">Array</span><span class="p">(</span><span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Config</span><span class="o">[</span><span class="ss">:plugin_path</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">plugin_files</span><span class="p">,</span> <span class="n">plugin_path</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">plugin_files</span> <span class="o">+</span> <span class="no">PluginFile</span><span class="o">.</span><span class="n">find_all_in</span><span class="p">(</span><span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注释中说它搜索所有的plugin路径并返回一个包含<code>PluginFile</code>对象的数组</p>
+
+<p>在看一下<code>PluginFile</code>对象长什么样子</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">PluginFile</span> <span class="o">&lt;</span> <span class="no">Struct</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:path</span><span class="p">,</span> <span class="ss">:plugin_root</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_all_in</span><span class="p">(</span><span class="n">plugin_dir</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">Dir</span><span class="o">[</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plugin_dir</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">,</span> <span class="s2">&quot;*.rb&quot;</span><span class="p">)</span><span class="o">].</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+</span><span class='line'>      <span class="kp">new</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">plugin_dir</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到它只是简单的从<code>Struct</code>继承而来,这里所起的作用就是定义了两个访问器<code>path</code>和<code>plugin_root</code>,打印出来类似这样</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#&lt;struct Ohai::Loader::PluginFile</span>
+</span><span class='line'> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/aix/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'> <span class="n">plugin_root</span><span class="o">=</span><span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins&quot;</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再回到<code>load_all</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_all</span>
+</span><span class='line'>  <span class="n">plugin_files_by_dir</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">plugin_file</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">load_plugin_class</span><span class="p">(</span><span class="n">plugin_file</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">plugin_file</span><span class="o">.</span><span class="n">plugin_root</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_v6_plugins</span>
+</span><span class='line'>  <span class="n">collect_v7_plugins</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对每一个<code>PluginFile</code>对象调用了<code>load_plugin_class</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_plugin_class</span><span class="p">(</span><span class="n">plugin_path</span><span class="p">,</span> <span class="n">plugin_dir_path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># Read the contents of the plugin to understand if it&#39;s a V6 or V7 plugin.</span>
+</span><span class='line'>  <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">contents</span> <span class="o">&lt;&lt;</span> <span class="no">IO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">IOError</span><span class="p">,</span> <span class="ss">Errno</span><span class="p">:</span><span class="ss">:ENOENT</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to open or read plugin at </span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">nil</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># We assume that a plugin is a V7 plugin if it contains Ohai.plugin in its contents.</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">contents</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s2">&quot;Ohai.plugin&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">load_v7_plugin_class</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;[DEPRECATION] Plugin at </span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2"> is a version 6 plugin. \</span>
+</span><span class='line'><span class="s2">Version 6 plugins will not be supported in future releases of Ohai. \</span>
+</span><span class='line'><span class="s2">Please upgrade your plugin to version 7 plugin syntax. \</span>
+</span><span class='line'><span class="s2">For more information visit here: docs.opscode.com/ohai_custom.html&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">load_v6_plugin_class</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">,</span> <span class="n">plugin_dir_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>他把文件里的内容读了进来,并根据有没有包含<code>Ohai.plugin</code>来有选择了调用<code>load_v7_plugin_class</code>或<code>load_v6_plugin_class</code>,我大概看来一下基本上全都包含<code>Ohai.plugin</code>,所以我们从v7追</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_v7_plugin_class</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin_class</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="no">TOPLEVEL_BINDING</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">unless</span> <span class="n">plugin_class</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Class</span><span class="p">)</span> <span class="ow">and</span> <span class="n">plugin_class</span> <span class="o">&lt;</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:DSL</span><span class="o">::</span><span class="no">Plugin</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">IllegalPluginDefinition</span><span class="p">,</span> <span class="s2">&quot;Plugin file cannot contain any statements after the plugin definition&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">plugin_class</span><span class="o">.</span><span class="n">sources</span> <span class="o">&lt;&lt;</span> <span class="n">plugin_path</span>
+</span><span class='line'>  <span class="vi">@v7_plugin_classes</span> <span class="o">&lt;&lt;</span> <span class="n">plugin_class</span> <span class="k">unless</span> <span class="vi">@v7_plugin_classes</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin_class</span>
+</span><span class='line'><span class="k">rescue</span> <span class="no">SystemExit</span><span class="p">,</span> <span class="no">Interrupt</span>
+</span><span class='line'>  <span class="k">raise</span>
+</span><span class='line'><span class="k">rescue</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">InvalidPluginName</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>  <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Plugin Name Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">rescue</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">IllegalPluginDefinition</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>  <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Plugin Definition Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">rescue</span> <span class="no">NoMethodError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>  <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Plugin Method Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: unsupported operation </span><span class="se">\&#39;</span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">rescue</span> <span class="no">SyntaxError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>  <span class="c1"># split on occurrences of</span>
+</span><span class='line'>  <span class="c1">#    &lt;env&gt;: syntax error,</span>
+</span><span class='line'>  <span class="c1">#    &lt;env&gt;:##: syntax error,</span>
+</span><span class='line'>  <span class="c1"># to remove from error message</span>
+</span><span class='line'>  <span class="n">parts</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sr">/&lt;.*&gt;[:[0-9]+]*: syntax error, /</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">parts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">next</span> <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Plugin Syntax Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: </span><span class="si">#{</span><span class="n">part</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">rescue</span> <span class="no">Exception</span><span class="p">,</span> <span class="ss">Errno</span><span class="p">:</span><span class="ss">:ENOENT</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>  <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Plugin Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Plugin Error: &lt;</span><span class="si">#{</span><span class="n">plugin_path</span><span class="si">}</span><span class="s2">&gt;: </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">backtrace</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>异常处理我们不关心,直接删掉来看</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_v7_plugin_class</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin_class</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="no">TOPLEVEL_BINDING</span><span class="p">,</span> <span class="n">plugin_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">unless</span> <span class="n">plugin_class</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Class</span><span class="p">)</span> <span class="ow">and</span> <span class="n">plugin_class</span> <span class="o">&lt;</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:DSL</span><span class="o">::</span><span class="no">Plugin</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">IllegalPluginDefinition</span><span class="p">,</span> <span class="s2">&quot;Plugin file cannot contain any statements after the plugin definition&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">plugin_class</span><span class="o">.</span><span class="n">sources</span> <span class="o">&lt;&lt;</span> <span class="n">plugin_path</span>
+</span><span class='line'>  <span class="vi">@v7_plugin_classes</span> <span class="o">&lt;&lt;</span> <span class="n">plugin_class</span> <span class="k">unless</span> <span class="vi">@v7_plugin_classes</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin_class</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里第一行把插件文件里的代码执行,返回的结果赋给<code>plugin_class</code>,把<code>plugin_path</code>保存到其中,并把它收集到实例变量<code>@v7_plugin_classes</code>中</p>
+
+<p>我们找最简单了plugin看里面是什么</p>
+
+<figure class='code'><figcaption><span>lib/ohai/plugins/command.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Ohai</span><span class="o">.</span><span class="n">plugin</span><span class="p">(</span><span class="ss">:Command</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">provides</span> <span class="s2">&quot;command&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_data</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">command</span> <span class="no">Mash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它是调用<code>Ohai</code>的<code>plugin</code>方法,还传给它一个block,看看这个方法的定义</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">InvalidPluginName</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> is not a valid plugin name. A valid plugin name is a symbol which begins with a capital letter and contains no underscores&quot;</span> <span class="k">unless</span> <span class="no">NamedPlugin</span><span class="o">.</span><span class="n">valid_name?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">plugin</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="no">NamedPlugin</span><span class="o">.</span><span class="n">strict_const_defined?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plugin</span> <span class="o">=</span> <span class="no">NamedPlugin</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plugin</span><span class="o">.</span><span class="n">class_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="n">klass</span> <span class="o">=</span> <span class="no">Class</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">DSL</span><span class="p">:</span><span class="ss">:Plugin</span><span class="o">::</span><span class="no">VersionVII</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plugin</span> <span class="o">=</span> <span class="no">NamedPlugin</span><span class="o">.</span><span class="n">const_set</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">klass</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">plugin</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法重点是这两行</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">klass</span> <span class="o">=</span> <span class="no">Class</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">DSL</span><span class="p">:</span><span class="ss">:Plugin</span><span class="o">::</span><span class="no">VersionVII</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'><span class="n">plugin</span> <span class="o">=</span> <span class="no">NamedPlugin</span><span class="o">.</span><span class="n">const_set</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">klass</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一行用传进来了block创建了一个继承自<code>DSL::Plugin::VersionVII</code>的类,然后一传进来的<code>name</code>为常量名保存到模块<code>NamedPlugin</code>中</p>
+
+<p>我们在回到前面的plugin文件</p>
+
+<figure class='code'><figcaption><span>lib/ohai/plugins/command.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Ohai</span><span class="o">.</span><span class="n">plugin</span><span class="p">(</span><span class="ss">:Command</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">provides</span> <span class="s2">&quot;command&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_data</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">command</span> <span class="no">Mash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里还有两个方法<code>provides</code>和<code>collect_data</code>,你没有猜错,它们就是定义在继承来的<code>DSL::Plugin::VersionVII</code>中</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin/versionvii.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">provides</span><span class="p">(</span><span class="o">*</span><span class="n">attrs</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">attrs</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="kp">attr</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">provides_attrs</span> <span class="o">&lt;&lt;</span> <span class="kp">attr</span> <span class="k">unless</span> <span class="n">provides_attrs</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它只是它传进来的参数收集到<code>provides_atts</code>,而<code>provides_atts</code>是前面生成的类的实例变量</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin/versionvii.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">provides_attrs</span>
+</span><span class='line'>  <span class="vi">@provides_attrs</span> <span class="o">||=</span> <span class="o">[]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在看<code>collect_data</code></p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin/versionvii.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">collect_data</span><span class="p">(</span><span class="n">platform</span> <span class="o">=</span> <span class="ss">:default</span><span class="p">,</span> <span class="o">*</span><span class="n">other_platforms</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">[</span><span class="n">platform</span><span class="p">,</span> <span class="n">other_platforms</span><span class="o">].</span><span class="n">flatten</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">plat</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">data_collector</span><span class="o">.</span><span class="n">has_key?</span><span class="p">(</span><span class="n">plat</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">IllegalPluginDefinition</span><span class="p">,</span> <span class="s2">&quot;collect_data already defined on platform </span><span class="si">#{</span><span class="n">plat</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">data_collector</span><span class="o">[</span><span class="n">plat</span><span class="o">]</span> <span class="o">=</span> <span class="n">block</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于前面的plugin中调用这个方法的时候只传了一个快进来,所从这个方法只是把传进来了块赋值给了以<code>:default</code>为key的<code>Mash</code>对象<code>data_collector</code>中</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin/versionvii.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">data_collector</span>
+</span><span class='line'>  <span class="vi">@data_collector</span> <span class="o">||=</span> <span class="no">Mash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们再回到<code>all_plugins</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">all_plugins</span><span class="p">(</span><span class="n">attribute_filter</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">reset_system</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">load_plugins</span>
+</span><span class='line'>  <span class="n">run_plugins</span><span class="p">(</span><span class="kp">true</span><span class="p">,</span> <span class="n">attribute_filter</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们再一次回到<code>load_all</code>方法中</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_all</span>
+</span><span class='line'>  <span class="n">plugin_files_by_dir</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">plugin_file</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">load_plugin_class</span><span class="p">(</span><span class="n">plugin_file</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">plugin_file</span><span class="o">.</span><span class="n">plugin_root</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_v6_plugins</span>
+</span><span class='line'>  <span class="n">collect_v7_plugins</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还剩下两行代码,我们只看一下<code>collect_v7_plugins</code></p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">collect_v7_plugins</span>
+</span><span class='line'>  <span class="vi">@v7_plugin_classes</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">plugin_class</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">load_v7_plugin</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对收集的<code>plugin_class</code>调用<code>load_v7_plugin</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_v7_plugin</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin_class</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@controller</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">collect_provides</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法把传进来的类实例化,并把<code>Ohai::System</code>实例的data传了进去,然后调用了<code>collect_provides</code></p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">collect_provides</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin_provides</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">provides_attrs</span>
+</span><span class='line'>  <span class="vi">@controller</span><span class="o">.</span><span class="n">provides_map</span><span class="o">.</span><span class="n">set_providers_for</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">plugin_provides</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还记得前面最简单的plugin的代码吗,这里的<code>plugin.class.provides_attrs</code>就是<code>provides</code>后面的参数(&ldquo;command&rdquo;)</p>
+
+<p>这里的provides_map是在<code>Ohai::System</code>的<code>reset_system</code>赋值的,是<code>ProvidesMap</code>的实例</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@provides_map</span> <span class="o">=</span> <span class="no">ProvidesMap</span><span class="o">.</span><span class="n">new</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后它又调用了<code>set_providers_for</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">set_providers_for</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">provided_attributes</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">unless</span> <span class="n">plugin</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="ss">Ohai</span><span class="p">:</span><span class="ss">:DSL</span><span class="o">::</span><span class="no">Plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;set_providers_for only accepts Ohai Plugin classes (got: </span><span class="si">#{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">provided_attributes</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">attribute</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">attrs</span> <span class="o">=</span> <span class="vi">@map</span>
+</span><span class='line'>    <span class="n">parts</span> <span class="o">=</span> <span class="n">normalize_and_validate</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">parts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">attrs</span><span class="o">[</span><span class="n">part</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Mash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>      <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">[</span><span class="n">part</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">attrs</span><span class="o">[</span><span class="ss">:_plugins</span><span class="o">]</span> <span class="o">||=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="n">attrs</span><span class="o">[</span><span class="ss">:_plugins</span><span class="o">]</span> <span class="o">&lt;&lt;</span> <span class="n">plugin</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里把传来的keys它plugin收集到了providesmap的实例变量<code>@map</code>中,类似这样</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="c1">#&lt;Ohai::ProvidesMap&gt;)&gt; @map</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;cpu&quot;</span><span class="o">=&gt;</span>
+</span><span class='line'>     <span class="p">{</span><span class="s2">&quot;_plugins&quot;</span><span class="o">=&gt;</span>
+</span><span class='line'>       <span class="o">[</span><span class="c1">#&lt;Ohai::NamedPlugin::CPU:0x00000101a6a4d0</span>
+</span><span class='line'>         <span class="vi">@data</span><span class="o">=</span><span class="p">{},</span>
+</span><span class='line'>         <span class="vi">@has_run</span><span class="o">=</span><span class="kp">false</span><span class="p">,</span>
+</span><span class='line'>         <span class="vi">@source</span><span class="o">=</span>
+</span><span class='line'>           <span class="o">[</span><span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/aix/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/darwin/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/freebsd/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/linux/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/netbsd/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/openbsd/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/sigar/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/solaris2/cpu.rb&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s2">&quot;/Users/william/Codes/ohai/lib/ohai/plugins/windows/cpu.rb&quot;</span>
+</span><span class='line'>           <span class="o">]</span><span class="p">,</span>
+</span><span class='line'>         <span class="vi">@version</span><span class="o">=</span><span class="ss">:version7</span><span class="o">&gt;</span>
+</span><span class='line'>       <span class="o">]</span>
+</span><span class='line'>     <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们再回到<code>all_plugins</code>方法,前面是<code>load_plugins</code>方法的深入执行过程,现在来看<code>run_plugins</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run_plugins</span><span class="p">(</span><span class="n">safe</span> <span class="o">=</span> <span class="kp">false</span><span class="p">,</span> <span class="n">attribute_filter</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># First run all the version 6 plugins</span>
+</span><span class='line'>  <span class="vi">@v6_dependency_solver</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">v6plugin</span><span class="o">|</span>
+</span><span class='line'>    <span class="vi">@runner</span><span class="o">.</span><span class="n">run_plugin</span><span class="p">(</span><span class="n">v6plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Then run all the version 7 plugins</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="vi">@provides_map</span><span class="o">.</span><span class="n">all_plugins</span><span class="p">(</span><span class="n">attribute_filter</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">plugin</span><span class="o">|</span>
+</span><span class='line'>      <span class="vi">@runner</span><span class="o">.</span><span class="n">run_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">AttributeNotFound</span><span class="p">,</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">DependencyCycle</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Encountered error while running plugins: </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">raise</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们只看v7的,这里比较简单,对每一个plugin调用<code>@runner</code>的<code>run_plugin</code>方法(<code>@runner</code>)是在<code>reset_system</code>中定义的</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">unless</span> <span class="n">plugin</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="ss">Ohai</span><span class="p">:</span><span class="ss">:DSL</span><span class="o">::</span><span class="no">Plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">InvalidPlugin</span><span class="p">,</span> <span class="s2">&quot;Invalid plugin </span><span class="si">#{</span><span class="n">plugin</span><span class="si">}</span><span class="s2"> (must be an Ohai::DSL::Plugin or subclass)&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Config</span><span class="o">[</span><span class="ss">:disabled_plugins</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skipping disabled plugin </span><span class="si">#{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">plugin</span><span class="o">.</span><span class="n">version</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:version7</span>
+</span><span class='line'>      <span class="n">run_v7_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:version6</span>
+</span><span class='line'>      <span class="n">run_v6_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">InvalidPlugin</span><span class="p">,</span> <span class="s2">&quot;Invalid plugin version </span><span class="si">#{</span><span class="n">plugin</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> for plugin </span><span class="si">#{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">Error</span>
+</span><span class='line'>    <span class="k">raise</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">Exception</span><span class="p">,</span><span class="ss">Errno</span><span class="p">:</span><span class="ss">:ENOENT</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Plugin </span><span class="si">#{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> threw exception </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">backtrace</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>简单说它就是转而去调用<code>run_v7_plugin</code></p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run_v7_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">visited</span> <span class="o">=</span> <span class="o">[</span> <span class="n">plugin</span> <span class="o">]</span>
+</span><span class='line'>  <span class="k">while</span> <span class="o">!</span><span class="n">visited</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>    <span class="n">next_plugin</span> <span class="o">=</span> <span class="n">visited</span><span class="o">.</span><span class="n">pop</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">next</span> <span class="k">if</span> <span class="n">next_plugin</span><span class="o">.</span><span class="n">has_run?</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">visited</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">next_plugin</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">DependencyCycle</span><span class="p">,</span> <span class="s2">&quot;Dependency cycle detected. Please refer to the following plugins: </span><span class="si">#{</span><span class="n">get_cycle</span><span class="p">(</span><span class="n">visited</span><span class="p">,</span> <span class="n">plugin</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span> <span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dependency_providers</span> <span class="o">=</span> <span class="n">fetch_plugins</span><span class="p">(</span><span class="n">next_plugin</span><span class="o">.</span><span class="n">dependencies</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># Remove the already ran plugins from dependencies if force is not set</span>
+</span><span class='line'>    <span class="c1"># Also remove the plugin that we are about to run from dependencies as well.</span>
+</span><span class='line'>    <span class="n">dependency_providers</span><span class="o">.</span><span class="n">delete_if</span> <span class="p">{</span> <span class="o">|</span><span class="n">dep_plugin</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">dep_plugin</span><span class="o">.</span><span class="n">has_run?</span> <span class="o">||</span> <span class="n">dep_plugin</span><span class="o">.</span><span class="n">eql?</span><span class="p">(</span><span class="n">next_plugin</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">dependency_providers</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="vi">@safe_run</span> <span class="p">?</span> <span class="n">next_plugin</span><span class="o">.</span><span class="n">safe_run</span> <span class="p">:</span> <span class="n">next_plugin</span><span class="o">.</span><span class="n">run</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">visited</span> <span class="o">&lt;&lt;</span> <span class="n">next_plugin</span> <span class="o">&lt;&lt;</span> <span class="n">dependency_providers</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>简单说就是去调用plugin自己的<code>safe_run</code>方法(因为在定义@runner的时候有传第二个参数true)</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">safe_run</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">run</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Exceptions</span><span class="o">::</span><span class="no">Error</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="n">e</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Plugin </span><span class="si">#{</span><span class="nb">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> threw </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">e</span><span class="o">.</span><span class="n">backtrace</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span> <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span> <span class="n">line</span> <span class="p">)}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它又调用了<code>run</code>方法</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run</span>
+</span><span class='line'>  <span class="vi">@has_run</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">run_plugin</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它又调用了<code>run_plugin</code>方法,这个方法是在<code>lib/ohai/dsl/plugin/versionvii.rb</code>中定义的</p>
+
+<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">run_plugin</span>
+</span><span class='line'>  <span class="n">collector</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">data_collector</span>
+</span><span class='line'>  <span class="n">platform</span> <span class="o">=</span> <span class="n">collect_os</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="n">collector</span><span class="o">.</span><span class="n">has_key?</span><span class="p">(</span><span class="n">platform</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">instance_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">collector</span><span class="o">[</span><span class="n">platform</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">elsif</span> <span class="n">collector</span><span class="o">.</span><span class="n">has_key?</span><span class="p">(</span><span class="ss">:default</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">instance_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">collector</span><span class="o">[</span><span class="ss">:default</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="ss">Ohai</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No data to collect for plugin </span><span class="si">#{</span><span class="nb">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. Continuing...&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它用<code>instance_eval</code>执行了前面动态构造Plugin类的时候保存下来的块(collect_data后面跟的块)</p>
+
+<p>整个过程过了一遍,但有一点还没明白,最开始的地方我们发现显示出来的信息都收集在<code>Ohai::System</code>的实例<code>@ohai</code>的实例变量<code>@data</code>里,执行插件里的代码怎么会修改到它呢?</p>
+
+<p>这是因为在实例化plugin的时候它把实例变量<code>@data</code>传了进去</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">load_v7_plugin</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin_class</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@controller</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">collect_provides</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">plugin</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在看一下plugin的部分代码</p>
+
+<figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Ohai</span><span class="o">.</span><span class="n">plugin</span><span class="p">(</span><span class="ss">:Command</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">provides</span> <span class="s2">&quot;command&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">collect_data</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">command</span> <span class="no">Mash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>传给<code>collect_data</code>的块中的command是不是很奇怪,它是个什么东西?</p>
+
+<p>答案的下面的代码中</p>
+
+<figure class='code'><figcaption><span>lib/ohai/dsl/plugin.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">get_attribute</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">set_attribute</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@data</span><span class="o">[</span><span class="nb">name</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到此所有迷雾都解开了, Yeah!!!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2014年规划]]></title>
@@ -24,8 +1003,9 @@
 <li>毕业两年换了三个工作,终于在去年找到了自己满意的工作,同事个个都是高手,一周还能打两次蓝球</li>
 <li>终于用上了梦寐以求苹果电脑,虽然是公司配的不是自己买的,虽然Mac OSX系统没有想象中的好</li>
 <li>其实最重要的是去年这一年大部分时间是过的比较开心的,快乐一直是我追求的最终目标</li>
-<li>学会了发气咆音(vocal fly)和弹舌音</li>
+<li>学会了发气咆音(vocal fry)和弹舌音</li>
 <li>没有生病</li>
+<li>学会了游泳</li>
 </ul>
 
 
@@ -96,8 +1076,8 @@
 <ul>
 <li>[x] 读佛即是拜佛:六祖慧能传(已看完)</li>
 <li>[ ] 读佛即是拜佛:真实的唐僧</li>
-<li>[ ] 读佛即是拜佛:弥勒佛传</li>
-<li>[ ] 读佛即是拜佛:地藏菩萨传</li>
+<li>[x] 读佛即是拜佛:弥勒佛传</li>
+<li>[x] 读佛即是拜佛:地藏菩萨传</li>
 </ul>
 </li>
 </ul>
@@ -139,6 +1119,12 @@
 <li>[ ] 把已经买的Erlang/OTP并发编程实战看完,不然太浪费了</li>
 </ul>
 </li>
+</ul>
+</li>
+<li>[ ] 加入骑行队伍
+
+<ul>
+<li>[ ] 买一辆公路自行车</li>
 </ul>
 </li>
 </ul>
@@ -3397,305 +4383,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <p>好像有点太短了,怎么办呢?粘张图片吧</p>
 
 <p><img src="http://williamherry.github.io/images/fcitx/fcitx.png"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Chef问题及小知识汇总(持续更新)]]></title>
-    <link href="http://williamherry.github.io/blog/2012/08/31/chef-tips/"/>
-    <updated>2012-08-31T09:00:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/08/31/chef-tips</id>
-    <content type="html"><![CDATA[<p>Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了</p>
-
-<h2>Centos6.2下Chef-server的安装</h2>
-
-<p>目前的知道的在Centos6.2下面安装Chef-server的最方便的方法是执行下面的命令</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rpm</span> <span class="o">-</span><span class="no">Uvh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">rbel</span><span class="o">.</span><span class="n">frameos</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rbel6</span>
-</span><span class='line'><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">rubygem</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span>
-</span><span class='line'><span class="n">service</span> <span class="n">iptables</span> <span class="n">stop</span>
-</span><span class='line'><span class="n">setup</span><span class="o">-</span><span class="n">chef</span><span class="o">-</span><span class="n">server</span><span class="o">.</span><span class="n">sh</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的命令已经可以安装并启动所有chef-servef需要的服务了,再加上下面的命令配置一个管理的客户端</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">configure</span> <span class="o">-</span><span class="n">i</span>  <span class="c1"># 然后一路回车</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Note: 以上方面来自<a href="http://blog.frameos.org/2011/05/19/installing-chef-server-0-10-in-rhel-6-scientificlinux-6/">Installing Chef Server 0.10 in RHEL 6</a></p>
-
-<h2>Centos6.2下chef-client的安装</h2>
-
-<p>从Rackspace开发的部署Openstack的Cookbook里找到的方法,可以通过以下命令安装chef-client</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//o</span><span class="n">pscode</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chef</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的命令会在/opt/chef/下安装chef-client需要的所有东西,好处除了方便外还有就是它是一个独立的环境,可以和系统的ruby完全分开,还有就是它使用的ruby是1.9,有些比较新的cookbook可能需要ruby 1.9才可以工作</p>
-
-<h2>Bootstrap的时候报错</h2>
-
-<p>利用bootstrap来配置客户端有时会报下面的错</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">error</span> <span class="n">as</span> <span class="ss">follows</span><span class="p">:</span><span class="no">Bootstrapping</span> <span class="no">Chef</span> <span class="n">on</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
-</span><span class='line'><span class="ss">ERROR</span><span class="p">:</span> <span class="ss">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">convert</span> <span class="kp">false</span> <span class="n">into</span> <span class="nb">String</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个算是比较变态的报错了,你从报错信息不好判断哪里出了问题.实际上这个报错的原因是它找不到bootstrap的脚本,例如你在bootstrap的时候加参数<code>-d centos6</code>,它会在当前目标下找<code>.chef/bootstrap/centos6.erb</code>,找不到就会报这个错,所以解决办法是<code>cd ~</code>后再执行,一般<code>.chef</code>这个目录都在用户主目录下面</p>
-
-<h2>批量执行命令(ssh)错误</h2>
-
-<p>有时候Chef利用SSH批量执行命令的时候会报类似下面的错</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">ssh</span> <span class="s2">&quot;node:test3.chef.com&quot;</span> <span class="s1">&#39;uptime&#39;</span> <span class="o">-</span><span class="no">VV</span>
-</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Using</span> <span class="n">configuration</span> <span class="n">from</span> <span class="sr">/root.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Signing</span> <span class="n">the</span> <span class="n">request</span> <span class="n">as</span> <span class="n">root</span>
-</span><span class='line'><span class="ss">DEBUG</span><span class="p">:</span> <span class="no">Sending</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="n">via</span> <span class="no">GET</span> <span class="n">to</span> <span class="n">server</span><span class="o">.</span><span class="n">chef</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">4000</span><span class="o">/</span><span class="n">search</span><span class="o">/</span><span class="n">node</span>
-</span><span class='line'><span class="ss">FATAL</span><span class="p">:</span> <span class="no">No</span> <span class="n">nodes</span> <span class="n">requrned</span> <span class="n">from</span> <span class="n">search!</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但是用<code>knife search node "name:test3.chef.com"</code>确可以找到这个Node,这里的出错信息也不容易确定问题出在哪儿,实际上<code>knife ssh</code>会利用Node的FQDN(就是主机名)去连,如果连不上就会报这个错,解决办法是加上<code>-a ipaddress</code>参数明确指定使用IP地址去连接</p>
-
-<h2>Rabbitmq-server服务启动失败</h2>
-
-<p>Chef和Openstack都用到了这个软件,我感觉这个软件比较变态,跟个老古董一样,动不动就装死不启动,日志里也不说人话,我目前只知道两个引起它启动失败的原因,一个是主机名,一个是qpidd这个服务已经启动,它也使用5672端口,rabbitmq-server再要绑到这个口上面就会失败.所以,下次如果rabbitmq-server启动不起来,可以先试试这两个</p>
-
-<h2>利用Bootstrap初始化的Client去连<code>localhost</code></h2>
-
-<p>也就是用Bootstrap给Client生成的<code>/etc/chef/client.rb</code>配置文件里的<code>chef_server_url</code>不对,那么Bootstrap脚本是从哪里得到的<code>chef_server_url</code>的值呢,就我所知它是读Chef管理员的<code>~/.chef/knife.rb</code>这个文件里的信息,所以解决办法就是把<code>~/.chef/knife.rb</code>这个文件里的<code>chef_server_url</code>改成chef-server的IP地址</p>
-
-<h2>打印日志帮助除错</h2>
-
-<p>有时候自己写的recipe不按自己的预期工作,又找不出问题的原因,这时可能会想能不能有像C语言里的print一样把一些变量的值打印出来帮助除错,在chef里可以用LOG的方法做到</p>
-
-<p>很简单,只要在recipe中加入一行</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>客户端执行的时候就会多一条info级别的日志:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sat</span><span class="p">,</span> <span class="mo">01</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mi">22</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="ss">INFO</span><span class="p">:</span> <span class="no">Hello</span><span class="p">,</span> <span class="n">world!</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>debug和error都是支持的(debug需要将<code>/etc/chef/client.rb</code>里的<code>log\_level</code>改来<code>:debug</code>才可以看到)</p>
-
-<h2>使用每个Client特有的属性(IP地址)</h2>
-
-<p>比如MySQL的配置,我希望它监听到自己的IP地址上而不是<code>0.0.0.0</code>, 应该怎么做呢?</p>
-
-<p>首先我们定义这个属性</p>
-
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/var/chef/cookbooks/mysql/attributes/default.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">ipaddress</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样就可以在recipe中使用这个属性了,可以用前面刚提到的日志的方法打印出来看对不对</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MySQL Binding on: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;bind_address&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Note: 注意定义的时候使用的是<code>default</code>,使用的时候用<code>node</code>
-Note: <code>ipaddress</code>是客户端的<code>ohai</code>收集的,要想知道还有哪些类似<code>ipaddress</code>的属性,在客户端执行<code>ohai</code>就可以看到了
-Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以你自己定义这样的属性会被替换</p>
-
-<h2>生成随机密码</h2>
-
-<p>把密码直接写死在cookbook里可能不是个好主意,更通用的方法是使用随机密码</p>
-
-<p>要使用随机密码需要<code>openssl</code>这个cookbook的支持,所以先下载并上传到我们的chef-server上去</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span>
-</span><span class='line'><span class="n">mkdir</span> <span class="n">cookbooks</span>
-</span><span class='line'><span class="n">cd</span> <span class="n">cookbooks</span>
-</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">site</span> <span class="n">download</span> <span class="n">openssl</span>
-</span><span class='line'><span class="n">tar</span> <span class="n">xf</span> <span class="n">openssl</span><span class="o">*</span>
-</span><span class='line'><span class="n">knife</span> <span class="n">cookbook</span> <span class="n">upload</span> <span class="o">-</span><span class="n">o</span> <span class="o">.</span> <span class="n">openssl</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在需要用到<code>openssl</code>的cookbook的<code>metadata.rb</code>文件中加入depends</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">depends</span> <span class="s2">&quot;openssl&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>加这条的意思就是说我会用到<code>openssl</code>这个cookbook,客户端下载cookbook的时候一并下载回去,如果没有这一条会报下面的错</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Sun</span><span class="p">,</span> <span class="mo">02</span> <span class="no">Sep</span> <span class="mi">2012</span> <span class="mo">01</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span><span class="o">]</span> <span class="ss">FATAL</span><span class="p">:</span> <span class="ss">NameError</span><span class="p">:</span> <span class="n">uninitialized</span> <span class="n">constant</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Recipe</span><span class="o">::</span><span class="no">Opscode</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>下面就可以在recipe中使用了,下面是mysql中的例子</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">::</span><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Recipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="ss">Opscode</span><span class="p">:</span><span class="ss">:OpenSSL:Password</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set_unless</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">secure_password</span>
-</span><span class='line'>
-</span><span class='line'><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Random Password: </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>MySQL设置密码的问题(Redhat系)</h2>
-
-<p>这个问题我花了一下午才搞明白,如果不想听我细细说来,只想知道重点,那么你只要知道MySQL的cookbook还会在root的家目录里创建一个<code>.my.cnf</code>的文件就可以了</p>
-
-<p>我们先来了解一个它是怎么设置密码了,首先看下面的resource</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">platform?</span><span class="p">(</span><span class="sx">%w{debian ubuntu}</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">execute</span> <span class="s2">&quot;assign-root-password&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysqladmin_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root password </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
-</span><span class='line'>    <span class="n">action</span> <span class="ss">:run</span>
-</span><span class='line'>    <span class="n">only_if</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root -e &#39;show databases;&#39;&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果platform不是debian或ubuntu(即Redhat系),那么只有在&#8221;#{node[&lsquo;mysql&rsquo;][&lsquo;mysql_bin&rsquo;]} -u root -e &lsquo;show databases;&rsquo;&ldquo;执行成功的时候才执行&rdquo;#{node[&lsquo;mysql&rsquo;][&lsquo;mysqladmin_bin&rsquo;]} -u root password \&ldquo;#{node[&lsquo;mysql&rsquo;][&lsquo;server_root_password&rsquo;]}\&rdquo;&ldquo;. mysql-server安装后默认没有密码,所以上面的resource只会执行一次设置好密码,后面的操作都是使用这个新密码来完成的,如下面的权限的设置</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">execute</span> <span class="s2">&quot;mysql-install-privileges&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">command</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;mysql_bin&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> -u root </span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">].</span><span class="n">empty?</span> <span class="p">?</span> <span class="s1">&#39;&#39;</span> <span class="p">:</span> <span class="s1">&#39;-p&#39;</span> <span class="si">}</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> &lt; </span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
-</span><span class='line'>  <span class="n">subscribes</span> <span class="ss">:run</span><span class="p">,</span> <span class="n">resources</span><span class="p">(</span><span class="s2">&quot;template[</span><span class="si">#{</span><span class="n">grants_path</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">),</span> <span class="ss">:immediately</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我遇到的问题是这样的,Rackspack公司基于Ubuntu12.04做了安装Openstack的cookbook,由于Chef抽象的特性,理论上应该在CentOS上也能用,所以我拿过来做测试.整个过程太长,不可能一次成功,出错后做一些修改然后让它再跑,系统环境应该要做一些还原,我是把mysql-server删除,然后把<code>/var/lib/mysql</code>也删除,这样重新安装后就回到空密码了</p>
-
-<p>问题就是这时遇到的,上面方法确实可以让mysql-server回到空密码(mysql -uroot -p [回车],提示输入密码的时候再回车就可进到mysql,进去后查看mysql.user表密码也是空),但奇怪的是直接输入mysql[回车]进不去.聪明的你现在应该猜到是怎么回事了,直接运行mysql它会用<code>~/.my.cnf</code>里的密码去登陆,但此时mysql还没有密码呢,所以当然失败了,我当时以为mysql没有密码和空密码不一样呢,还到irc去问老外:&ndash;(</p>
-
-<h2>配置chef-client周期性唤起时间</h2>
-
-<p>chef-client会周期性的每隔一段时间+随机时间启动,这个时间的配置在Debian系和Redhat系不一样,这里记录一下,Debian系中是<code>/etc/default/chef-client</code>,Redhat系是<code>/etc/sysconfig/chef-client</code></p>
-
-<h2>提示认证失败</h2>
-
-<p>有时可能会遇到这样的错误</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">ERROR</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span> <span class="n">to</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="p">:</span><span class="mi">4000</span> <span class="n">as</span> <span class="n">root</span> <span class="n">with</span> <span class="n">key</span> <span class="sr">/root/</span><span class="o">.</span><span class="n">chef</span><span class="o">/</span><span class="n">root</span><span class="o">.</span><span class="n">pem</span>
-</span><span class='line'><span class="ss">Response</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Ensure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">client</span> <span class="n">key</span> <span class="n">is</span> <span class="n">valid</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果你的这个客户端以前认证没有问题,那么可以排除key不对的原因,这个key一般不会发霉变质的.也不是时间不同步的问题,因为如果是时间不同步,报错应该像下面的样子,并提示你同步时间</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="no">Wed</span><span class="p">,</span> <span class="mi">11</span> <span class="no">Dec</span> <span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mi">0800</span><span class="o">]</span> <span class="ss">Info</span><span class="p">:</span> <span class="no">HTTP</span> <span class="no">Request</span> <span class="no">Returned</span> <span class="mi">401</span> <span class="ss">Unauthorized</span><span class="p">:</span> <span class="no">Failed</span> <span class="n">to</span> <span class="n">authenticate</span><span class="o">.</span> <span class="no">Please</span> <span class="n">synchronize</span> <span class="n">the</span> <span class="n">clock</span> <span class="n">on</span> <span class="n">your</span> <span class="n">client</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个问题有可能是chef-server上的couchdb服务没有启动引起了,我遇到几次都是这样,所以有时间chef-server不按预期的工作的时候,不公要检查chef-server,相关的服务也要检查</p>
-
-<h2>有条件的执行</h2>
-
-<p>有时候一些资源可以希望在特定的条件下才执行,这时可以用<code>only_if</code>和<code>not_if</code>来实现,如下面的例子</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
-</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
-</span><span class='line'>  <span class="n">not_if</span> <span class="s2">&quot;test -f /etc/passwd&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果只是判断文件是否存在,下面的方法更常用</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
-</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
-</span><span class='line'>  <span class="n">not_if</span> <span class="k">do</span>
-</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>或</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">template</span> <span class="s2">&quot;/tmp/somefile&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">mode</span> <span class="s2">&quot;0644&quot;</span>
-</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;somefile.erb&quot;</span>
-</span><span class='line'>  <span class="n">not_if</span> <span class="p">{</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;/etc/passwd&quot;</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

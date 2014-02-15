@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ohai | William's Blog with Octopress]]></title>
+  <link href="http://williamherry.github.io/blog/categories/ohai/atom.xml" rel="self"/>
+  <link href="http://williamherry.github.io/"/>
+  <updated>2014-02-15T22:17:48+08:00</updated>
+  <id>http://williamherry.github.io/</id>
+  <author>
+    <name><![CDATA[William Herry]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Chef Ohai源码学习]]></title>
+    <link href="http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code/"/>
+    <updated>2014-02-11T08:28:00+08:00</updated>
+    <id>http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code</id>
+    <content type="html"><![CDATA[<p>接触Chef以来一直对Ohai很感兴趣,它收集的系统信息非常全面,很好奇它是怎么收集的,现在终于有时间学习了</p>
+
+<h3>目标</h3>
+
+<p>搞清楚Ohai是如何收集到某一项系统消息的,如IP地址</p>
+
+<h3>环境搭建</h3>
+
+<p>使用<code>gem install ohai</code>安装ohai和它的依赖,然后下载ohai的源码</p>
+
+<pre><code>git clone https://github.com/opscode/ohai.git
+</code></pre>
+
+<p>可以直接在源码目录通过<code>./bin/ohai</code>运行<code>ohai</code>,这样可以对源码做一些修改(添加调试代码)然后马上运行查看效果,而不用去找它的源码安装到系统的位置</p>
+
+<p>还可以使用<code>pry</code>进行单步调试: <code>gem install pry</code>安装<code>pry</code>,的要调试的代码前面加上<code>binding.pry</code>,在该文件前面加上<code>require 'pry'</code></p>
+
+<h3>查看源码过程</h3>
+
+<p>首先找到入口,当然就是<code>bin/ohai</code>文件了,我们需要关系的只有一行</p>
+
+<p><code>ruby bin/ohai
+Ohai::Application.new.run
+</code></p>
+
+<p>我们在看一下<code>Ohai::Application</code>的定义,我们感兴趣的是<code>run</code>方法的定义</p>
+
+<p><code>ruby lib/ohai/application.rb
+def run
+  configure_ohai
+  configure_logging
+  run_application
+end
+</code></p>
+
+<p>这里前两个方法我们目前不关心,看一下<code>run_application</code>方法的定义</p>
+
+<p>``` ruby lib/ohai/application.rb
+def run_application
+  ohai = Ohai::System.new
+  ohai.all_plugins(@attributes)</p>
+
+<p>  if @attributes</p>
+
+<pre><code>@attributes.each do |a|
+  puts ohai.attributes_print(a)
+end
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>puts ohai.json_pretty_print
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>通过加调试代码发现这里的<code>@attributes</code>是nil,所以这里的代码可以简化为</p>
+
+<p><code>ruby
+ohai = Ohai::System.new
+ohai.all_plugins(nil)
+puts ohai.json_pretty_print
+</code></p>
+
+<p>下来去看<code>Ohai::System</code>的定义</p>
+
+<p>首先我们看一下<code>json_pretty_print</code>的定义</p>
+
+<p><code>ruby lib/ohai/system.rb
+def json_pretty_print(item=nil)
+  Yajl::Encoder.new(:pretty =&gt; true).encode(item || @data)
+end
+</code></p>
+
+<p>它只是把<code>@data</code>的数据格式化后输出,所以我们推测实际收集的动作是发生在<code>all_plugins</code>方法里</p>
+
+<p>``` ruby lib/ohai/system.rb
+def all_plugins(attribute_filter=nil)
+  # Reset the system when all_plugins is called since this function
+  # can be run multiple times in order to pick up any changes in the
+  # config or plugins with Chef.
+  reset_system</p>
+
+<p>  load_plugins
+  run_plugins(true, attribute_filter)
+end
+```</p>
+
+<p><code>reset_system</code>方法里只是初始化了一些实例变量,其中包括<code>@loader</code>它<code>@runner</code></p>
+
+<p><code>ruby
+@loader = Ohai::Loader.new(self)
+@runner = Ohai::Runner.new(self, true)
+</code></p>
+
+<p>这里把<code>self</code>传了进去,这里的<code>self</code>就就<code>Ohai::System</code>的实例,我们看一下loader如何处理</p>
+
+<p><code>ruby lib/ohai/loader.rb
+def initialize(controller)
+  @controller = controller
+  @v6_plugin_classes = []
+  @v7_plugin_classes = []
+end
+</code></p>
+
+<p>loader把<code>Ohai::System</code>的实例保存到了实例变量<code>@controller</code>中</p>
+
+<p><code>load_plugins</code>方法只有一行,调用了<code>@loader</code>的<code>load_all</code>方法,我们看一下这个方法</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_all
+  plugin_files_by_dir.each do |plugin_file|</p>
+
+<pre><code>load_plugin_class(plugin_file.path, plugin_file.plugin_root)
+</code></pre>
+
+<p>  end</p>
+
+<p>  collect_v6_plugins
+  collect_v7_plugins
+end
+```</p>
+
+<p>看一下<code>plugin_files_by_dir</code>的定义</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def plugin_files_by_dir
+  Array(Ohai::Config[:plugin_path]).inject([]) do |plugin_files, plugin_path|</p>
+
+<pre><code>plugin_files + PluginFile.find_all_in(plugin_path)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>注释中说它搜索所有的plugin路径并返回一个包含<code>PluginFile</code>对象的数组</p>
+
+<p>在看一下<code>PluginFile</code>对象长什么样子</p>
+
+<p>``` ruby lib/ohai/loader.rb
+class PluginFile &lt; Struct.new(:path, :plugin_root)</p>
+
+<p>  def self.find_all_in(plugin_dir)</p>
+
+<pre><code>Dir[File.join(plugin_dir, "**", "*.rb")].map do |file|
+  new(file, plugin_dir)
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>可以看到它只是简单的从<code>Struct</code>继承而来,这里所起的作用就是定义了两个访问器<code>path</code>和<code>plugin_root</code>,打印出来类似这样</p>
+
+<p>```</p>
+
+<h1>&lt;struct Ohai::Loader::PluginFile</h1>
+
+<p> path=&ldquo;/Users/william/Codes/ohai/lib/ohai/plugins/aix/cpu.rb&rdquo;,
+ plugin_root=&ldquo;/Users/william/Codes/ohai/lib/ohai/plugins&rdquo;>
+```</p>
+
+<p>再回到<code>load_all</code>方法</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_all
+  plugin_files_by_dir.each do |plugin_file|</p>
+
+<pre><code>load_plugin_class(plugin_file.path, plugin_file.plugin_root)
+</code></pre>
+
+<p>  end</p>
+
+<p>  collect_v6_plugins
+  collect_v7_plugins
+end
+```</p>
+
+<p>对每一个<code>PluginFile</code>对象调用了<code>load_plugin_class</code>方法</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_plugin_class(plugin_path, plugin_dir_path=nil)
+  # Read the contents of the plugin to understand if it&rsquo;s a V6 or V7 plugin.
+  contents = &ldquo;&rdquo;
+  begin</p>
+
+<pre><code>contents &lt;&lt; IO.read(plugin_path)
+</code></pre>
+
+<p>  rescue IOError, Errno::ENOENT</p>
+
+<pre><code>Ohai::Log.warn("Unable to open or read plugin at #{plugin_path}")
+return nil
+</code></pre>
+
+<p>  end</p>
+
+<p>  # We assume that a plugin is a V7 plugin if it contains Ohai.plugin in its contents.
+  if contents.include?(&ldquo;Ohai.plugin&rdquo;)</p>
+
+<pre><code>load_v7_plugin_class(contents, plugin_path)
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>Ohai::Log.warn("[DEPRECATION] Plugin at #{plugin_path} is a version 6 plugin. \
+</code></pre>
+
+<p>Version 6 plugins will not be supported in future releases of Ohai. \
+Please upgrade your plugin to version 7 plugin syntax. \
+For more information visit here: docs.opscode.com/ohai_custom.html")</p>
+
+<pre><code>load_v6_plugin_class(contents, plugin_path, plugin_dir_path)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>他把文件里的内容读了进来,并根据有没有包含<code>Ohai.plugin</code>来有选择了调用<code>load_v7_plugin_class</code>或<code>load_v6_plugin_class</code>,我大概看来一下基本上全都包含<code>Ohai.plugin</code>,所以我们从v7追</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_v7_plugin_class(contents, plugin_path)
+  plugin_class = eval(contents, TOPLEVEL_BINDING, plugin_path)
+  unless plugin_class.kind_of?(Class) and plugin_class &lt; Ohai::DSL::Plugin</p>
+
+<pre><code>raise Ohai::Exceptions::IllegalPluginDefinition, "Plugin file cannot contain any statements after the plugin definition"
+</code></pre>
+
+<p>  end
+  plugin_class.sources &lt;&lt; plugin_path
+  @v7_plugin_classes &lt;&lt; plugin_class unless @v7_plugin_classes.include?(plugin_class)
+  plugin_class
+rescue SystemExit, Interrupt
+  raise
+rescue Ohai::Exceptions::InvalidPluginName => e
+  Ohai::Log.warn(&ldquo;Plugin Name Error: &lt;#{plugin_path}>: #{e.message}&rdquo;)
+rescue Ohai::Exceptions::IllegalPluginDefinition => e
+  Ohai::Log.warn(&ldquo;Plugin Definition Error: &lt;#{plugin_path}>: #{e.message}&rdquo;)
+rescue NoMethodError => e
+  Ohai::Log.warn(&ldquo;Plugin Method Error: &lt;#{plugin_path}>: unsupported operation \&lsquo;#{e.name}\&rsquo;&rdquo;)
+rescue SyntaxError => e
+  # split on occurrences of
+  #    <env>: syntax error,
+  #    <env>:##: syntax error,
+  # to remove from error message
+  parts = e.message.split(/&lt;.<em>>[:[0-9]+]</em>: syntax error, /)
+  parts.each do |part|</p>
+
+<pre><code>next if part.length == 0
+Ohai::Log.warn("Plugin Syntax Error: &lt;#{plugin_path}&gt;: #{part}")
+</code></pre>
+
+<p>  end
+rescue Exception, Errno::ENOENT => e
+  Ohai::Log.warn(&ldquo;Plugin Error: &lt;#{plugin_path}>: #{e.message}&rdquo;)
+  Ohai::Log.debug(&ldquo;Plugin Error: &lt;#{plugin_path}>: #{e.inspect}, #{e.backtrace.join(&lsquo;\n&rsquo;)}&rdquo;)
+end
+```</p>
+
+<p>异常处理我们不关心,直接删掉来看</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_v7_plugin_class(contents, plugin_path)
+  plugin_class = eval(contents, TOPLEVEL_BINDING, plugin_path)
+  unless plugin_class.kind_of?(Class) and plugin_class &lt; Ohai::DSL::Plugin</p>
+
+<pre><code>raise Ohai::Exceptions::IllegalPluginDefinition, "Plugin file cannot contain any statements after the plugin definition"
+</code></pre>
+
+<p>  end
+  plugin_class.sources &lt;&lt; plugin_path
+  @v7_plugin_classes &lt;&lt; plugin_class unless @v7_plugin_classes.include?(plugin_class)
+  plugin_class
+end
+```</p>
+
+<p>这里第一行把插件文件里的代码执行,返回的结果赋给<code>plugin_class</code>,把<code>plugin_path</code>保存到其中,并把它收集到实例变量<code>@v7_plugin_classes</code>中</p>
+
+<p>我们找最简单了plugin看里面是什么</p>
+
+<p>``` ruby lib/ohai/plugins/command.rb
+Ohai.plugin(:Command) do
+  provides &ldquo;command&rdquo;</p>
+
+<p>  collect_data do</p>
+
+<pre><code>command Mash.new
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>它是调用<code>Ohai</code>的<code>plugin</code>方法,还传给它一个block,看看这个方法的定义</p>
+
+<p>``` ruby lib/ohai/dsl/plugin.rb
+def self.plugin(name, &amp;block)
+  raise Ohai::Exceptions::InvalidPluginName, &ldquo;#{name} is not a valid plugin name. A valid plugin name is a symbol which begins with a capital letter and contains no underscores&rdquo; unless NamedPlugin.valid_name?(name)</p>
+
+<p>  plugin = nil</p>
+
+<p>  if NamedPlugin.strict_const_defined?(name)</p>
+
+<pre><code>plugin = NamedPlugin.const_get(name)
+plugin.class_eval(&amp;block)
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>klass = Class.new(DSL::Plugin::VersionVII, &amp;block)
+plugin = NamedPlugin.const_set(name, klass)
+</code></pre>
+
+<p>  end</p>
+
+<p>  plugin
+end
+```</p>
+
+<p>这个方法重点是这两行</p>
+
+<p><code>
+klass = Class.new(DSL::Plugin::VersionVII, &amp;block)
+plugin = NamedPlugin.const_set(name, klass)
+</code></p>
+
+<p>第一行用传进来了block创建了一个继承自<code>DSL::Plugin::VersionVII</code>的类,然后一传进来的<code>name</code>为常量名保存到模块<code>NamedPlugin</code>中</p>
+
+<p>我们在回到前面的plugin文件</p>
+
+<p>``` ruby lib/ohai/plugins/command.rb
+Ohai.plugin(:Command) do
+  provides &ldquo;command&rdquo;</p>
+
+<p>  collect_data do</p>
+
+<pre><code>command Mash.new
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>这里还有两个方法<code>provides</code>和<code>collect_data</code>,你没有猜错,它们就是定义在继承来的<code>DSL::Plugin::VersionVII</code>中</p>
+
+<p>``` ruby lib/ohai/dsl/plugin/versionvii.rb
+def self.provides(*attrs)
+  attrs.each do |attr|</p>
+
+<pre><code>provides_attrs &lt;&lt; attr unless provides_attrs.include?(attr)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>它只是它传进来的参数收集到<code>provides_atts</code>,而<code>provides_atts</code>是前面生成的类的实例变量</p>
+
+<p><code>ruby lib/ohai/dsl/plugin/versionvii.rb
+def self.provides_attrs
+  @provides_attrs ||= []
+end
+</code></p>
+
+<p>在看<code>collect_data</code></p>
+
+<p>``` ruby lib/ohai/dsl/plugin/versionvii.rb
+def self.collect_data(platform = :default, *other_platforms, &amp;block)
+  [platform, other_platforms].flatten.each do |plat|</p>
+
+<pre><code>if data_collector.has_key?(plat)
+  raise Ohai::Exceptions::IllegalPluginDefinition, "collect_data already defined on platform #{plat}"
+else
+  data_collector[plat] = block
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>由于前面的plugin中调用这个方法的时候只传了一个快进来,所从这个方法只是把传进来了块赋值给了以<code>:default</code>为key的<code>Mash</code>对象<code>data_collector</code>中</p>
+
+<p><code>ruby lib/ohai/dsl/plugin/versionvii.rb
+def self.data_collector
+  @data_collector ||= Mash.new
+end
+</code></p>
+
+<p>我们再回到<code>all_plugins</code>方法</p>
+
+<p>``` ruby lib/ohai/system.rb
+def all_plugins(attribute_filter=nil)
+  reset_system</p>
+
+<p>  load_plugins
+  run_plugins(true, attribute_filter)
+end
+```</p>
+
+<p>我们再一次回到<code>load_all</code>方法中</p>
+
+<p>``` ruby lib/ohai/loader.rb
+def load_all
+  plugin_files_by_dir.each do |plugin_file|</p>
+
+<pre><code>load_plugin_class(plugin_file.path, plugin_file.plugin_root)
+</code></pre>
+
+<p>  end</p>
+
+<p>  collect_v6_plugins
+  collect_v7_plugins
+end
+```</p>
+
+<p>还剩下两行代码,我们只看一下<code>collect_v7_plugins</code></p>
+
+<p>``` ruby lib/ohai/loader.rb
+def collect_v7_plugins
+  @v7_plugin_classes.each do |plugin_class|</p>
+
+<pre><code>load_v7_plugin(plugin_class)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>对收集的<code>plugin_class</code>调用<code>load_v7_plugin</code>方法</p>
+
+<p><code>ruby lib/ohai/loader.rb
+def load_v7_plugin(plugin_class)
+  plugin = plugin_class.new(@controller.data)
+  collect_provides(plugin)
+  plugin
+end
+</code></p>
+
+<p>这个方法把传进来的类实例化,并把<code>Ohai::System</code>实例的data传了进去,然后调用了<code>collect_provides</code></p>
+
+<p><code>ruby lib/ohai/loader.rb
+def collect_provides(plugin)
+  plugin_provides = plugin.class.provides_attrs
+  @controller.provides_map.set_providers_for(plugin, plugin_provides)
+end
+</code></p>
+
+<p>还记得前面最简单的plugin的代码吗,这里的<code>plugin.class.provides_attrs</code>就是<code>provides</code>后面的参数(&ldquo;command&rdquo;)</p>
+
+<p>这里的provides_map是在<code>Ohai::System</code>的<code>reset_system</code>赋值的,是<code>ProvidesMap</code>的实例</p>
+
+<p><code>
+@provides_map = ProvidesMap.new
+</code></p>
+
+<p>然后它又调用了<code>set_providers_for</code>方法</p>
+
+<p>```
+def set_providers_for(plugin, provided_attributes)
+  unless plugin.kind_of?(Ohai::DSL::Plugin)</p>
+
+<pre><code>raise ArgumentError, "set_providers_for only accepts Ohai Plugin classes (got: #{plugin})"
+</code></pre>
+
+<p>  end</p>
+
+<p>  provided_attributes.each do |attribute|</p>
+
+<pre><code>attrs = @map
+parts = normalize_and_validate(attribute)
+parts.each do |part|
+  attrs[part] ||= Mash.new
+  attrs = attrs[part]
+end
+attrs[:_plugins] ||= []
+attrs[:_plugins] &lt;&lt; plugin
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>这里把传来的keys它plugin收集到了providesmap的实例变量<code>@map</code>中,类似这样</p>
+
+<p>```
+[2] pry(#&lt;Ohai::ProvidesMap>)> @map
+=> {&ldquo;cpu&rdquo;=></p>
+
+<pre><code> {"_plugins"=&gt;
+   [#&lt;Ohai::NamedPlugin::CPU:0x00000101a6a4d0
+     @data={},
+     @has_run=false,
+     @source=
+       ["/Users/william/Codes/ohai/lib/ohai/plugins/aix/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/darwin/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/freebsd/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/linux/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/netbsd/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/openbsd/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/sigar/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/solaris2/cpu.rb",
+         "/Users/william/Codes/ohai/lib/ohai/plugins/windows/cpu.rb"
+       ],
+     @version=:version7&gt;
+   ]
+ }
+</code></pre>
+
+<p>   }
+```</p>
+
+<p>我们再回到<code>all_plugins</code>方法,前面是<code>load_plugins</code>方法的深入执行过程,现在来看<code>run_plugins</code>方法</p>
+
+<p>``` ruby lib/ohai/system.rb
+def run_plugins(safe = false, attribute_filter = nil)
+  # First run all the version 6 plugins
+  @v6_dependency_solver.values.each do |v6plugin|</p>
+
+<pre><code>@runner.run_plugin(v6plugin)
+</code></pre>
+
+<p>  end</p>
+
+<p>  # Then run all the version 7 plugins
+  begin</p>
+
+<pre><code>@provides_map.all_plugins(attribute_filter).each { |plugin|
+  @runner.run_plugin(plugin)
+}
+</code></pre>
+
+<p>  rescue Ohai::Exceptions::AttributeNotFound, Ohai::Exceptions::DependencyCycle => e</p>
+
+<pre><code>Ohai::Log.error("Encountered error while running plugins: #{e.inspect}")
+raise
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>我们只看v7的,这里比较简单,对每一个plugin调用<code>@runner</code>的<code>run_plugin</code>方法(<code>@runner</code>)是在<code>reset_system</code>中定义的</p>
+
+<p>```
+def run_plugin(plugin)
+  unless plugin.kind_of?(Ohai::DSL::Plugin)</p>
+
+<pre><code>raise Ohai::Exceptions::InvalidPlugin, "Invalid plugin #{plugin} (must be an Ohai::DSL::Plugin or subclass)"
+</code></pre>
+
+<p>  end</p>
+
+<p>  if Ohai::Config[:disabled_plugins].include?(plugin.name)</p>
+
+<pre><code>Ohai::Log.debug("Skipping disabled plugin #{plugin.name}")
+return false
+</code></pre>
+
+<p>  end</p>
+
+<p>  begin</p>
+
+<pre><code>case plugin.version
+when :version7
+  run_v7_plugin(plugin)
+when :version6
+  run_v6_plugin(plugin)
+else
+  raise Ohai::Exceptions::InvalidPlugin, "Invalid plugin version #{plugin.version} for plugin #{plugin}"
+end
+</code></pre>
+
+<p>  rescue Ohai::Exceptions::Error</p>
+
+<pre><code>raise
+</code></pre>
+
+<p>  rescue Exception,Errno::ENOENT => e</p>
+
+<pre><code>Ohai::Log.debug("Plugin #{plugin.name} threw exception #{e.inspect} #{e.backtrace.join("\n")}")
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>简单说它就是转而去调用<code>run_v7_plugin</code></p>
+
+<p>```
+def run_v7_plugin(plugin)
+  visited = [ plugin ]
+  while !visited.empty?</p>
+
+<pre><code>next_plugin = visited.pop
+
+next if next_plugin.has_run?
+
+if visited.include?(next_plugin)
+  raise Ohai::Exceptions::DependencyCycle, "Dependency cycle detected. Please refer to the following plugins: #{get_cycle(visited, plugin).join(", ") }"
+end
+
+dependency_providers = fetch_plugins(next_plugin.dependencies)
+
+# Remove the already ran plugins from dependencies if force is not set
+# Also remove the plugin that we are about to run from dependencies as well.
+dependency_providers.delete_if { |dep_plugin|
+  dep_plugin.has_run? || dep_plugin.eql?(next_plugin)
+}
+
+if dependency_providers.empty?
+  @safe_run ? next_plugin.safe_run : next_plugin.run
+else
+  visited &lt;&lt; next_plugin &lt;&lt; dependency_providers.first
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>简单说就是去调用plugin自己的<code>safe_run</code>方法(因为在定义@runner的时候有传第二个参数true)</p>
+
+<p>```
+def safe_run
+  begin</p>
+
+<pre><code>self.run
+</code></pre>
+
+<p>  rescue Ohai::Exceptions::Error => e</p>
+
+<pre><code>raise e
+</code></pre>
+
+<p>  rescue => e</p>
+
+<pre><code>Ohai::Log.debug("Plugin #{self.name} threw #{e.inspect}")
+e.backtrace.each { |line| Ohai::Log.debug( line )}
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>它又调用了<code>run</code>方法</p>
+
+<p><code>
+def run
+  @has_run = true
+  run_plugin
+end
+</code></p>
+
+<p>它又调用了<code>run_plugin</code>方法,这个方法是在<code>lib/ohai/dsl/plugin/versionvii.rb</code>中定义的</p>
+
+<p>```
+def run_plugin
+  collector = self.class.data_collector
+  platform = collect_os</p>
+
+<p>  if collector.has_key?(platform)</p>
+
+<pre><code>self.instance_eval(&amp;collector[platform])
+</code></pre>
+
+<p>  elsif collector.has_key?(:default)</p>
+
+<pre><code>self.instance_eval(&amp;collector[:default])
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>Ohai::Log.debug("No data to collect for plugin #{self.name}. Continuing...")
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>它用<code>instance_eval</code>执行了前面动态构造Plugin类的时候保存下来的块(collect_data后面跟的块)</p>
+
+<p>整个过程过了一遍,但有一点还没明白,最开始的地方我们发现显示出来的信息都收集在<code>Ohai::System</code>的实例<code>@ohai</code>的实例变量<code>@data</code>里,执行插件里的代码怎么会修改到它呢?</p>
+
+<p>这是因为在实例化plugin的时候它把实例变量<code>@data</code>传了进去</p>
+
+<p><code>ruby lib/ohai/loader.rb
+def load_v7_plugin(plugin_class)
+  plugin = plugin_class.new(@controller.data)
+  collect_provides(plugin)
+  plugin
+end
+</code></p>
+
+<p>在看一下plugin的部分代码</p>
+
+<p>```
+Ohai.plugin(:Command) do
+  provides &ldquo;command&rdquo;</p>
+
+<p>  collect_data do</p>
+
+<pre><code>command Mash.new
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>传给<code>collect_data</code>的块中的command是不是很奇怪,它是个什么东西?</p>
+
+<p>答案的下面的代码中</p>
+
+<p>``` ruby lib/ohai/dsl/plugin.rb
+def method_missing(name, *args)
+  return get_attribute(name) if args.length == 0</p>
+
+<p>  set_attribute(name, *args)
+end</p>
+
+<p>def get_attribute(name)
+  @data[name]
+end
+```</p>
+
+<p>到此所有迷雾都解开了, Yeah!!!</p>
+]]></content>
+  </entry>
+  
+</feed>
