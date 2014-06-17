@@ -617,23 +617,6 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>我们再回到<code>all_plugins</code>方法</p>
-
-<figure class='code'><figcaption><span>lib/ohai/system.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">all_plugins</span><span class="p">(</span><span class="n">attribute_filter</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">reset_system</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">load_plugins</span>
-</span><span class='line'>  <span class="n">run_plugins</span><span class="p">(</span><span class="kp">true</span><span class="p">,</span> <span class="n">attribute_filter</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
 <p>我们再一次回到<code>load_all</code>方法中</p>
 
 <figure class='code'><figcaption><span>lib/ohai/loader.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1132,7 +1115,7 @@
 
 <ul>
 <li>[x] 首先需要买一把吉他</li>
-<li>[ ] 学会&lt;&lt;她来听我的演唱会>>的弹唱</li>
+<li>[ ] 学会&lt;她来听我的演唱会>的弹唱</li>
 </ul>
 </li>
 <li>[ ] 读Rails源码,以问题的方式去读而不是从头一个文件一个文件的读,那样肯定完成不了
@@ -1145,8 +1128,6 @@
 <li>[ ] 请求的处理过程</li>
 </ul>
 </li>
-<li>[ ] 通过查看源代友找到答案</li>
-<li>[ ] 写博客记录下来</li>
 </ul>
 </li>
 <li>[ ] 可以轻松唱A2
@@ -1193,7 +1174,12 @@
 </li>
 </ul>
 </li>
-<li>[ ] 写5篇技术含量比较高的博客</li>
+<li>[ ] 写5篇技术含量比较高的博客
+
+<ul>
+<li>[x] Chef Ohai源码学习</li>
+</ul>
+</li>
 <li>[ ] 进一步深入了解Linux
 
 <ul>

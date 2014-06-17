@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ohai | William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.io/blog/categories/ohai/atom.xml" rel="self"/>
   <link href="http://williamherry.github.io/"/>
-  <updated>2014-02-15T22:17:48+08:00</updated>
+  <updated>2014-06-16T09:57:39+08:00</updated>
   <id>http://williamherry.github.io/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -411,17 +411,6 @@ def self.data_collector
   @data_collector ||= Mash.new
 end
 </code></p>
-
-<p>我们再回到<code>all_plugins</code>方法</p>
-
-<p>``` ruby lib/ohai/system.rb
-def all_plugins(attribute_filter=nil)
-  reset_system</p>
-
-<p>  load_plugins
-  run_plugins(true, attribute_filter)
-end
-```</p>
 
 <p>我们再一次回到<code>load_all</code>方法中</p>
 
