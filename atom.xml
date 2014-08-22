@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.github.io/atom.xml" rel="self"/>
   <link href="http://williamherry.github.io/"/>
-  <updated>2014-07-28T07:55:34+08:00</updated>
+  <updated>2014-08-22T15:35:39+08:00</updated>
   <id>http://williamherry.github.io/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,112 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Login From Console]]></title>
+    <link href="http://williamherry.github.io/blog/2014/08/22/login-from-console/"/>
+    <updated>2014-08-22T14:42:00+08:00</updated>
+    <id>http://williamherry.github.io/blog/2014/08/22/login-from-console</id>
+    <content type="html"><![CDATA[<p>最近有一个问题调试了好久,这个过程中学的了一些有意思的调试方法,在这里记录一下过程</p>
+
+<p>问题是出现在staging环境上的,有一个form已提交就报错,只有那一条数据有这个错误,
+但是单独肉眼看没发现有什么问题,查看日志只有很少的错误信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ActiveRecord::RecordNotSaved (ActiveRecord::RecordNotSaved):
+</span><span class='line'>  app/forms/my_form.rb:51:in `submit'
+</span><span class='line'>  app/controllers/my_controller.rb:60:in `update'</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/forms/my_form.rb</code>的51行是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>my_object.save!</span></code></pre></td></tr></table></div></figure>
+
+
+<p>判断是没保存成功,由于不是在本地开发模式,不能用pry设置断点,只能打印出来了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>begin
+</span><span class='line'>  my_object.save
+</span><span class='line'>rescue ActiveRecord::RecordNotSaved =&gt; e
+</span><span class='line'>  Rails.logger.info my_object.errors.full_messages
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结果什么错误信息也没有,搜索了一下这个错误提示,有人说callback返回false会引起保存不成功并没有错误,例如有这样一个callback</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def hide
+</span><span class='line'>  self.visible = false
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但这个model并没有这样的Callback,把全部callback都删掉问题依旧,所以判断不是这个问题</p>
+
+<p>同事支招把backtrace打出来会不会看出点眉目</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>begin
+</span><span class='line'>  my_object.save
+</span><span class='line'>rescue ActiveRecord::RecordNotSaved =&gt; e
+</span><span class='line'>  Rails.logger.info $!.inspect, $@
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>错误信息是多了,但任然看不出问题所在,由于经常用pry断点调试,现在已经没办法了,搜索怎么在非development环境用pry</p>
+
+<p>这个过程中学会了怎么在console里发请求如登陆什么的</p>
+
+<p>引用 <a href="http://stackoverflow.com/questions/151030/how-do-i-call-controller-view-methods-from-the-console-in-rails">http://stackoverflow.com/questions/151030/how-do-i-call-controller-view-methods-from-the-console-in-rails</a> 的最后一个答案</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Start Rails console
+</span><span class='line'>rails console
+</span><span class='line'># Disable forgery_protection
+</span><span class='line'>ApplicationController.allow_forgery_protection = false
+</span><span class='line'># Get the login form
+</span><span class='line'>app.get '/community_members/sign_in'
+</span><span class='line'># View the session
+</span><span class='line'>app.session.to_hash
+</span><span class='line'># Copy the CSRF token "_csrf_token" and place it in the login request.
+</span><span class='line'># Log in from the console to create a session
+</span><span class='line'>app.post '/community_members/login', {"authenticity_token"=&gt;"gT7G17RNFaWUDLC6PJGapwHk/OEyYfI1V8yrlg0lHpM=",  "refinery_user[login]"=&gt;'chloe', 'refinery_user[password]'=&gt;'test'}
+</span><span class='line'># View the session to verify CSRF token is the same
+</span><span class='line'>app.session.to_hash
+</span><span class='line'># Copy the CSRF token "_csrf_token" and place it in the request. It's best to edit this in Notepad++
+</span><span class='line'>app.post '/refinery/blog/posts', {"authenticity_token"=&gt;"gT7G17RNFaWUDLC6PJGapwHk/OEyYfI1V8yrlg0lHpM=", "switch_locale"=&gt;"en", "post"=&gt;{"title"=&gt;"Test", "homepage"=&gt;"0", "featured"=&gt;"0", "magazine"=&gt;"0", "refinery_category_ids"=&gt;["1282"], "body"=&gt;"Tests do a body good.", "custom_teaser"=&gt;"", "draft"=&gt;"0", "tag_list"=&gt;"", "published_at(1i)"=&gt;"2014", "published_at(2i)"=&gt;"5", "published_at(3i)"=&gt;"27", "published_at(4i)"=&gt;"21", "published_at(5i)"=&gt;"20", "custom_url"=&gt;"", "source_url_title"=&gt;"", "source_url"=&gt;"", "user_id"=&gt;"56", "browser_title"=&gt;"", "meta_description"=&gt;""}, "continue_editing"=&gt;"false", "locale"=&gt;:en}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>登陆可以了但断点还是不行, 不过<a href="http://stackoverflow.com/questions/7744848/is-there-a-way-to-identify-why-the-database-rollsback-in-a-rails-application">http://stackoverflow.com/questions/7744848/is-there-a-way-to-identify-why-the-database-rollsback-in-a-rails-application</a> 的回答给了我灵感,保存不成功日志里会有rollback, 所以我修改了日志配置,果然发现了原因,原来是关联的model缺字段保存没成功</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Chef Ohai源码学习]]></title>
@@ -4356,19 +4462,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 <p>重新打包即可</p>
 
 <h2>更换背景图片</h2>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[fcitx在Ubuntu12.04上Crash的解决办法]]></title>
-    <link href="http://williamherry.github.io/blog/2012/09/02/ubuntu-fcitx-crash/"/>
-    <updated>2012-09-02T12:34:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/09/02/ubuntu-fcitx-crash</id>
-    <content type="html"><![CDATA[<p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
-
-<p>好像有点太短了,怎么办呢?粘张图片吧</p>
-
-<p><img src="http://williamherry.github.io/images/fcitx/fcitx.png"></p>
 ]]></content>
   </entry>
   

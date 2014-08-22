@@ -9,7 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="Chef算是我比较喜欢的一个软件了,虽然网上它和Puppet的比较好多人说Puppet更好,我没有用过Puppet,我觉得Chef已经非常好用了.在使用它的过程中也遇到一些小问题和一些小技巧,汇总在这里,以后遇到又想不起来的时候就不用去Google找了 Centos6.2下Chef- &hellip;">
+  <meta name="description" content="今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除~/.config/fcitx/table/ 好像有点太短了,怎么办呢?粘张图片吧 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +69,48 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/02/ubuntu-fcitx-crash/">fcitx在Ubuntu12.04上Crash的解决办法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-02T12:34:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/02/ubuntu-fcitx-crash/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
+
+<p>好像有点太短了,怎么办呢?粘张图片吧</p>
+
+<p><img src="/images/fcitx/fcitx.png"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1233,61 +1275,9 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/14/lvs-and-keepalived/">LVS和KEEPALIVED实现高可用负载均衡</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-14T21:16:00+08:00" pubdate data-updated="true">Jul 14<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/14/lvs-and-keepalived/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>背景</h2>
-
-<p>利用LVS和Keepalived实现高可用负载均衡已经不是什么新鲜玩意了,网上的资料的也非常多,但大多都是转载的NetSeek大侠的博文,我学习的过程中也遇到一些困难,所以就有了写一篇自己的文档的想法.本文档没有太多自己的东西,只是将网上的资料做一些整理的工作</p>
-
-<p>本文档主要包括以下内容</p>
-
-<ul>
-<li>RSYNC和SERSYNC实现后端服务器内容同步</li>
-<li>LVS实现负载均衡</li>
-<li>KEEPALIVED实现高可用</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/14/lvs-and-keepalived/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1300,6 +1290,10 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
@@ -1327,10 +1321,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     
       <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/09/image-grayscale-for-ie10/">IE10下图片灰度处理</a>
       </li>
     
   </ul>

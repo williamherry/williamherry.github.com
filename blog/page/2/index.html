@@ -9,11 +9,7 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在这里 方法很简单,在crontab中可以定义环境变量 1
-crontab -e 1
-2
-3
-SHELL = /home/william/.rvm/bin/rvm-shell * 4 * * * /bin &hellip;">
+  <meta name="description" content="今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -73,6 +69,112 @@ SHELL = /home/william/.rvm/bin/rvm-shell * 4 * * * /bin &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T02:36:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+        
+         | <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
+
+<p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
+
+<p>不过openSUSE 12.3的默认字体还是非常难看的,需要做一些配置才可以让人看着舒服</p>
+
+<p>其实根本的问题并不是没有好看的字体,而是字体的渲染不给力,使字体看起来很虚,锯齿很厉害,我从网上找的这个办法可以开启抗锯齿,分享给大家</p>
+
+<p>原文地址在<a href="http://tuxperience.blogspot.com/2012/12/fix-ugly-fonts-in-kubuntu-or-kde-make.html">这里</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fix: Ugly Fonts in Kubuntu or KDE | Make your fonts crystal clear
+</span><span class='line'>
+</span><span class='line'>By default, KDE Desktop and Kubuntu have a very ugly font behavior compared to GNOME or Ubuntu. But no worries. Fix is easy!
+</span><span class='line'>
+</span><span class='line'>How to fix it?
+</span><span class='line'>
+</span><span class='line'>1- Go to "System Settings &gt; Application Appearance &gt; Fonts"
+</span><span class='line'>2- Enable anti-ailising.
+</span><span class='line'>3- Set Use sub-pixel rendering to RGB and Slight.
+</span><span class='line'>4- Go Advanced tab of Desktop Effects and set scale method to Crisp.
+</span><span class='line'>
+</span><span class='line'>To improve your fonts more, change your fonts to DejaVu and for a better console set console fonts to DejaVu Sans Mono 9.5.
+</span><span class='line'>
+</span><span class='line'>Now you have very cyrstal looking fonts! Have fun!</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有<code>Exclude range</code>正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果</p>
+
+<p>PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了</p>
+
+<p>UPDATE: 无线网络的问题</p>
+
+<p>Release Note中有说安装完无线网没有启动,需要手机重启系统,但是我发现我还遇到一个问题,有时候开机无线网络是没有连上了,点开直接是空的,我在<a href="http://forums.opensuse.org/english/get-technical-help-here/network-internet/470567-wireless-problems-opensuse-12-1-a.html">这里</a>找到了解决办法,简单说就是默认他用的<code>dhcpd</code>好像不太稳定,改成<code>dhclient</code>就好了</p>
+
+<p>在<code>/etc/sysconfig/network/dhcp</code>中修改下面两行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DHCLIENT_BIN="dhclient"
+</span><span class='line'>DHCLIENT_DEBUG="yes"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>加第二行是因为有一个<a href="https://bugzilla.novell.com/show_bug.cgi?id=732910">bug</a> (不过好像已经修复了)</p>
+
+<p>UPDATE2: 支付宝插件</p>
+
+<p>需要安装<code>libpng12-0</code>才可以使支付宝的插件安装成功,不然它提示成功但却用不了</p>
+
+<p>UPDATE3: 无线网硬件禁用的问题</p>
+
+<p>从sleep状态resume后无线网会是硬件禁用状态,需要手动按<code>Fn + F3</code>开启,后来发现是驱动冲突,在<code>/etc/modprobe.d/50-blacklist.conf</code>中的最后加上<code>blacklist acer-wmi</code>就好了</p>
+
+<p>还有一直让我很迷惑的<code>Magic Lamp</code>的问题,我很早就发现这个特效会有两种不同的效果,有时会最小化收到状态栏,有时会收到鼠标的位置,后来才知道原来收到鼠标的位置是一种fallback的情形,有的时候收到状态栏不可用,比如程序刚启动的时候,状态栏还没有调整好,这时候这个特效就会收到鼠标的位置</p>
+
+<p>还有默认的配置如果你一段时间不操作电脑,他会出现输入密码的登陆的画面,但只要你动一下鼠标或键盘就消失了,我看的一个youtube上的视频上还有人说这是个bug,其实不是,这只是它的默认屏保画面而已</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2039,48 +2141,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/02/ubuntu-fcitx-crash/">fcitx在Ubuntu12.04上Crash的解决办法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-02T12:34:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/02/ubuntu-fcitx-crash/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除<code>~/.config/fcitx/table/</code></p>
-
-<p>好像有点太短了,怎么办呢?粘张图片吧</p>
-
-<p><img src="/images/fcitx/fcitx.png"></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2096,6 +2156,10 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
@@ -2123,10 +2187,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
     
       <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/09/image-grayscale-for-ie10/">IE10下图片灰度处理</a>
       </li>
     
   </ul>

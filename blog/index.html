@@ -9,7 +9,11 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="接触Chef以来一直对Ohai很感兴趣,它收集的系统信息非常全面,很好奇它是怎么收集的,现在终于有时间学习了 目标 搞清楚Ohai是如何收集到某一项系统消息的,如IP地址 环境搭建 使用gem install ohai安装ohai和它的依赖,然后下载ohai的源码 git clone https &hellip;">
+  <meta name="description" content="最近有一个问题调试了好久,这个过程中学的了一些有意思的调试方法,在这里记录一下过程 问题是出现在staging环境上的,有一个form已提交就报错,只有那一条数据有这个错误,
+但是单独肉眼看没发现有什么问题,查看日志只有很少的错误信息 1
+2
+3
+ActiveRecord:: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +73,141 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/08/22/login-from-console/">Login From Console</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-22T14:42:00+08:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2014</time>
+        
+         | <a href="/blog/2014/08/22/login-from-console/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近有一个问题调试了好久,这个过程中学的了一些有意思的调试方法,在这里记录一下过程</p>
+
+<p>问题是出现在staging环境上的,有一个form已提交就报错,只有那一条数据有这个错误,
+但是单独肉眼看没发现有什么问题,查看日志只有很少的错误信息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ActiveRecord::RecordNotSaved (ActiveRecord::RecordNotSaved):
+</span><span class='line'>  app/forms/my_form.rb:51:in `submit'
+</span><span class='line'>  app/controllers/my_controller.rb:60:in `update'</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/forms/my_form.rb</code>的51行是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>my_object.save!</span></code></pre></td></tr></table></div></figure>
+
+
+<p>判断是没保存成功,由于不是在本地开发模式,不能用pry设置断点,只能打印出来了</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>begin
+</span><span class='line'>  my_object.save
+</span><span class='line'>rescue ActiveRecord::RecordNotSaved =&gt; e
+</span><span class='line'>  Rails.logger.info my_object.errors.full_messages
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结果什么错误信息也没有,搜索了一下这个错误提示,有人说callback返回false会引起保存不成功并没有错误,例如有这样一个callback</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def hide
+</span><span class='line'>  self.visible = false
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但这个model并没有这样的Callback,把全部callback都删掉问题依旧,所以判断不是这个问题</p>
+
+<p>同事支招把backtrace打出来会不会看出点眉目</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>begin
+</span><span class='line'>  my_object.save
+</span><span class='line'>rescue ActiveRecord::RecordNotSaved =&gt; e
+</span><span class='line'>  Rails.logger.info $!.inspect, $@
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>错误信息是多了,但任然看不出问题所在,由于经常用pry断点调试,现在已经没办法了,搜索怎么在非development环境用pry</p>
+
+<p>这个过程中学会了怎么在console里发请求如登陆什么的</p>
+
+<p>引用 <a href="http://stackoverflow.com/questions/151030/how-do-i-call-controller-view-methods-from-the-console-in-rails">http://stackoverflow.com/questions/151030/how-do-i-call-controller-view-methods-from-the-console-in-rails</a> 的最后一个答案</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Start Rails console
+</span><span class='line'>rails console
+</span><span class='line'># Disable forgery_protection
+</span><span class='line'>ApplicationController.allow_forgery_protection = false
+</span><span class='line'># Get the login form
+</span><span class='line'>app.get '/community_members/sign_in'
+</span><span class='line'># View the session
+</span><span class='line'>app.session.to_hash
+</span><span class='line'># Copy the CSRF token "_csrf_token" and place it in the login request.
+</span><span class='line'># Log in from the console to create a session
+</span><span class='line'>app.post '/community_members/login', {"authenticity_token"=&gt;"gT7G17RNFaWUDLC6PJGapwHk/OEyYfI1V8yrlg0lHpM=",  "refinery_user[login]"=&gt;'chloe', 'refinery_user[password]'=&gt;'test'}
+</span><span class='line'># View the session to verify CSRF token is the same
+</span><span class='line'>app.session.to_hash
+</span><span class='line'># Copy the CSRF token "_csrf_token" and place it in the request. It's best to edit this in Notepad++
+</span><span class='line'>app.post '/refinery/blog/posts', {"authenticity_token"=&gt;"gT7G17RNFaWUDLC6PJGapwHk/OEyYfI1V8yrlg0lHpM=", "switch_locale"=&gt;"en", "post"=&gt;{"title"=&gt;"Test", "homepage"=&gt;"0", "featured"=&gt;"0", "magazine"=&gt;"0", "refinery_category_ids"=&gt;["1282"], "body"=&gt;"Tests do a body good.", "custom_teaser"=&gt;"", "draft"=&gt;"0", "tag_list"=&gt;"", "published_at(1i)"=&gt;"2014", "published_at(2i)"=&gt;"5", "published_at(3i)"=&gt;"27", "published_at(4i)"=&gt;"21", "published_at(5i)"=&gt;"20", "custom_url"=&gt;"", "source_url_title"=&gt;"", "source_url"=&gt;"", "user_id"=&gt;"56", "browser_title"=&gt;"", "meta_description"=&gt;""}, "continue_editing"=&gt;"false", "locale"=&gt;:en}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>登陆可以了但断点还是不行, 不过<a href="http://stackoverflow.com/questions/7744848/is-there-a-way-to-identify-why-the-database-rollsback-in-a-rails-application">http://stackoverflow.com/questions/7744848/is-there-a-way-to-identify-why-the-database-rollsback-in-a-rails-application</a> 的回答给了我灵感,保存不成功日志里会有rollback, 所以我修改了日志配置,果然发现了原因,原来是关联的model缺字段保存没成功</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2896,112 +3035,6 @@ A stub with an expectations that the method gets called.</p></blockquote>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/">openSUSE 12.3 安装完后需要做的事情</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-23T02:36:00+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
-        
-         | <a href="/blog/2013/03/23/opensuse-12-dot-3-font-configuration/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
-
-<p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
-
-<p>不过openSUSE 12.3的默认字体还是非常难看的,需要做一些配置才可以让人看着舒服</p>
-
-<p>其实根本的问题并不是没有好看的字体,而是字体的渲染不给力,使字体看起来很虚,锯齿很厉害,我从网上找的这个办法可以开启抗锯齿,分享给大家</p>
-
-<p>原文地址在<a href="http://tuxperience.blogspot.com/2012/12/fix-ugly-fonts-in-kubuntu-or-kde-make.html">这里</a></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Fix: Ugly Fonts in Kubuntu or KDE | Make your fonts crystal clear
-</span><span class='line'>
-</span><span class='line'>By default, KDE Desktop and Kubuntu have a very ugly font behavior compared to GNOME or Ubuntu. But no worries. Fix is easy!
-</span><span class='line'>
-</span><span class='line'>How to fix it?
-</span><span class='line'>
-</span><span class='line'>1- Go to "System Settings &gt; Application Appearance &gt; Fonts"
-</span><span class='line'>2- Enable anti-ailising.
-</span><span class='line'>3- Set Use sub-pixel rendering to RGB and Slight.
-</span><span class='line'>4- Go Advanced tab of Desktop Effects and set scale method to Crisp.
-</span><span class='line'>
-</span><span class='line'>To improve your fonts more, change your fonts to DejaVu and for a better console set console fonts to DejaVu Sans Mono 9.5.
-</span><span class='line'>
-</span><span class='line'>Now you have very cyrstal looking fonts! Have fun!</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我刚开始照他的做也看不到效果的,花了好长时间,发现一个很有意思的事情,就是把字体放大到16以后和缩小到8以后字体的渲染开始变得非常漂亮,后来才发现在第三步设置anti-ailising的时候点击后面的configure在弹出的窗口中有<code>Exclude range</code>正好是8和16,我是勾选了的,原来我把8到16之间的字体除过不渲染,去掉之后漂亮的字体终于出来了.现在你可以随便选择你喜欢的字体,都会有很好的效果</p>
-
-<p>PS: 这些文字就是在新的openSUSE 12.3下面写的,看来以后要和Ubuntu说再见了</p>
-
-<p>UPDATE: 无线网络的问题</p>
-
-<p>Release Note中有说安装完无线网没有启动,需要手机重启系统,但是我发现我还遇到一个问题,有时候开机无线网络是没有连上了,点开直接是空的,我在<a href="http://forums.opensuse.org/english/get-technical-help-here/network-internet/470567-wireless-problems-opensuse-12-1-a.html">这里</a>找到了解决办法,简单说就是默认他用的<code>dhcpd</code>好像不太稳定,改成<code>dhclient</code>就好了</p>
-
-<p>在<code>/etc/sysconfig/network/dhcp</code>中修改下面两行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>DHCLIENT_BIN="dhclient"
-</span><span class='line'>DHCLIENT_DEBUG="yes"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>加第二行是因为有一个<a href="https://bugzilla.novell.com/show_bug.cgi?id=732910">bug</a> (不过好像已经修复了)</p>
-
-<p>UPDATE2: 支付宝插件</p>
-
-<p>需要安装<code>libpng12-0</code>才可以使支付宝的插件安装成功,不然它提示成功但却用不了</p>
-
-<p>UPDATE3: 无线网硬件禁用的问题</p>
-
-<p>从sleep状态resume后无线网会是硬件禁用状态,需要手动按<code>Fn + F3</code>开启,后来发现是驱动冲突,在<code>/etc/modprobe.d/50-blacklist.conf</code>中的最后加上<code>blacklist acer-wmi</code>就好了</p>
-
-<p>还有一直让我很迷惑的<code>Magic Lamp</code>的问题,我很早就发现这个特效会有两种不同的效果,有时会最小化收到状态栏,有时会收到鼠标的位置,后来才知道原来收到鼠标的位置是一种fallback的情形,有的时候收到状态栏不可用,比如程序刚启动的时候,状态栏还没有调整好,这时候这个特效就会收到鼠标的位置</p>
-
-<p>还有默认的配置如果你一段时间不操作电脑,他会出现输入密码的登陆的画面,但只要你动一下鼠标或键盘就消失了,我看的一个youtube上的视频上还有人说这是个bug,其实不是,这只是它的默认屏保画面而已</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -3015,6 +3048,10 @@ A stub with an expectations that the method gets called.</p></blockquote>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
@@ -3042,10 +3079,6 @@ A stub with an expectations that the method gets called.</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/09/image-grayscale-for-ie10/">IE10下图片灰度处理</a>
       </li>
     
   </ul>
