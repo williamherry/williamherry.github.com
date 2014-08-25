@@ -64,7 +64,7 @@ Chef提供了更方便统一的方法
 
 - 有一个中心服务器(运行chef-server)
   - Chef将数据存储在CouchDB数据库里面
-  - RabbitMQ和chef-solo等提供搜索的功能
+  - RabbitMQ和chef-solr等提供搜索的功能
   - Chef还提供了个图形的用户界面(cher-server-webui)
 - 可以有多个Workstation(运行knife工具对Chef进行配置)
   - Workstation上有一个pem文件,knift利用它作为认证来和chef-server通过REST API进行通信
