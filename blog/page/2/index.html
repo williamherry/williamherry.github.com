@@ -9,7 +9,8 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题, &hellip;">
+  <meta name="description" content="刚开始学习rspec的时候,stub和mock理解起来有点困难,听了Terry和aNdReW的讲解后,对它们的理解深入多了,在此表示感谢 先从stub说起,什么是stub呢,CodeSchool给出这样的定义: Stub:
+For replacing a method with code that &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +70,147 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-13T16:46:00+08:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/05/13/understand-stub-and-mock/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>刚开始学习<code>rspec</code>的时候,<code>stub</code>和<code>mock</code>理解起来有点困难,听了<code>Terry</code>和<code>aNdReW</code>的讲解后,对它们的理解深入多了,在此表示感谢</p>
+
+<p>先从<code>stub</code>说起,什么是<code>stub</code>呢,<code>CodeSchool</code>给出这样的定义:</p>
+
+<blockquote><p>Stub:<br/>
+For replacing a method with code that returns a specified result</p></blockquote>
+
+<p>简单说就是你可以用<code>stub</code>去<strong>伪造(fade)</strong>一个方法,<strong>阻断</strong>对原来方法的调用,例如下面来自<code>CodeSchool</code>的例子</p>
+
+<p>我们有一个叫<code>zombie</code>的<code>model</code></p>
+
+<figure class='code'><figcaption><span>app/models/zombie.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Zombie</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_one</span> <span class="ss">:weapon</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">decapitate</span>
+</span><span class='line'>    <span class="n">weapon</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">:head</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;dead again&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们要测试<code>decapitate</code>方法,它里面调用了<code>weapon</code>的<code>slice</code>方法,下面是测试代码:</p>
+
+<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;sets status to dead again&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s2">&quot;dead again&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面代码的第6行就是用<code>stub</code>伪造了<code>weapon</code>的<code>slice</code>方法,阻断了对原来方法的调用</p>
+
+<p>你可能会问为什么我们要这样做,这是因为我们在做单元测试,<code>weapon</code>的<code>slice</code>可能会非常复杂,里面又调用了其它的方法等等,这是集成测试应该做的工作.事实上这里我们是在测试<code>decapitate</code>方法会把<code>zombie.status</code>设置成<code>"dead again"</code></p>
+
+<p>接下来我们来说<code>mock</code>, <code>CodeSchool</code>上给的定义是这样的:</p>
+
+<blockquote><p>Mock:<br/>
+A stub with an expectations that the method gets called.</p></blockquote>
+
+<p>简单来说<code>mock</code>就是<code>stub + expectation</code>, 说它是<code>stub</code>是因为它也可以像<code>stub</code>一样伪造方法,阻断对原来方法的调用, <code>expectation</code>是说它不仅伪造了这个方法,它还期望你(必须)调用这个方法,如果没有被调用到,这个<code>test</code>就<code>fail</code>了,看下面的例子</p>
+
+<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;calls weapon.slice&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的第6行伪造了<code>weapon</code>的<code>slice</code>方法,并期望这个方法在这个测试中被调用.</p>
+
+<p>你可能会想为什么要这样写,这是因为我们仅仅是要测试<code>decapitate</code>这个方法确实调用了<code>weapon.slice</code>, 可以把<code>decapitate</code>想成下面的黑盒,我们蹲在图中的A点,等着看它会不会去调用<code>weapon.slice</code></p>
+
+<p><img src="/images/test/test_outgoing.jpg"></p>
+
+<p>这个图是<code>Sandi Metz</code>在<code>RailsConf 2013</code>上的演讲<code>The Magic Tricks of Testing</code></p>
+
+<p><a href="http://www.justin.tv/confreaks/c/2247122">视频</a></p>
+
+<p><a href="https://speakerdeck.com/skmetz/magic-tricks-of-testing-railsconf">Slides</a></p>
+
+<p>这里注意一下顺序,一般的测试先是执行一个动作,然后再去判断状态或其它东西,像前面<code>stub</code>的例子,先调用decapitate方法,再去判断<code>status</code>的变化,就好像我踢你一脚,看你会不会喊疼,而这里是先有期望再有动作,这就好比老板对你说这个下周前完成,不然就滚蛋一样</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1952,195 +2094,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/09/customize-centos-iso/">定制Linux发行版(CentOS-6.2)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-09T01:18:00+08:00" pubdate data-updated="true">Sep 9<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/09/customize-centos-iso/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>主要内容:</p>
-
-<ul>
-<li>基本的定制过程</li>
-<li>改变ISO中包含的软件包</li>
-<li>集成Kickstart</li>
-<li>更换背景图片</li>
-</ul>
-
-
-<h2>基本的定制过程</h2>
-
-<p>ISO的定制简单来说就是将ISO挂载,修改里面的内容然后打包回去,这一节我们不修改ISO里的内容,只熟悉一个这个过程</p>
-
-<ul>
-<li>安装需要要的软件包</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>yum -y install genisoimage createrepo</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>挂载ISO</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mount -o loop /opt/CentOS-6.2-x86_64-bin-DVD1.iso /media/</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>将所有人文件复制到一个目录</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cp -r /media mycentos</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>做修改</li>
-</ul>
-
-
-<p>这里我们不做修改,只熟悉这个过程</p>
-
-<ul>
-<li>重新生成软件包列表</li>
-</ul>
-
-
-<p>如果添加或删除了ISO里包含的软件包,需要运行下面命令重新生成列表(注意下面命令最后的<code>.</code>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
-</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的很长的文件名可以从<code>repodata/repomd.xml</code>文件里找到,在这个文件中寻找<code>type="group"</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>...
-</span><span class='line'> &lt;data type="group"&gt;
-</span><span class='line'>    &lt;location xml:base="media://1323560292.885204#1" href="repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml"/&gt;
-</span><span class='line'>    &lt;checksum type="sha256"&gt;3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098&lt;/checksum&gt;
-</span><span class='line'>    &lt;timestamp&gt;1324003565&lt;/timestamp&gt;
-</span><span class='line'> &lt;/data&gt;
-</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>重新打包回去</li>
-</ul>
-
-
-<p>运行下面命令重新生成修改过的ISO保存到<code>/tmp</code>下(注意最后面的<code>.</code>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
-</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>改变ISO中包含的软件包</h2>
-
-<p>如果觉得CentOS的ISO太大,可以对里面的软件包做一些删减,只包含最小化安装需要的包可能是一个好选择,在一个最小化安装的系统中<code>/root/install.log</code>里包含了最小化安装所需要的包,所以这一节很简单,在Packages目录下只留下需要的包,重新生成软件列表,重新打包</p>
-
-<ul>
-<li>只复制需要要软件包</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
-</span><span class='line'>rm -rf Packages/*
-</span><span class='line'>for i in `cat /root/install.log | grep Installing | sed 's/Installing //'`; do cp -v /media/Packages/$i* Packages/; done</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>重新生成软件包列表</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
-</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>重新打包回去</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
-</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果要需要一些自己制作的软件包,需要把他们依赖的包也复制到Packages目录里</p>
-
-<h2>集成Kickstart</h2>
-
-<p>集成Kickstart比较简单,将做好的Kickstart文件复制到ISO里(可以是isolinux下),然后修改<code>isolinux/isolinux.cfg</code>文件</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>label autoinstall
-</span><span class='line'>  menu label ^Auto install
-</span><span class='line'>  menu default
-</span><span class='line'>  kernel vmlinuz
-</span><span class='line'>  append initrd=initrd.img ks=cdrom:/isolinux/ks.cfg</span></code></pre></td></tr></table></div></figure>
-
-
-<p>重新打包即可</p>
-
-<h2>更换背景图片</h2>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2156,6 +2109,10 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
@@ -2183,10 +2140,6 @@ virt-install的更多参数可以参考<a href="http://my.oschina.net/williamher
     
       <li class="post">
         <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
       </li>
     
   </ul>

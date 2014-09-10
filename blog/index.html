@@ -9,11 +9,12 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="最近有一个问题调试了好久,这个过程中学的了一些有意思的调试方法,在这里记录一下过程 问题是出现在staging环境上的,有一个form已提交就报错,只有那一条数据有这个错误,
-但是单独肉眼看没发现有什么问题,查看日志只有很少的错误信息 1
+  <meta name="description" content="利用munin这样的工具可以查看到Memcached整个缓存的命中率,有时候可能会需要知道不同的缓存各自的命中率如何,这时候可以利用Rails的ActiveSupport::Notifications来帮助我们分析 1
 2
 3
-ActiveRecord:: &hellip;">
+4
+5
+CacheLogger = Logger.new("log/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -73,6 +74,140 @@ ActiveRecord:: &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-10T22:55:00+08:00" pubdate data-updated="true">Sep 10<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/09/10/memcached-cache-analysis/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>利用munin这样的工具可以查看到Memcached整个缓存的命中率,有时候可能会需要知道不同的缓存各自的命中率如何,这时候可以利用Rails的<a href="http://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-support">ActiveSupport::Notifications</a>来帮助我们分析</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CacheLogger = Logger.new("log/cache.log")
+</span><span class='line'>
+</span><span class='line'>ActiveSupport::Notifications.subscribe /cache_\S*\.active_support/ do |name, start, finish, id, payload|
+</span><span class='line'>  CacheLogger.info "#{name} #{start} #{payload[:key]}"
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码会把所有的缓存的请求记录到一个日志文件里面,可以用下面的脚本去生产分析报告(from @soffolk)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#! /bin/sh
+</span><span class='line'>
+</span><span class='line'># ./parse_cache cache.log courses
+</span><span class='line'>
+</span><span class='line'>read=`cat $1 | grep $2 | grep cache_read.active_support | wc -l`
+</span><span class='line'>write=`cat $1 | grep $2 | grep cache_write.active_support | wc -l`
+</span><span class='line'>read_multi=`cat $1 | grep $2 | grep cache_read_multi.active_support | grep -o '[as|to]-json' | wc -l`
+</span><span class='line'>fetch_hit=`cat $1 | grep $2 | grep cache_fetch_hit.active_support | wc -l`
+</span><span class='line'>all=$((read+read_multi))
+</span><span class='line'>if [ $all = 0 ]; then
+</span><span class='line'>  ratio=0
+</span><span class='line'>else
+</span><span class='line'>  ratio=$(echo "scale=6; $(($all-$write))/$all*100" | bc -l)
+</span><span class='line'>fi
+</span><span class='line'>
+</span><span class='line'>echo "Read:         $read"
+</span><span class='line'>echo "Write:        $write"
+</span><span class='line'>echo "Read Multi:   $read_multi"
+</span><span class='line'>echo "Fetch Hit:    $fetch_hit"
+</span><span class='line'>echo "All:          $all"
+</span><span class='line'>echo "Hit Ratio:    $ratio%"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外你可能想看一下是不是分给Memcached的内存已经用光了,不断有少访问的item被挤出去</p>
+
+<p>可以用memcdump命令dump出所有的keys</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>memcdump --servers=localhost | sort &gt; keys1.dump</span></code></pre></td></tr></table></div></figure>
+
+
+<p>过几秒在dump一次</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>memcdump --servers=localhost | sort &gt; keys2.dump</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用comm命令可以查看是否有变化</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>comm -23 keys1.dump keys2.dump &gt; only_in_one.dump
+</span><span class='line'>comm -13 keys1.dump keys2.dump &gt; only_in_two.dump</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实际上从memcached的内置命令stats就可以看到内存已经不够用的,一直有item被挤出去</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>...
+</span><span class='line'>STAT hash_is_expanding 0
+</span><span class='line'>STAT expired_unfetched 4383
+</span><span class='line'>STAT evicted_unfetched 7335517 #已驱逐但未获取的对象数目 
+</span><span class='line'>STAT bytes 253815528
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2894,147 +3029,6 @@ t.year   # => 2000</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/05/13/understand-stub-and-mock/">理解测试中的stub和mock</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-13T16:46:00+08:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/05/13/understand-stub-and-mock/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>刚开始学习<code>rspec</code>的时候,<code>stub</code>和<code>mock</code>理解起来有点困难,听了<code>Terry</code>和<code>aNdReW</code>的讲解后,对它们的理解深入多了,在此表示感谢</p>
-
-<p>先从<code>stub</code>说起,什么是<code>stub</code>呢,<code>CodeSchool</code>给出这样的定义:</p>
-
-<blockquote><p>Stub:<br/>
-For replacing a method with code that returns a specified result</p></blockquote>
-
-<p>简单说就是你可以用<code>stub</code>去<strong>伪造(fade)</strong>一个方法,<strong>阻断</strong>对原来方法的调用,例如下面来自<code>CodeSchool</code>的例子</p>
-
-<p>我们有一个叫<code>zombie</code>的<code>model</code></p>
-
-<figure class='code'><figcaption><span>app/models/zombie.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Zombie</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-</span><span class='line'>  <span class="n">has_one</span> <span class="ss">:weapon</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">decapitate</span>
-</span><span class='line'>    <span class="n">weapon</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">:head</span><span class="p">)</span>
-</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;dead again&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我们要测试<code>decapitate</code>方法,它里面调用了<code>weapon</code>的<code>slice</code>方法,下面是测试代码:</p>
-
-<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;sets status to dead again&quot;</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
-</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s2">&quot;dead again&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面代码的第6行就是用<code>stub</code>伪造了<code>weapon</code>的<code>slice</code>方法,阻断了对原来方法的调用</p>
-
-<p>你可能会问为什么我们要这样做,这是因为我们在做单元测试,<code>weapon</code>的<code>slice</code>可能会非常复杂,里面又调用了其它的方法等等,这是集成测试应该做的工作.事实上这里我们是在测试<code>decapitate</code>方法会把<code>zombie.status</code>设置成<code>"dead again"</code></p>
-
-<p>接下来我们来说<code>mock</code>, <code>CodeSchool</code>上给的定义是这样的:</p>
-
-<blockquote><p>Mock:<br/>
-A stub with an expectations that the method gets called.</p></blockquote>
-
-<p>简单来说<code>mock</code>就是<code>stub + expectation</code>, 说它是<code>stub</code>是因为它也可以像<code>stub</code>一样伪造方法,阻断对原来方法的调用, <code>expectation</code>是说它不仅伪造了这个方法,它还期望你(必须)调用这个方法,如果没有被调用到,这个<code>test</code>就<code>fail</code>了,看下面的例子</p>
-
-<figure class='code'><figcaption><span>/spec/models/zombie_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">Zombie</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:zombie</span><span class="p">)</span> <span class="p">{</span> <span class="no">Zombie</span><span class="o">.</span><span class="n">create</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;#decapitate&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;calls weapon.slice&quot;</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">weapon</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:slice</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">zombie</span><span class="o">.</span><span class="n">decapitate</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里的第6行伪造了<code>weapon</code>的<code>slice</code>方法,并期望这个方法在这个测试中被调用.</p>
-
-<p>你可能会想为什么要这样写,这是因为我们仅仅是要测试<code>decapitate</code>这个方法确实调用了<code>weapon.slice</code>, 可以把<code>decapitate</code>想成下面的黑盒,我们蹲在图中的A点,等着看它会不会去调用<code>weapon.slice</code></p>
-
-<p><img src="/images/test/test_outgoing.jpg"></p>
-
-<p>这个图是<code>Sandi Metz</code>在<code>RailsConf 2013</code>上的演讲<code>The Magic Tricks of Testing</code></p>
-
-<p><a href="http://www.justin.tv/confreaks/c/2247122">视频</a></p>
-
-<p><a href="https://speakerdeck.com/skmetz/magic-tricks-of-testing-railsconf">Slides</a></p>
-
-<p>这里注意一下顺序,一般的测试先是执行一个动作,然后再去判断状态或其它东西,像前面<code>stub</code>的例子,先调用decapitate方法,再去判断<code>status</code>的变化,就好像我踢你一脚,看你会不会喊疼,而这里是先有期望再有动作,这就好比老板对你说这个下周前完成,不然就滚蛋一样</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -3048,6 +3042,10 @@ A stub with an expectations that the method gets called.</p></blockquote>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
@@ -3075,10 +3073,6 @@ A stub with an expectations that the method gets called.</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
       </li>
     
   </ul>

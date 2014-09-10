@@ -9,7 +9,11 @@
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="今天开始不知道怎么搞的,fcitx可以切换出来,一打字就Crash了,网上找了一下,好像是码表挂掉了,解决办法是删除~/.config/fcitx/table/ 好像有点太短了,怎么办呢?粘张图片吧 ">
+  <meta name="description" content="主要内容: 基本的定制过程
+改变ISO中包含的软件包
+集成Kickstart
+更换背景图片 基本的定制过程 ISO的定制简单来说就是将ISO挂载,修改里面的内容然后打包回去,这一节我们不修改ISO里的内容,只熟悉一个这个过程 安装需要要的软件包 1
+yum -y install &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +73,195 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/09/customize-centos-iso/">定制Linux发行版(CentOS-6.2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-09T01:18:00+08:00" pubdate data-updated="true">Sep 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/09/customize-centos-iso/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>主要内容:</p>
+
+<ul>
+<li>基本的定制过程</li>
+<li>改变ISO中包含的软件包</li>
+<li>集成Kickstart</li>
+<li>更换背景图片</li>
+</ul>
+
+
+<h2>基本的定制过程</h2>
+
+<p>ISO的定制简单来说就是将ISO挂载,修改里面的内容然后打包回去,这一节我们不修改ISO里的内容,只熟悉一个这个过程</p>
+
+<ul>
+<li>安装需要要的软件包</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yum -y install genisoimage createrepo</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>挂载ISO</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mount -o loop /opt/CentOS-6.2-x86_64-bin-DVD1.iso /media/</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>将所有人文件复制到一个目录</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cp -r /media mycentos</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>做修改</li>
+</ul>
+
+
+<p>这里我们不做修改,只熟悉这个过程</p>
+
+<ul>
+<li>重新生成软件包列表</li>
+</ul>
+
+
+<p>如果添加或删除了ISO里包含的软件包,需要运行下面命令重新生成列表(注意下面命令最后的<code>.</code>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的很长的文件名可以从<code>repodata/repomd.xml</code>文件里找到,在这个文件中寻找<code>type="group"</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>...
+</span><span class='line'> &lt;data type="group"&gt;
+</span><span class='line'>    &lt;location xml:base="media://1323560292.885204#1" href="repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml"/&gt;
+</span><span class='line'>    &lt;checksum type="sha256"&gt;3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098&lt;/checksum&gt;
+</span><span class='line'>    &lt;timestamp&gt;1324003565&lt;/timestamp&gt;
+</span><span class='line'> &lt;/data&gt;
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新打包回去</li>
+</ul>
+
+
+<p>运行下面命令重新生成修改过的ISO保存到<code>/tmp</code>下(注意最后面的<code>.</code>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>改变ISO中包含的软件包</h2>
+
+<p>如果觉得CentOS的ISO太大,可以对里面的软件包做一些删减,只包含最小化安装需要的包可能是一个好选择,在一个最小化安装的系统中<code>/root/install.log</code>里包含了最小化安装所需要的包,所以这一节很简单,在Packages目录下只留下需要的包,重新生成软件列表,重新打包</p>
+
+<ul>
+<li>只复制需要要软件包</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>rm -rf Packages/*
+</span><span class='line'>for i in `cat /root/install.log | grep Installing | sed 's/Installing //'`; do cp -v /media/Packages/$i* Packages/; done</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新生成软件包列表</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>createrepo -v -g repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>重新打包回去</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd mycentos
+</span><span class='line'>mkisofs -joliet-long -T -o /tmp/mycentos.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要需要一些自己制作的软件包,需要把他们依赖的包也复制到Packages目录里</p>
+
+<h2>集成Kickstart</h2>
+
+<p>集成Kickstart比较简单,将做好的Kickstart文件复制到ISO里(可以是isolinux下),然后修改<code>isolinux/isolinux.cfg</code>文件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>label autoinstall
+</span><span class='line'>  menu label ^Auto install
+</span><span class='line'>  menu default
+</span><span class='line'>  kernel vmlinuz
+</span><span class='line'>  append initrd=initrd.img ks=cdrom:/isolinux/ks.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重新打包即可</p>
+
+<h2>更换背景图片</h2>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1215,66 +1408,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/16/chef-basic/">Chef基础知识</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-16T18:57:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/16/chef-basic/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>主要内容</h2>
-
-<p>本文档主要讲述了一些Chef的基础知识,包括:</p>
-
-<ul>
-<li>Chef是什么</li>
-<li>Chef能做什么</li>
-<li>Chef怎么做</li>
-</ul>
-
-
-<h2>Chef是什么</h2>
-
-<h3>Chef简介</h3>
-
-<p>Chef是，由Ruby开发的服务器的构成管理工具</p>
-
-<p>想像一下我们现在需要搭建一台mysql database slave服务器，安装过程我们手动操作了 没过多久，我们需要第二台，这时候我们会想，如果之后安装第一台的时候把操作过程执行的命令写成脚本 现在安装第二台，运行一下脚本就行了，节约时间而且不容易出错</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/16/chef-basic/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1290,6 +1423,10 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
@@ -1317,10 +1454,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     
       <li class="post">
         <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/10/allow-ip-from-shanghai-do-something/">只允许上海的用户注册</a>
       </li>
     
   </ul>

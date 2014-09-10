@@ -5,11 +5,16 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>VIM练级日记01-外挂总管Vundle - William's Blog with Octopress</title>
+  <title>Memcached Cache Analysis - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
 
   
-  <meta name="description" content="背景 已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾高見龍老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文, &hellip;">
+  <meta name="description" content="利用munin这样的工具可以查看到Memcached整个缓存的命中率,有时候可能会需要知道不同的缓存各自的命中率如何,这时候可以利用Rails的ActiveSupport::Notifications来帮助我们分析 1
+2
+3
+4
+5
+CacheLogger = Logger.new("log/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/">
+  <link rel="canonical" href="http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -72,7 +77,7 @@
   
   <header>
     
-      <h1 class="entry-title">VIM练级日记01-外挂总管Vundle</h1>
+      <h1 class="entry-title">Memcached Cache Analysis</h1>
     
     
       <p class="meta">
@@ -88,7 +93,7 @@
   
 
 
-<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+<time datetime="2014-09-10T22:55:00+08:00" pubdate data-updated="true">Sep 10<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -97,28 +102,23 @@
   </header>
 
 
-<div class="entry-content"><h2>背景</h2>
-
-<p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
-
-<h2>外挂总管Vundle</h2>
-
-<p>高老师的视频中使用的是pathogen这个外挂来管理其它VIM外挂,但我通过Google发现有人说Vundle比pathogen要好,就试了下,果然很不错的说</p>
-
-<p>Vundle利用git,插件的git repo以及vim-scripts维护的GitHub repo, 自动安装, 更新和卸载插件. 它把这些繁杂的工作变得简单, 甚至, 成为一种享受.</p>
-
-<h2>安装</h2>
-
-<p>Vundle的github地址在<a href="https://github.com/gmarik/vundle">这里</a>,上面有安装和使用方法,我在这里也简单的写一下</p>
+<div class="entry-content"><p>利用munin这样的工具可以查看到Memcached整个缓存的命中率,有时候可能会需要知道不同的缓存各自的命中率如何,这时候可以利用Rails的<a href="http://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-support">ActiveSupport::Notifications</a>来帮助我们分析</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CacheLogger = Logger.new("log/cache.log")
+</span><span class='line'>
+</span><span class='line'>ActiveSupport::Notifications.subscribe /cache_\S*\.active_support/ do |name, start, finish, id, payload|
+</span><span class='line'>  CacheLogger.info "#{name} #{start} #{payload[:key]}"
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>配置</h2>
+<p>上面的代码会把所有的缓存的请求记录到一个日志文件里面,可以用下面的脚本去生产分析报告(from @soffolk)</p>
 
-<figure class='code'><figcaption><span>vim ~/.vimrc </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -139,54 +139,66 @@
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">nocompatible</span>               <span class="c">&quot; be iMproved</span>
-</span><span class='line'><span class="k">filetype</span> off                   <span class="c">&quot; required!</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#! /bin/sh
 </span><span class='line'>
-</span><span class='line'><span class="k">set</span> <span class="nb">rtp</span><span class="p">+=~</span><span class="sr">/.vim/</span>bundle<span class="sr">/vundle/</span>
-</span><span class='line'><span class="k">call</span> vundle#rc<span class="p">()</span>
+</span><span class='line'># ./parse_cache cache.log courses
 </span><span class='line'>
-</span><span class='line'><span class="c">&quot; let Vundle manage Vundle</span>
-</span><span class='line'><span class="c">&quot; required! </span>
-</span><span class='line'>Bundle <span class="s1">&#39;gmarik/vundle&#39;</span>
+</span><span class='line'>read=`cat $1 | grep $2 | grep cache_read.active_support | wc -l`
+</span><span class='line'>write=`cat $1 | grep $2 | grep cache_write.active_support | wc -l`
+</span><span class='line'>read_multi=`cat $1 | grep $2 | grep cache_read_multi.active_support | grep -o '[as|to]-json' | wc -l`
+</span><span class='line'>fetch_hit=`cat $1 | grep $2 | grep cache_fetch_hit.active_support | wc -l`
+</span><span class='line'>all=$((read+read_multi))
+</span><span class='line'>if [ $all = 0 ]; then
+</span><span class='line'>  ratio=0
+</span><span class='line'>else
+</span><span class='line'>  ratio=$(echo "scale=6; $(($all-$write))/$all*100" | bc -l)
+</span><span class='line'>fi
 </span><span class='line'>
-</span><span class='line'><span class="c">&quot; My Bundles here:</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>     <span class="c">&quot; required!</span>
-</span><span class='line'><span class="c">&quot;</span>
-</span><span class='line'><span class="c">&quot; Brief help</span>
-</span><span class='line'><span class="c">&quot; :BundleList          - list configured bundles</span>
-</span><span class='line'><span class="c">&quot; :BundleInstall(!)    - install(update) bundles</span>
-</span><span class='line'><span class="c">&quot; :BundleSearch(!) foo - search(or refresh cache first) for foo</span>
-</span><span class='line'><span class="c">&quot; :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles</span>
-</span><span class='line'><span class="c">&quot;</span>
-</span><span class='line'><span class="c">&quot; see :h vundle for more details or wiki for FAQ</span>
-</span><span class='line'><span class="c">&quot; NOTE: comments after Bundle command are not allowed..</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>echo "Read:         $read"
+</span><span class='line'>echo "Write:        $write"
+</span><span class='line'>echo "Read Multi:   $read_multi"
+</span><span class='line'>echo "Fetch Hit:    $fetch_hit"
+</span><span class='line'>echo "All:          $all"
+</span><span class='line'>echo "Hit Ratio:    $ratio%"</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>使用</h2>
+<p>另外你可能想看一下是不是分给Memcached的内存已经用光了,不断有少访问的item被挤出去</p>
 
-<p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
-
-<ul>
-<li><p>在github上搜索nerdtree找到它,我找到的是: <a href="https://github.com/scrooloose/nerdtree">https://github.com/scrooloose/nerdtree</a></p></li>
-<li><p>在～/.vimrc文件里添加一行:</p></li>
-</ul>
-
+<p>可以用memcdump命令dump出所有的keys</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>memcdump --servers=localhost | sort &gt; keys1.dump</span></code></pre></td></tr></table></div></figure>
 
 
-<ul>
-<li>退出并重新打开VIM,执行:BundleInstall</li>
-</ul>
+<p>过几秒在dump一次</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>memcdump --servers=localhost | sort &gt; keys2.dump</span></code></pre></td></tr></table></div></figure>
 
 
-<p>新的外挂NERDTree已经安装好了,可以在~/.vim/bundle/目录下看到它,下一篇我会简单介绍它的使用</p>
+<p>使用comm命令可以查看是否有变化</p>
 
-<p>用Vundle管理外挂就是这么简单</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>comm -23 keys1.dump keys2.dump &gt; only_in_one.dump
+</span><span class='line'>comm -13 keys1.dump keys2.dump &gt; only_in_two.dump</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实际上从memcached的内置命令stats就可以看到内存已经不够用的,一直有item被挤出去</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>...
+</span><span class='line'>STAT hash_is_expanding 0
+</span><span class='line'>STAT expired_unfetched 4383
+</span><span class='line'>STAT evicted_unfetched 7335517 #已驱逐但未获取的对象数目 
+</span><span class='line'>STAT bytes 253815528
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -209,7 +221,7 @@
   
 
 
-<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+<time datetime="2014-09-10T22:55:00+08:00" pubdate data-updated="true">Sep 10<span>th</span>, 2014</time>
       
 
 
@@ -217,7 +229,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/" data-via="williamherry" data-counturl="http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/" data-via="williamherry" data-counturl="http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/" >Tweet</a>
   
   
   
@@ -226,10 +238,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/07/16/chef-basic/" title="Previous Post: Chef基础知识">&laquo; Chef基础知识</a>
+        <a class="basic-alignment left" href="/blog/2014/08/22/login-from-console/" title="Previous Post: Login From Console">&laquo; Login From Console</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/07/19/master-vim-02-nerdtree/" title="Next Post: VIM练级日记02-目录外挂NERDTree">VIM练级日记02-目录外挂NERDTree &raquo;</a>
       
     </p>
   </footer>
@@ -336,8 +346,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/';
-        var disqus_url = 'http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/';
+        var disqus_identifier = 'http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/';
+        var disqus_url = 'http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/';
         var disqus_script = 'embed.js';
       
     (function () {
