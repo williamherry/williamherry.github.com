@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[William's Blog with Octopress]]></title>
-  <link href="http://williamherry.github.io/atom.xml" rel="self"/>
-  <link href="http://williamherry.github.io/"/>
-  <updated>2014-10-21T08:59:27+08:00</updated>
-  <id>http://williamherry.github.io/</id>
+  <link href="http://williamherry.com/atom.xml" rel="self"/>
+  <link href="http://williamherry.com/"/>
+  <updated>2014-10-21T09:42:18+08:00</updated>
+  <id>http://williamherry.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Memcached Cache Analysis]]></title>
-    <link href="http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/"/>
+    <link href="http://williamherry.com/blog/2014/09/10/memcached-cache-analysis/"/>
     <updated>2014-09-10T22:55:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis</id>
+    <id>http://williamherry.com/blog/2014/09/10/memcached-cache-analysis</id>
     <content type="html"><![CDATA[<p>利用munin这样的工具可以查看到Memcached整个缓存的命中率,有时候可能会需要知道不同的缓存各自的命中率如何,这时候可以利用Rails的<a href="http://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-support">ActiveSupport::Notifications</a>来帮助我们分析</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -120,9 +120,9 @@
   
   <entry>
     <title type="html"><![CDATA[Login From Console]]></title>
-    <link href="http://williamherry.github.io/blog/2014/08/22/login-from-console/"/>
+    <link href="http://williamherry.com/blog/2014/08/22/login-from-console/"/>
     <updated>2014-08-22T14:42:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2014/08/22/login-from-console</id>
+    <id>http://williamherry.com/blog/2014/08/22/login-from-console</id>
     <content type="html"><![CDATA[<p>最近有一个问题调试了好久,这个过程中学的了一些有意思的调试方法,在这里记录一下过程</p>
 
 <p>问题是出现在staging环境上的,有一个form已提交就报错,只有那一条数据有这个错误,
@@ -226,9 +226,9 @@
   
   <entry>
     <title type="html"><![CDATA[Chef Ohai源码学习]]></title>
-    <link href="http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code/"/>
+    <link href="http://williamherry.com/blog/2014/02/11/learning-chef-ohai-source-code/"/>
     <updated>2014-02-11T08:28:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code</id>
+    <id>http://williamherry.com/blog/2014/02/11/learning-chef-ohai-source-code</id>
     <content type="html"><![CDATA[<p>接触Chef以来一直对Ohai很感兴趣,它收集的系统信息非常全面,很好奇它是怎么收集的,现在终于有时间学习了</p>
 
 <h3>目标</h3>
@@ -1188,9 +1188,9 @@
   
   <entry>
     <title type="html"><![CDATA[2014年规划]]></title>
-    <link href="http://williamherry.github.io/blog/2014/01/01/2014-plans/"/>
+    <link href="http://williamherry.com/blog/2014/01/01/2014-plans/"/>
     <updated>2014-01-01T11:52:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2014/01/01/2014-plans</id>
+    <id>http://williamherry.com/blog/2014/01/01/2014-plans</id>
     <content type="html"><![CDATA[<p>2013年已经在昨天划上的句号,回想过去的这一年,真的可以说收获很多:</p>
 
 <ul>
@@ -1331,9 +1331,9 @@
   
   <entry>
     <title type="html"><![CDATA[omniauth-github使用示例]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/29/omniauth-github-demo/"/>
+    <link href="http://williamherry.com/blog/2013/07/29/omniauth-github-demo/"/>
     <updated>2013-07-29T11:57:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/29/omniauth-github-demo</id>
+    <id>http://williamherry.com/blog/2013/07/29/omniauth-github-demo</id>
     <content type="html"><![CDATA[<p>这篇文档简单记录一下使用omniauth-github的过程</p>
 
 <p>这里有个能跑的代码可以clone看看效果<a href="https://github.com/williamherry/omniauth-github-demo">omniauth-github-demo</a></p>
@@ -1614,9 +1614,9 @@
   
   <entry>
     <title type="html"><![CDATA[Ruby/Rails小技巧收集]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/29/ruby-slash-rails-tips-collection/"/>
+    <link href="http://williamherry.com/blog/2013/07/29/ruby-slash-rails-tips-collection/"/>
     <updated>2013-07-29T11:43:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/29/ruby-slash-rails-tips-collection</id>
+    <id>http://williamherry.com/blog/2013/07/29/ruby-slash-rails-tips-collection</id>
     <content type="html"><![CDATA[<p>收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow</p>
 
 <h3>jQuery on的用法</h3>
@@ -1651,9 +1651,9 @@
   
   <entry>
     <title type="html"><![CDATA[The Ruby Programming Language Notes]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/22/the-ruby-programming-language-notes/"/>
+    <link href="http://williamherry.com/blog/2013/07/22/the-ruby-programming-language-notes/"/>
     <updated>2013-07-22T11:14:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/22/the-ruby-programming-language-notes</id>
+    <id>http://williamherry.com/blog/2013/07/22/the-ruby-programming-language-notes</id>
     <content type="html"><![CDATA[<ul>
 <li>Global variables are prefixed with $</li>
 <li>Instance variables are prefixed with @</li>
@@ -2434,9 +2434,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[日期时间选择插件使用]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/21/datetimepicker-demo/"/>
+    <link href="http://williamherry.com/blog/2013/07/21/datetimepicker-demo/"/>
     <updated>2013-07-21T23:22:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/21/datetimepicker-demo</id>
+    <id>http://williamherry.com/blog/2013/07/21/datetimepicker-demo</id>
     <content type="html"><![CDATA[<p>以前做过这样的东西,花了好多时间,因为要选择到底用那个插件,还有好多插件要只有日期没有时间,今天做这样的东西又花了不少时间,决定记录下来,下一次就简单多了</p>
 
 <p>我使用的是<code>jQuery</code>的<code>datepicker</code>加上<a href="https://github.com/trentrichardson/jQuery-Timepicker-Addon">jQuery-Timepicker-Addon</a></p>
@@ -2445,7 +2445,7 @@ t.year   # => 2000</p>
 
 <p>效果类似这样:</p>
 
-<p><img src="http://williamherry.github.io/images/datetimepicker.png"></p>
+<p><img src="http://williamherry.com/images/datetimepicker.png"></p>
 
 <ul>
 <li>首先创建项目</li>
@@ -2551,9 +2551,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[只允许上海的用户注册]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/10/allow-ip-from-shanghai-do-something/"/>
+    <link href="http://williamherry.com/blog/2013/07/10/allow-ip-from-shanghai-do-something/"/>
     <updated>2013-07-10T13:33:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/10/allow-ip-from-shanghai-do-something</id>
+    <id>http://williamherry.com/blog/2013/07/10/allow-ip-from-shanghai-do-something</id>
     <content type="html"><![CDATA[<p>刚开始听到老板说这个需求的时候,我还傻呼呼一直在想要怎么得到所有上海的IP地址,都打算试着写爬虫去爬这些数据,事实上我只要判断一个客户端的IP是不是属于上海就行了,而这个动作可以由一些第三方提供的API来做,像百度就有提供这个的服务</p>
 
 <p>转过弯来就比较简单了,我的方法在<code>app/controller/application_controller.rb</code>文件里加一个helper方法</p>
@@ -2621,9 +2621,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[IE10下图片灰度处理]]></title>
-    <link href="http://williamherry.github.io/blog/2013/07/09/image-grayscale-for-ie10/"/>
+    <link href="http://williamherry.com/blog/2013/07/09/image-grayscale-for-ie10/"/>
     <updated>2013-07-09T17:18:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/07/09/image-grayscale-for-ie10</id>
+    <id>http://williamherry.com/blog/2013/07/09/image-grayscale-for-ie10</id>
     <content type="html"><![CDATA[<p>其它浏览器或版本的图片灰度处理可以看<a href="http://www.karlhorky.com/2012/06/cross-browser-image-grayscale-with-css.html">这里</a></p>
 
 <p>上面的方法对IE10是没有效果的,Google了好久发现只有用svg才对IE10才有作用,想知道svg是什么请看<a href="http://www.w3school.com.cn/svg/svg_intro.asp">这里</a></p>
@@ -2665,7 +2665,7 @@ t.year   # => 2000</p>
 
 <p>还用上面的例子,它会把图片按比较放到和短的边一样, 这里是100X1000,然后把100X100的框放中间,多余的裁掉,剩下的就是显示的部分</p>
 
-<p><img src="http://williamherry.github.io/images/svg/preverse-aspect-ratio.svg"></p>
+<p><img src="http://williamherry.com/images/svg/preverse-aspect-ratio.svg"></p>
 
 <p>这样只要保存图片的比例和设置的很接近就可以基本上解决这个问题</p>
 
@@ -2679,9 +2679,9 @@ t.year   # => 2000</p>
   
   <entry>
     <title type="html"><![CDATA[理解测试中的stub和mock]]></title>
-    <link href="http://williamherry.github.io/blog/2013/05/13/understand-stub-and-mock/"/>
+    <link href="http://williamherry.com/blog/2013/05/13/understand-stub-and-mock/"/>
     <updated>2013-05-13T16:46:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/05/13/understand-stub-and-mock</id>
+    <id>http://williamherry.com/blog/2013/05/13/understand-stub-and-mock</id>
     <content type="html"><![CDATA[<p>刚开始学习<code>rspec</code>的时候,<code>stub</code>和<code>mock</code>理解起来有点困难,听了<code>Terry</code>和<code>aNdReW</code>的讲解后,对它们的理解深入多了,在此表示感谢</p>
 
 <p>先从<code>stub</code>说起,什么是<code>stub</code>呢,<code>CodeSchool</code>给出这样的定义:</p>
@@ -2777,7 +2777,7 @@ A stub with an expectations that the method gets called.</p></blockquote>
 
 <p>你可能会想为什么要这样写,这是因为我们仅仅是要测试<code>decapitate</code>这个方法确实调用了<code>weapon.slice</code>, 可以把<code>decapitate</code>想成下面的黑盒,我们蹲在图中的A点,等着看它会不会去调用<code>weapon.slice</code></p>
 
-<p><img src="http://williamherry.github.io/images/test/test_outgoing.jpg"></p>
+<p><img src="http://williamherry.com/images/test/test_outgoing.jpg"></p>
 
 <p>这个图是<code>Sandi Metz</code>在<code>RailsConf 2013</code>上的演讲<code>The Magic Tricks of Testing</code></p>
 
@@ -2791,9 +2791,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[openSUSE 12.3 安装完后需要做的事情]]></title>
-    <link href="http://williamherry.github.io/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
+    <link href="http://williamherry.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration/"/>
     <updated>2013-03-23T02:36:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
+    <id>http://williamherry.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration</id>
     <content type="html"><![CDATA[<p>今天终于把openSUSE12.3安装上了,记得上次安装openSUSE应该是好几年前吧,那时候刚开始玩Linux.记得当时选发行版的时候很纠结,老想用openSUSE但当时它还是有很多问题,尤其严重的是显示上有点问题,图形界面和字符界面不能同时和显示器边对齐,以当时的水平解决不了这个问题,就放弃而一直用的Ubuntu</p>
 
 <p>今天安装上了最新的12.3,比以前进步太多了,fcitx输入法安装就能用(以前很麻烦的,尤其是环境是英文的),各种驱动自动帮你安好,进系统就可以开启3D,KDE4.10已经非常稳定了,不像以前动不动就Crash. 总的来说我非常满意,以后就用她了</p>
@@ -2868,9 +2868,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[最简单的在crontab中执行rake命令的方法]]></title>
-    <link href="http://williamherry.github.io/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
+    <link href="http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/"/>
     <updated>2013-02-05T11:26:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
+    <id>http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu</id>
     <content type="html"><![CDATA[<p>stackoverflow上很多都说要添加变量什么的,这是我发现的最简单而且能工作的方法,原文在<a href="http://www.wyliethomas.com/blog/2011/08/24/rvm-rake-and-cron-on-ubuntu/">这里</a></p>
 
 <p>方法很简单,在crontab中可以定义环境变量</p>
@@ -2893,9 +2893,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Rails图片上传]]></title>
-    <link href="http://williamherry.github.io/blog/2013/01/25/rails-image-upload/"/>
+    <link href="http://williamherry.com/blog/2013/01/25/rails-image-upload/"/>
     <updated>2013-01-25T22:27:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2013/01/25/rails-image-upload</id>
+    <id>http://williamherry.com/blog/2013/01/25/rails-image-upload</id>
     <content type="html"><![CDATA[<p>好久没有更新这个了,竟然连<code>rake new_post['title']</code>都忘记了还得查文档,看来以后还是得时不时的写点</p>
 
 <p>这里简单记录一下Rails中如何处理图片上传,我们选择<a href="https://github.com/jnicklas/carrierwave">CarrierWave</a>这个gem来处理上传的文件,由于重点是处理图片上传,所以我们会使用scaffolding生成一个article的CURD,把图片绑定给它(一个article有一个图片)</p>
@@ -3029,9 +3029,9 @@ A stub with an expectations that the method gets called.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[使用Nginx+SSL代理chef-server]]></title>
-    <link href="http://williamherry.github.io/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
+    <link href="http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
     <updated>2012-10-12T21:09:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/10/12/proxy-chef-server-with-nginx</id>
+    <id>http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx</id>
     <content type="html"><![CDATA[<h2>说明</h2>
 
 <p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
@@ -3057,7 +3057,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
 
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.com/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3252,7 +3252,7 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 <h2>修改client使用新的地址</h2>
 
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.github.io/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.com/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
@@ -3279,20 +3279,20 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之Arrtibutes]]></title>
-    <link href="http://williamherry.github.io/blog/2012/10/10/chef-attributes/"/>
+    <link href="http://williamherry.com/blog/2012/10/10/chef-attributes/"/>
     <updated>2012-10-10T21:42:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/10/10/chef-attributes</id>
+    <id>http://williamherry.com/blog/2012/10/10/chef-attributes</id>
     <content type="html"><![CDATA[<p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
 
 <h2>概述</h2>
 
-<p><img src="http://williamherry.github.io/images/chef/attributes.jpg"></p>
+<p><img src="http://williamherry.com/images/chef/attributes.jpg"></p>
 
 <p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
 
 <h2>属性类型和优先级</h2>
 
-<p><img src="http://williamherry.github.io/images/chef/attribute-priority-stack.png"></p>
+<p><img src="http://williamherry.com/images/chef/attribute-priority-stack.png"></p>
 
 <p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
 
@@ -3546,9 +3546,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Git学习资料收集]]></title>
-    <link href="http://williamherry.github.io/blog/2012/10/10/learning-git-resources/"/>
+    <link href="http://williamherry.com/blog/2012/10/10/learning-git-resources/"/>
     <updated>2012-10-10T20:40:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/10/10/learning-git-resources</id>
+    <id>http://williamherry.com/blog/2012/10/10/learning-git-resources</id>
     <content type="html"><![CDATA[<p>收集一下学习Git过程中用过的比较好的资料</p>
 
 <h2>ProGit</h2>
@@ -3600,9 +3600,9 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
   
   <entry>
     <title type="html"><![CDATA[Chef基础之LWRP]]></title>
-    <link href="http://williamherry.github.io/blog/2012/10/09/chef-lwrp/"/>
+    <link href="http://williamherry.com/blog/2012/10/09/chef-lwrp/"/>
     <updated>2012-10-09T20:18:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/10/09/chef-lwrp</id>
+    <id>http://williamherry.com/blog/2012/10/09/chef-lwrp</id>
     <content type="html"><![CDATA[<h2>概述</h2>
 
 <p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
@@ -3765,9 +3765,9 @@ knife node run list add client1.chef.com 'recipe[users::test]'
   
   <entry>
     <title type="html"><![CDATA[安装配置Git服务器Gitolite]]></title>
-    <link href="http://williamherry.github.io/blog/2012/10/03/install-gitolite/"/>
+    <link href="http://williamherry.com/blog/2012/10/03/install-gitolite/"/>
     <updated>2012-10-03T18:38:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/10/03/install-gitolite</id>
+    <id>http://williamherry.com/blog/2012/10/03/install-gitolite</id>
     <content type="html"><![CDATA[<p>Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法</p>
 
 <h3>安装</h3>
@@ -3931,9 +3931,9 @@ fatal: The remote end hung up unexpectedly
   
   <entry>
     <title type="html"><![CDATA[virt相关命令总结]]></title>
-    <link href="http://williamherry.github.io/blog/2012/09/14/virt-releated-command/"/>
+    <link href="http://williamherry.com/blog/2012/09/14/virt-releated-command/"/>
     <updated>2012-09-14T09:35:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2012/09/14/virt-releated-command</id>
+    <id>http://williamherry.com/blog/2012/09/14/virt-releated-command</id>
     <content type="html"><![CDATA[<p>在CentOS下面多部分命令都是有包<code>libguestfs-tools-c</code>提供,所以,首先需要安装它</p>
 
 <h2>virt-ls</h2>

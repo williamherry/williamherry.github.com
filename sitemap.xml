@@ -1,149 +1,143 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/14/lvs-and-keepalived/</loc>
+        <loc>http://williamherry.com/blog/2012/07/14/lvs-and-keepalived/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/16/chef-basic/</loc>
+        <loc>http://williamherry.com/blog/2012/07/16/chef-basic/</loc>
         <lastmod>2014-08-25T14:42:55+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/16/master-vim-01-vundle/</loc>
+        <loc>http://williamherry.com/blog/2012/07/16/master-vim-01-vundle/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/19/master-vim-02-nerdtree/</loc>
+        <loc>http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/20/octopress-setup/</loc>
+        <loc>http://williamherry.com/blog/2012/07/20/octopress-setup/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/07/21/master-vim-03-surround/</loc>
+        <loc>http://williamherry.com/blog/2012/07/21/master-vim-03-surround/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/08/25/master-vim-04-ctrlp/</loc>
+        <loc>http://williamherry.com/blog/2012/08/25/master-vim-04-ctrlp/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/08/29/install-ruby-with-rvm/</loc>
+        <loc>http://williamherry.com/blog/2012/08/29/install-ruby-with-rvm/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/08/29/weechat-irc-client/</loc>
+        <loc>http://williamherry.com/blog/2012/08/29/weechat-irc-client/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/08/31/chef-tips/</loc>
+        <loc>http://williamherry.com/blog/2012/08/31/chef-tips/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/09/02/ubuntu-fcitx-crash/</loc>
+        <loc>http://williamherry.com/blog/2012/09/02/ubuntu-fcitx-crash/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/09/09/customize-centos-iso/</loc>
+        <loc>http://williamherry.com/blog/2012/09/09/customize-centos-iso/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/09/14/virt-releated-command/</loc>
+        <loc>http://williamherry.com/blog/2012/09/14/virt-releated-command/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/10/03/install-gitolite/</loc>
+        <loc>http://williamherry.com/blog/2012/10/03/install-gitolite/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/10/09/chef-lwrp/</loc>
+        <loc>http://williamherry.com/blog/2012/10/09/chef-lwrp/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/10/10/learning-git-resources/</loc>
+        <loc>http://williamherry.com/blog/2012/10/10/learning-git-resources/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/10/10/chef-attributes/</loc>
+        <loc>http://williamherry.com/blog/2012/10/10/chef-attributes/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2012/10/12/proxy-chef-server-with-nginx/</loc>
+        <loc>http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/01/25/rails-image-upload/</loc>
+        <loc>http://williamherry.com/blog/2013/01/25/rails-image-upload/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/02/05/rvm-rake-cron-ubuntu/</loc>
+        <loc>http://williamherry.com/blog/2013/02/05/rvm-rake-cron-ubuntu/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://williamherry.github.io/blog/2013/03/23/opensuse-12-dot-3-font-configuration/
-        </loc>
+        <loc>http://williamherry.com/blog/2013/03/23/opensuse-12-dot-3-font-configuration/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/05/13/understand-stub-and-mock/</loc>
+        <loc>http://williamherry.com/blog/2013/05/13/understand-stub-and-mock/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/07/09/image-grayscale-for-ie10/</loc>
+        <loc>http://williamherry.com/blog/2013/07/09/image-grayscale-for-ie10/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://williamherry.github.io/blog/2013/07/10/allow-ip-from-shanghai-do-something/
-        </loc>
+        <loc>http://williamherry.com/blog/2013/07/10/allow-ip-from-shanghai-do-something/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/07/21/datetimepicker-demo/</loc>
+        <loc>http://williamherry.com/blog/2013/07/21/datetimepicker-demo/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://williamherry.github.io/blog/2013/07/22/the-ruby-programming-language-notes/
-        </loc>
+        <loc>http://williamherry.com/blog/2013/07/22/the-ruby-programming-language-notes/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/07/29/ruby-slash-rails-tips-collection/</loc>
+        <loc>http://williamherry.com/blog/2013/07/29/ruby-slash-rails-tips-collection/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2013/07/29/omniauth-github-demo/</loc>
+        <loc>http://williamherry.com/blog/2013/07/29/omniauth-github-demo/</loc>
         <lastmod>2014-01-27T11:22:40+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2014/01/01/2014-plans/</loc>
+        <loc>http://williamherry.com/blog/2014/01/01/2014-plans/</loc>
         <lastmod>2014-07-27T20:30:52+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code/</loc>
+        <loc>http://williamherry.com/blog/2014/02/11/learning-chef-ohai-source-code/</loc>
         <lastmod>2014-02-15T22:21:15+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2014/08/22/login-from-console/</loc>
+        <loc>http://williamherry.com/blog/2014/08/22/login-from-console/</loc>
         <lastmod>2014-08-22T15:31:41+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/2014/09/10/memcached-cache-analysis/</loc>
+        <loc>http://williamherry.com/blog/2014/09/10/memcached-cache-analysis/</loc>
         <lastmod>2014-09-10T23:15:08+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/archives/</loc>
+        <loc>http://williamherry.com/blog/archives/</loc>
         <lastmod>2014-09-10T23:15:08+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/blog/</loc>
+        <loc>http://williamherry.com/blog/</loc>
         <lastmod>2014-09-10T23:15:08+08:00</lastmod>
     </url>
     <url>
-        <loc>http://williamherry.github.io/</loc>
+        <loc>http://williamherry.com/</loc>
         <lastmod>2014-09-10T23:15:08+08:00</lastmod>
     </url>
 </urlset>

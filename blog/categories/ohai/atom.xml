@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ohai | William's Blog with Octopress]]></title>
-  <link href="http://williamherry.github.io/blog/categories/ohai/atom.xml" rel="self"/>
-  <link href="http://williamherry.github.io/"/>
-  <updated>2014-10-21T08:59:40+08:00</updated>
-  <id>http://williamherry.github.io/</id>
+  <link href="http://williamherry.com/blog/categories/ohai/atom.xml" rel="self"/>
+  <link href="http://williamherry.com/"/>
+  <updated>2014-10-21T09:42:18+08:00</updated>
+  <id>http://williamherry.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Chef Ohai源码学习]]></title>
-    <link href="http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code/"/>
+    <link href="http://williamherry.com/blog/2014/02/11/learning-chef-ohai-source-code/"/>
     <updated>2014-02-11T08:28:00+08:00</updated>
-    <id>http://williamherry.github.io/blog/2014/02/11/learning-chef-ohai-source-code</id>
+    <id>http://williamherry.com/blog/2014/02/11/learning-chef-ohai-source-code</id>
     <content type="html"><![CDATA[<p>接触Chef以来一直对Ohai很感兴趣,它收集的系统信息非常全面,很好奇它是怎么收集的,现在终于有时间学习了</p>
 
 <h3>目标</h3>
