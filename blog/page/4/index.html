@@ -10,9 +10,7 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="主要内容 本文档主要讲述了一些Chef的基础知识,包括: Chef是什么
-Chef能做什么
-Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构成管理工具 想像一下我们现在需要搭建一台mysql database slave服务器，安装过程我们手动操作了 没过多久， &hellip;">
+  <meta name="description" content="背景 已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾高見龍老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,6 +70,133 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/16/master-vim-01-vundle/">VIM练级日记01-外挂总管Vundle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T22:02:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/16/master-vim-01-vundle/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>背景</h2>
+
+<p>已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾<a href="http://blog.eddie.com.tw">高見龍</a>老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文,主要是介绍一些好用的VIM外挂(插件)的使用,这是第一篇,介绍一个Vundle这个外挂(台湾朋友喜欢用这个词)</p>
+
+<h2>外挂总管Vundle</h2>
+
+<p>高老师的视频中使用的是pathogen这个外挂来管理其它VIM外挂,但我通过Google发现有人说Vundle比pathogen要好,就试了下,果然很不错的说</p>
+
+<p>Vundle利用git,插件的git repo以及vim-scripts维护的GitHub repo, 自动安装, 更新和卸载插件. 它把这些繁杂的工作变得简单, 甚至, 成为一种享受.</p>
+
+<h2>安装</h2>
+
+<p>Vundle的github地址在<a href="https://github.com/gmarik/vundle">这里</a>,上面有安装和使用方法,我在这里也简单的写一下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置</h2>
+
+<figure class='code'><figcaption><span>vim ~/.vimrc </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">nocompatible</span>               <span class="c">&quot; be iMproved</span>
+</span><span class='line'><span class="k">filetype</span> off                   <span class="c">&quot; required!</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">set</span> <span class="nb">rtp</span><span class="p">+=~</span><span class="sr">/.vim/</span>bundle<span class="sr">/vundle/</span>
+</span><span class='line'><span class="k">call</span> vundle#rc<span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; let Vundle manage Vundle</span>
+</span><span class='line'><span class="c">&quot; required! </span>
+</span><span class='line'>Bundle <span class="s1">&#39;gmarik/vundle&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&quot; My Bundles here:</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>     <span class="c">&quot; required!</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; Brief help</span>
+</span><span class='line'><span class="c">&quot; :BundleList          - list configured bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleInstall(!)    - install(update) bundles</span>
+</span><span class='line'><span class="c">&quot; :BundleSearch(!) foo - search(or refresh cache first) for foo</span>
+</span><span class='line'><span class="c">&quot; :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles</span>
+</span><span class='line'><span class="c">&quot;</span>
+</span><span class='line'><span class="c">&quot; see :h vundle for more details or wiki for FAQ</span>
+</span><span class='line'><span class="c">&quot; NOTE: comments after Bundle command are not allowed..</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用</h2>
+
+<p>前面非常简单的步骤已经安装好了,那要怎么使用呢,这里以一个例子做说明,假设我们想安装NERDTree(下篇介绍)这个外挂,我的方法是:</p>
+
+<ul>
+<li><p>在github上搜索nerdtree找到它,我找到的是: <a href="https://github.com/scrooloose/nerdtree">https://github.com/scrooloose/nerdtree</a></p></li>
+<li><p>在～/.vimrc文件里添加一行:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>退出并重新打开VIM,执行:BundleInstall</li>
+</ul>
+
+
+<p>新的外挂NERDTree已经安装好了,可以在~/.vim/bundle/目录下看到它,下一篇我会简单介绍它的使用</p>
+
+<p>用Vundle管理外挂就是这么简单</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -202,6 +327,10 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/07/2014-conclusion-and-2015-plan/">2014年总结 && 2015年展望</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
       </li>
     
@@ -227,10 +356,6 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
     
       <li class="post">
         <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/21/datetimepicker-demo/">日期时间选择插件使用</a>
       </li>
     
   </ul>
@@ -275,7 +400,7 @@ Chef怎么做 Chef是什么 Chef简介 Chef是，由Ruby开发的服务器的构
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - William Herry -
+  Copyright &copy; 2015 - William Herry -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
