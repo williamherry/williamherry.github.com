@@ -10,10 +10,11 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="在CentOS下面多部分命令都是有包libguestfs-tools-c提供,所以,首先需要安装它 virt-ls virt-ls可以列出虚拟机中目录下的文件或目录,用法如下 1
+  <meta name="description" content="概述 Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers 如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个: 1
 2
-virt-ls [--options] -d domname dir [dir ...]
-virt-ls [-- &hellip;">
+3
+4
+5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -73,6 +74,395 @@ virt-ls [-- &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/chef-lwrp/">Chef基础之LWRP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T20:18:00+08:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/09/chef-lwrp/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>概述</h2>
+
+<p>Chef内置的Resources和Providers已经非常强大了,如果有些需求还不能满足,或者用内置的比较麻烦,这时可以编写自己的Resources和Providers</p>
+
+<p>如果你看到别人的cookbook里有带有下画线的Resource,例如下面这个:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">apt_repository</span> <span class="s2">&quot;zenoss&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">uri</span> <span class="s2">&quot;http://dev.zenoss.org/deb&quot;</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="s2">&quot;stable&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:add</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么它有可能就是一个一个Lightweight Resource.这里之所以说可能是因为还有其它的一些东西也是这种格式(以后会介绍到)</p>
+
+<p>这个文档我们来看一下怎么写LWRP,主要是基本官方的Wiki,如果英文够好,可以直接看官方的,地址是: <a href="http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29">Lightweight Resources and Providers</a></p>
+
+<p>在介绍LWRP之前我们先来回顾一下什么是Resource和Provider.简单来说Resource就是以一种抽象的方式来描述系统的某一部分我希望它处在一种什么状态, 如下面的例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s2">&quot;vim&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">version</span> <span class="s2">&quot;1.16.1-1&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:install</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这条Resource就是描述说我希望我的系统中版本为1.16.1-1的vim这个包处于安装的状态,Resource会有一些属性(这里是version),对这个状态做自定.还会有一个动作,通过这个动作将系统的某一部分改变到我们希望的状态.</p>
+
+<p>那么什么是Providers呢,看上面的例子,如果我们把它用bash命令来表示,它可能会是<code>yum -y install vim</code>或<code>apt-get install vim</code>.我们之所以可以用上面那种抽象的方式来表达我的需求,而不用关心底层它是怎么做到的,就是因为有Provider为我们做这个工作.Provider为我们提供了这一层的抽象</p>
+
+<h2>文件位置</h2>
+
+<p>轻量级(或叫自定义)Resources和Providers分区从cookbook的<code>resources</code>和<code>providers</code>目录加载.Resources和Providers的名字由cookbook的名字与文件的名字通过下画线组合而成.唯一的例外是文件名为<code>default.rb</code>.在这种情况下Resources和Providers的名字仅是cookbook的名字</p>
+
+<h3>例子</h3>
+
+<p>Note: 下面的例子只是为了说明名字,不一定真的有这些LWRP</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">+----------------------------------------------------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="no">Filename</span>                               <span class="o">|</span> <span class="no">Resource</span> <span class="ow">or</span> <span class="no">Provider</span> <span class="no">Name</span><span class="p">,</span> <span class="n">as</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="no">DSL</span> <span class="o">|</span> <span class="no">Generated</span> <span class="no">Class</span>                     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------+-----------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">Aws</span>                 <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resourcesce</span><span class="o">::</span><span class="no">AwsElasticIp</span>     <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">rb</span>    <span class="o">|</span> <span class="n">aws</span>                                           <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerser</span><span class="o">::</span><span class="no">Aws</span>              <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span><span class='line'><span class="o">|</span> <span class="sr">/cookbooks/</span><span class="n">aws</span><span class="o">/</span><span class="n">providers</span><span class="o">/</span><span class="n">elastic_ip</span><span class="o">.</span><span class="n">rb</span> <span class="o">|</span> <span class="n">aws_elastic_ip</span>                                <span class="o">|</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Providerrovider</span><span class="o">::</span><span class="no">AwsElasticIp</span> <span class="o">|</span>
+</span><span class='line'><span class="o">+----------------------------------------+-----------------------------------------------+-------------------------------------+</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Resources</h2>
+
+<p>前面已经说过,Resources会有一个或多个属性,我们在写Recipe的时候会给属性一些我们想要的值,这些值可以通过属性传给Provider.Resources还会有一个动作,这个动作具体做什么是在Providers中定义的</p>
+
+<h2>Providers</h2>
+
+<p>Providers就是支持Resources的,它可以通过实例变量<code>@new_resource</code>做为载体来来得到我们在Recipes中传给Resources的属性在值,定义Resource中的动作具体做些什么动作.完了之后调用`@new_resource.updated_by_last_action(true)来告诉Chef我们做完了</p>
+
+<p>下面我们以一个简单的例子来加深一下理解,主要注意里面变量(属性)的传递</p>
+
+<h2>简单的例子</h2>
+
+<p>这个例子我们简单的封装一个内容Resource类型<code>user</code>得到一个LWRP</p>
+
+<p>首先我们利用knife命令创建cookbook的目录结构</p>
+
+<pre><code>knife cookbook create users
+</code></pre>
+
+<p>然后我们直接在resources目录下创建我们的resource</p>
+
+<figure class='code'><figcaption><span>vim users/resources/manage.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">actions</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:remove</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">attribute</span> <span class="ss">:user_name</span><span class="p">,</span> <span class="ss">:kind_of</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作和一个属性,这两个具体做什么工作是在Provider中实现的,在recipe使用这个Resource的时候传来属性的值可以在Provider中访问到</p>
+
+<p>下面我们创建我们的Provider用来支持Resource.实现上就是定义前面的两个动作要做什么工作</p>
+
+<figure class='code'><figcaption><span>vim users/providers/manage.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">action</span> <span class="ss">:remove</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:remove</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">action</span> <span class="ss">:create</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="n">new_resource</span><span class="o">.</span><span class="n">user_name</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">new_resource</span><span class="o">.</span><span class="n">updated_by_last_action</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们定义了两个动作,使用内置的Resource类型<code>user</code>来创建用户,利用<code>new_resource</code>得到从recipes中传来的用户名,最后更新状态</p>
+
+<p>下面我们就在这个cookbook中使用我们定义的Resource.Cookbook的名字为<code>users</code>,Resouces文件的名字为<code>manage.rb</code>,所以我们的Resource名字为<code>users_manage</code></p>
+
+<figure class='code'><figcaption><span>vim users/recipes/test.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">users_maange</span> <span class="s2">&quot;william&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user_name</span> <span class="s2">&quot;william&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以测试我们写的LWRP了</p>
+
+<pre><code>knife cookbook upload users
+knife node run list add client1.chef.com 'recipe[users::test]'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/03/install-gitolite/">安装配置Git服务器Gitolite</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-03T18:38:00+08:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/03/install-gitolite/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Gitolite的代码做了更改,网上好多安装教程都不再适用,所以在这里简单记录一下我的安装方法</p>
+
+<h3>安装</h3>
+
+<h4>首先安装必要的软件</h4>
+
+<pre><code>yum -y install git
+</code></pre>
+
+<h4>添加用户</h4>
+
+<pre><code>useradd --system --shell /bin/bash --create-home git
+</code></pre>
+
+<h4>设置密码</h4>
+
+<pre><code>passwd git
+</code></pre>
+
+<h4>拷贝公钥</h4>
+
+<p>Gitolite管理的方式是给你一个特殊的仓库,修改,提交,推送到服务器就可以了,这个仓库只可以管理员访问,现在把管理员的公钥复制到服务器上(可以和Git服务器在同一台服务器上也可以在不同的服务器上)</p>
+
+<pre><code># 如果没有key先生成
+ssh-keygen
+ssh-copy-id git@git-server
+</code></pre>
+
+<h4>安装Gitolite</h4>
+
+<p>现在在Git服务器上切换到git用户进行安装</p>
+
+<pre><code># change to git user
+su - git
+
+# gitolite will install here
+mkdir bin
+
+# authorized_keys is admin's pubkey
+mv ~/.ssh/authorized_keys ~/git.pub
+
+# get the source code
+git clone git://github.com/sitaramc/gitolite.git
+
+# install
+~/gitolite/install -to ~/bin
+
+# setup
+~/bin/gitolite setup -pk ~/git.pub
+</code></pre>
+
+<p>安装已经完成了,可以在以管理用户进行测试(前面运行<code>ssh-copy-id</code>的服务器)</p>
+
+<pre><code>ssh git@chef-server
+</code></pre>
+
+<p>应该看到类似这样的输出:</p>
+
+<pre><code>hello git, this is git@desktop running gitolite3 v3.04-20-g6328ec2 on git 1.7.9.5
+
+  R W   gitolite-admin
+Connection to localhost closed.closed
+</code></pre>
+
+<p>可以把管理仓库克隆下来管理Git服务器</p>
+
+<pre><code>git clone git:git-server:gitolite-admin.git
+</code></pre>
+
+<p>要添加用户,只要把用户的公钥复制到这个仓库里的<code>keydir</code>下并以<code>username.pub</code>命名,然后提交并推送到服务器</p>
+
+<h3>添加用户示例(jenny)</h3>
+
+<pre><code>cd gitolite-admin
+cp path/of/jenny's/pubkey keydir/jenny.pub
+git add keydir
+git commit -m "add new user jenny"
+git push
+</code></pre>
+
+<h3>创建仓库示例</h3>
+
+<p>假如我们要创建一个名为<code>notes</code>的仓库,让刚创建的<code>jenny</code>有读写权限</p>
+
+<pre><code>cd gitolite-admin
+vi conf/gitolite.conf
+</code></pre>
+
+<p>添加类似下面这内容进去</p>
+
+<pre><code>repo notes
+    RW    =   jenny
+</code></pre>
+
+<p>保存,提交并推送到远和服务</p>
+
+<pre><code>git add -u
+git commit -m 'add new repo notes and assign RW to jenny'
+git push
+</code></pre>
+
+<p>推送的时候应该看到类似这样的信息</p>
+
+<pre><code>Counting objects: 7, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 395 bytes, done.
+Total 4 (delta 1), reused 0 (delta 0)
+remote: Initialized empty Git repository in /home/git/repositories/notes.git/
+To git@desktop:gitolite-admin
+   6de90b8..52737aa  master -&gt; master
+</code></pre>
+
+<p>注意<code>remote</code>开头的一行,它已经帮你创建了这个仓库</p>
+
+<h3>通配符仓库的创建示例</h3>
+
+<p>通配符仓库事先不能确定名字,所以不会帮你创建,在你clone的时候才会创建</p>
+
+<p>编辑<code>conf/gitolite.conf</code>文件在里面加入类似下面的内容</p>
+
+<pre><code>repo sandbox/.+$
+  C      =   jenny
+  RW+C   =   jenny
+</code></pre>
+
+<p>注意<code>C  =  username</code>的一行必不可少,这里的<code>C</code>是指创建仓库的意思,下一行的<code>RW+C</code>中的<code>C</code>是指创建引用(branch,tag)的意思</p>
+
+<p>保存后提交并推送到服务上去</p>
+
+<pre><code>git add -u
+git commit -m 'add wildcard repo'
+git push
+</code></pre>
+
+<p>注意看<code>push</code>时输出的信息,应该没有创建仓库的信息</p>
+
+<p>这时<code>jenny</code>克隆仓库的时候会自动创建</p>
+
+<pre><code># as jenny user
+git clone git@desktop:sandbox/test.git
+</code></pre>
+
+<p>输出应该类似这样</p>
+
+<pre><code>Cloning into 'test'...
+Initialized empty Git repository in /home/git/repositories/sandbox/test.git/
+warning: You appear to have cloned an empty repository.
+</code></pre>
+
+<p>如果你的输出报这样的错</p>
+
+<pre><code>FATAL: R any sandbox/test jenny DENIED by fallthru
+(or you mis-spelled the reponame)
+fatal: The remote end hung up unexpectedly
+</code></pre>
+
+<p>一般是没有<code>C  =  username</code>这一行,注意是只有<code>C</code>的一行</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1641,156 +2031,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/20/octopress-setup/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
-
-<p>这篇文档主要包括</p>
-
-<ul>
-<li>搭建Octopress</li>
-<li>将博客托管到Github上</li>
-<li>我对主题做的一些修改</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/20/octopress-setup/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/19/master-vim-02-nerdtree/">VIM练级日记02-目录外挂NERDTree</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/19/master-vim-02-nerdtree/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>NERDTree简介</h2>
-
-<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
-
-<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
-
-<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
-
-<p><img src="/images/nerdtree/nerdtree.png"></p>
-
-<p>这里还有一个Youtube上的视频演示</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
-
-
-<h2>安装使用</h2>
-
-<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>重启VIM并执行:BundleInstall</p>
-
-<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
-
-<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
-
-<p>这里是NERDTree中的一些按键</p>
-
-<p><code>o</code> 打开关闭文件或者目录
-<code>t</code> 在标签页中打开
-<code>T</code> 在后台标签页中打开
-<code>!</code> 执行此文件
-<code>p</code> 到上层目录
-<code>P</code> 到根目录
-<code>K</code> 到第一个节点
-<code>J</code> 到最后一个节点
-<code>u</code> 打开上层目录
-<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
-<code>?</code> 帮助
-<code>q</code> 关闭</p>
-
-<h2>问题</h2>
-
-<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
-</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1806,6 +2046,14 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-gitlab-shell-works/">How Gitlab Shell Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/01/07/2014-conclusion-and-2015-plan/">2014年总结 && 2015年展望</a>
@@ -1829,14 +2077,6 @@ Note: 类似这样的属性叫自动属性,每次运行都会重新收集,所以
     
       <li class="post">
         <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
       </li>
     
   </ul>

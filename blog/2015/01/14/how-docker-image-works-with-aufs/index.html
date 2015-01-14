@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>VIM练级日记02-目录外挂NERDTree - William's Blog with Octopress</title>
+  <title>理解Docker镜像的存储原理 - William's Blog with Octopress</title>
   <meta name="author" content="William Herry">
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="NERDTree简介 上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂 NERDTree是一个用于浏览文件系统的树形资源管理外挂, &hellip;">
+  <meta name="description" content="一开始接触Docker就对他镜像的存储原理很感兴趣,有一个问题一直不明白,Commit一个镜像的时候到底把什么存下来了,只知道他是使用分层的AUFS,具体不是特别很清楚,直到看了这篇关于Linux AuFS的文章,才有一个自己的认识,对不对还不知道 如果你用过Photoshop, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/">
+  <link rel="canonical" href="http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -73,7 +73,7 @@
   
   <header>
     
-      <h1 class="entry-title">VIM练级日记02-目录外挂NERDTree</h1>
+      <h1 class="entry-title">理解Docker镜像的存储原理</h1>
     
     
       <p class="meta">
@@ -89,7 +89,7 @@
   
 
 
-<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+<time datetime="2015-01-14T15:09:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2015</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -98,67 +98,75 @@
   </header>
 
 
-<div class="entry-content"><h2>NERDTree简介</h2>
+<div class="entry-content"><p>一开始接触Docker就对他镜像的存储原理很感兴趣,有一个问题一直不明白,Commit一个镜像的时候到底把什么存下来了,只知道他是使用分层的AUFS,具体不是特别很清楚,直到看了这篇关于<a href="http://www.thegeekstuff.com/2013/05/linux-aufs/">Linux AuFS的文章</a>,才有一个自己的认识,对不对还不知道</p>
 
-<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
+<p>如果你用过Photoshop,那么用类比的方法就很好理解了,PS里作图一般都是一层一层的,上层如果没有内容就会透过去显示下层的内容,如果有旧覆盖下层内容.假设从下到上有ABC三层,A层上有一个红点,B层上靠右的地方有一个绿点(没有和A层上的重叠),如果只有这两层,那我们看到的就是一个红点加几个绿点,现在在上面有加一层C,他上面有一个蓝点和A层上红点的位置重叠,那么他就会覆盖A层的红点,最后我们看到的就是一个蓝点一个绿点</p>
 
-<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
+<p>类比到文件也是这样,假设一个目录<code>/XXX</code>由自底向上的ABC三层组成,他们每一层都有一个和他们名字对应的文件(A=>A.txt, ..),同时他们都有一个叫<code>common.txt</code>文件,里面的内容分别是A,B,C,那么最终的结果是<code>/XXX</code>目录共有4个文件,<code>A.txt</code>, <code>B.txt</code>, <code>C.txt</code>和<code>common.txt</code>,而<code>common.txt</code>里的内容是C(最上层覆盖下层的)</p>
 
-<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
+<p>我们可以用一个例子看看:</p>
 
-<p><img src="/images/nerdtree/nerdtree.png"></p>
-
-<p>这里还有一个Youtube上的视频演示</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
-
-
-<h2>安装使用</h2>
-
-<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>重启VIM并执行:BundleInstall</p>
-
-<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
-
-<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
-
-<p>这里是NERDTree中的一些按键</p>
-
-<p><code>o</code> 打开关闭文件或者目录
-<code>t</code> 在标签页中打开
-<code>T</code> 在后台标签页中打开
-<code>!</code> 执行此文件
-<code>p</code> 到上层目录
-<code>P</code> 到根目录
-<code>K</code> 到第一个节点
-<code>J</code> 到最后一个节点
-<code>u</code> 打开上层目录
-<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
-<code>?</code> 帮助
-<code>q</code> 关闭</p>
-
-<h2>问题</h2>
-
-<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
+<p>首先创建三个目录:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
-</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir -p /tmp/aufs/root
+</span><span class='line'>mkdir -p /tmp/aufs/layer1
+</span><span class='line'>mkdir -p /tmp/aufs/layer2</span></code></pre></td></tr></table></div></figure>
 
 
-<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
+<p>创建相应的文件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'root' &gt; /tmp/aufs/root/root.txt
+</span><span class='line'>echo 'layer1' &gt; /tmp/aufs/layer1/layer1.txt
+</span><span class='line'>echo 'layer2' &gt; /tmp/aufs/layer2/layer2.txt
+</span><span class='line'>
+</span><span class='line'>echo 'root' &gt; /tmp/aufs/root/common.txt
+</span><span class='line'>echo 'layer1' &gt; /tmp/aufs/root/common.txt
+</span><span class='line'>echo 'layer2' &gt; /tmp/aufs/root/common.txt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们把他们按顺序Mount起来</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mount -t aufs -o br=/tmp/aufs/layer2:/tmp/aufs/layer1:/tmp/aufs/root none /tmp/aufs/root</span></code></pre></td></tr></table></div></figure>
+
+
+<p>br后面的参数顺序是越后面越底层</p>
+
+<p>现在<code>/tmp/aufs/root/</code>下应该有4个文件,<code>root.txt</code>, <code>layer1.txt</code>, <code>layer2.txt</code>和<code>common.txt</code>,并且<code>common.txt</code>里面的内容应该是<code>layer2</code>.同时由于现在layer2是最上层,那么<code>/tmp/aufs/root</code>里面做修改会反映到<code>/tmp/aufs/layer2</code>,在<code>/tmp/aufs/root</code>里创建文件,<code>/tmp/aufs/layer2</code>里也会出现</p>
+
+<p>再回到前面的问题,Commit的时候到底保存的是什么呢,假设我们要基于前面的三层做修改在提交,只要再在上面加一层layer3,然后对<code>/tmp/aufs/root</code>做修改</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir -p /tmp/aufs/layer3
+</span><span class='line'>umount /tmp/aufs/root
+</span><span class='line'>mount -t aufs -o br=/tmp/aufs/layer3:/tmp/aufs/layer2:/tmp/aufs/layer1:/tmp/aufs/root none /tmp/aufs/root</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: 没有找到可以一层一层加的方法,只能先umount在按顺序mount</p>
+
+<p>然后再<code>/tmp/aufs/root</code>下做修改</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo 'layer3' &gt; /tmp/aufs/root/layer3.txt
+</span><span class='line'>echo 'layer3' &gt; /tmp/aufs/root/common.txt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这时候看<code>/tmp/aufs/layer3</code>目录,应该看到会有这两个文件,我们就可以把这个目录打个包实现Commit的目的</p>
+
+<p>把这样的每一层保存下来,并想办法记录他们之间的关系(某一层的上层和下层是谁),差不多就可以实现Docker的镜像存储了,不过不一定对,具体怎么做得看了代码才知道</p>
 </div>
 
 
@@ -181,15 +189,21 @@
   
 
 
-<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+<time datetime="2015-01-14T15:09:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2015</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/docker/'>docker</a>
+  
+</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/" data-via="williamherry" data-counturl="http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/" data-via="williamherry" data-counturl="http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/" >Tweet</a>
   
   
   
@@ -198,10 +212,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/07/16/master-vim-01-vundle/" title="Previous Post: VIM练级日记01-外挂总管Vundle">&laquo; VIM练级日记01-外挂总管Vundle</a>
+        <a class="basic-alignment left" href="/blog/2015/01/14/how-gitlab-shell-works/" title="Previous Post: How Gitlab Shell Works">&laquo; How Gitlab Shell Works</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/07/20/octopress-setup/" title="Next Post: Octopress - 像黑客一样写博客">Octopress - 像黑客一样写博客 &raquo;</a>
       
     </p>
   </footer>
@@ -308,8 +320,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/';
-        var disqus_url = 'http://williamherry.com/blog/2012/07/19/master-vim-02-nerdtree/';
+        var disqus_identifier = 'http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/';
+        var disqus_url = 'http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/';
         var disqus_script = 'embed.js';
       
     (function () {

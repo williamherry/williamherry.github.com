@@ -10,7 +10,9 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="背景 已经使用VIM好多年了,但从来都不去配置,最多只是在写Python的时候加个ts=4,前几天不小心看到台湾高見龍老师的VIM视频,马上被VIM加外挂(插件)后强大的功能震惊了,所以决定花一些时候把VIM了解的更深一点,并通过BLOG记录下来,也就有了VIM练级日记系列博文, &hellip;">
+  <meta name="description" content="Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮 这篇文档主要包括 搭建Octopress
+将博客托管到Github上
+我对主题做的一些修改 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +72,156 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-20T11:14:00+08:00" pubdate data-updated="true">Jul 20<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/20/octopress-setup/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Octopress是一个非常优秀的博客框架,现在已经有越来越多的人从Wordpress转向Octopress,它有很多的优点,但我使用它的原因仅仅是因为,在我看来它非常漂亮</p>
+
+<p>这篇文档主要包括</p>
+
+<ul>
+<li>搭建Octopress</li>
+<li>将博客托管到Github上</li>
+<li>我对主题做的一些修改</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/20/octopress-setup/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/19/master-vim-02-nerdtree/">VIM练级日记02-目录外挂NERDTree</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-19T19:16:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/19/master-vim-02-nerdtree/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>NERDTree简介</h2>
+
+<p>上一篇日记介绍了Vundle这个外挂管家,并简单演示了如何使用它来管理NERDTree这个外挂,今天主要介绍一个NERDTree这个外挂</p>
+
+<p>NERDTree是一个用于浏览文件系统的树形资源管理外挂,它可以让你像使用Windows档案总管一样在VIM中浏览文件系统并且打开文件或目录.</p>
+
+<p>看一下它的效果图(可以在图片上右键选择<code>view image</code>看高清大图)</p>
+
+<p><img src="/images/nerdtree/nerdtree.png"></p>
+
+<p>这里还有一个Youtube上的视频演示</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/CPu9mDpSYj0 "></iframe></div>
+
+
+<h2>安装使用</h2>
+
+<p>如果你已经配置好了Vundle这个外挂(可以参考<a href="http://williamherry.com/blog/2012/07/16/master-vim-01/">这里</a>,那么安装NERDTree真的是太简单了,只要在你的<code>～/.vimrc</code>文件里添加一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Bundle 'scrooloose/nerdtree'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重启VIM并执行:BundleInstall</p>
+
+<p>使用也很简单,只要在Normal模式下执行<code>:NERDTree</code> (可以自动补全),就可以看到一个树状的目录在左边了,光标移动(当然可以用JK键)到某个文件(或目录)上回车就可以打开了.</p>
+
+<p>可以给它绑定一个按键,这样就不用每次输入<code>:NERDTree</code>了,例如要绑定到<code>F2</code>上,只要在`～/.vimrc文件里加入下面一行:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>nmap &lt;F2&gt; :NERDTreeToggle &lt;CR&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在<code>Normal</code>模式下按一下<code>F2</code>就出现NERDTree了,再按一下就消失了(也可以按<code>q</code>让它消失)</p>
+
+<p>这里是NERDTree中的一些按键</p>
+
+<p><code>o</code> 打开关闭文件或者目录
+<code>t</code> 在标签页中打开
+<code>T</code> 在后台标签页中打开
+<code>!</code> 执行此文件
+<code>p</code> 到上层目录
+<code>P</code> 到根目录
+<code>K</code> 到第一个节点
+<code>J</code> 到最后一个节点
+<code>u</code> 打开上层目录
+<code>m</code> 显示文件系统菜单（添加、删除、移动操作）
+<code>?</code> 帮助
+<code>q</code> 关闭</p>
+
+<h2>问题</h2>
+
+<p>我遇到的问题是,由于我的家目录下文件和目录比较多,当在我的家目录下打开VIM并按<code>F2</code>调出NERDTree的时候它会出现下面的提示,按一下回车才能调出NERDTree</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NERDTree: Please wait, caching a large dir ... DONE (124 node
+</span><span class='line'>Press ENTER or type command to continue</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不知道怎么解决,虽然只在打开VIM第一次会出现这个情况,还是感觉有点不爽 :(</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -327,6 +479,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-gitlab-shell-works/">How Gitlab Shell Works</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/07/2014-conclusion-and-2015-plan/">2014年总结 && 2015年展望</a>
       </li>
     
@@ -348,14 +508,6 @@
     
       <li class="post">
         <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a>
       </li>
     
   </ul>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: docker | William's Blog with Octopress]]></title>
+  <link href="http://williamherry.com/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://williamherry.com/"/>
+  <updated>2015-01-14T16:06:09+08:00</updated>
+  <id>http://williamherry.com/</id>
+  <author>
+    <name><![CDATA[William Herry]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[理解Docker镜像的存储原理]]></title>
+    <link href="http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs/"/>
+    <updated>2015-01-14T15:09:00+08:00</updated>
+    <id>http://williamherry.com/blog/2015/01/14/how-docker-image-works-with-aufs</id>
+    <content type="html"><![CDATA[<p>一开始接触Docker就对他镜像的存储原理很感兴趣,有一个问题一直不明白,Commit一个镜像的时候到底把什么存下来了,只知道他是使用分层的AUFS,具体不是特别很清楚,直到看了这篇关于<a href="http://www.thegeekstuff.com/2013/05/linux-aufs/">Linux AuFS的文章</a>,才有一个自己的认识,对不对还不知道</p>
+
+<p>如果你用过Photoshop,那么用类比的方法就很好理解了,PS里作图一般都是一层一层的,上层如果没有内容就会透过去显示下层的内容,如果有旧覆盖下层内容.假设从下到上有ABC三层,A层上有一个红点,B层上靠右的地方有一个绿点(没有和A层上的重叠),如果只有这两层,那我们看到的就是一个红点加几个绿点,现在在上面有加一层C,他上面有一个蓝点和A层上红点的位置重叠,那么他就会覆盖A层的红点,最后我们看到的就是一个蓝点一个绿点</p>
+
+<p>类比到文件也是这样,假设一个目录<code>/XXX</code>由自底向上的ABC三层组成,他们每一层都有一个和他们名字对应的文件(A=>A.txt, ..),同时他们都有一个叫<code>common.txt</code>文件,里面的内容分别是A,B,C,那么最终的结果是<code>/XXX</code>目录共有4个文件,<code>A.txt</code>, <code>B.txt</code>, <code>C.txt</code>和<code>common.txt</code>,而<code>common.txt</code>里的内容是C(最上层覆盖下层的)</p>
+
+<p>我们可以用一个例子看看:</p>
+
+<p>首先创建三个目录:</p>
+
+<p><code>
+mkdir -p /tmp/aufs/root
+mkdir -p /tmp/aufs/layer1
+mkdir -p /tmp/aufs/layer2
+</code></p>
+
+<p>创建相应的文件</p>
+
+<p>```
+echo &lsquo;root&rsquo; > /tmp/aufs/root/root.txt
+echo &lsquo;layer1&rsquo; > /tmp/aufs/layer1/layer1.txt
+echo &lsquo;layer2&rsquo; > /tmp/aufs/layer2/layer2.txt</p>
+
+<p>echo &lsquo;root&rsquo; > /tmp/aufs/root/common.txt
+echo &lsquo;layer1&rsquo; > /tmp/aufs/root/common.txt
+echo &lsquo;layer2&rsquo; > /tmp/aufs/root/common.txt
+```</p>
+
+<p>然后我们把他们按顺序Mount起来</p>
+
+<p><code>
+mount -t aufs -o br=/tmp/aufs/layer2:/tmp/aufs/layer1:/tmp/aufs/root none /tmp/aufs/root
+</code></p>
+
+<p>br后面的参数顺序是越后面越底层</p>
+
+<p>现在<code>/tmp/aufs/root/</code>下应该有4个文件,<code>root.txt</code>, <code>layer1.txt</code>, <code>layer2.txt</code>和<code>common.txt</code>,并且<code>common.txt</code>里面的内容应该是<code>layer2</code>.同时由于现在layer2是最上层,那么<code>/tmp/aufs/root</code>里面做修改会反映到<code>/tmp/aufs/layer2</code>,在<code>/tmp/aufs/root</code>里创建文件,<code>/tmp/aufs/layer2</code>里也会出现</p>
+
+<p>再回到前面的问题,Commit的时候到底保存的是什么呢,假设我们要基于前面的三层做修改在提交,只要再在上面加一层layer3,然后对<code>/tmp/aufs/root</code>做修改</p>
+
+<p><code>
+mkdir -p /tmp/aufs/layer3
+umount /tmp/aufs/root
+mount -t aufs -o br=/tmp/aufs/layer3:/tmp/aufs/layer2:/tmp/aufs/layer1:/tmp/aufs/root none /tmp/aufs/root
+</code></p>
+
+<p>Note: 没有找到可以一层一层加的方法,只能先umount在按顺序mount</p>
+
+<p>然后再<code>/tmp/aufs/root</code>下做修改</p>
+
+<p><code>
+echo 'layer3' &gt; /tmp/aufs/root/layer3.txt
+echo 'layer3' &gt; /tmp/aufs/root/common.txt
+</code></p>
+
+<p>这时候看<code>/tmp/aufs/layer3</code>目录,应该看到会有这两个文件,我们就可以把这个目录打个包实现Commit的目的</p>
+
+<p>把这样的每一层保存下来,并想办法记录他们之间的关系(某一层的上层和下层是谁),差不多就可以实现Docker的镜像存储了,不过不一定对,具体怎么做得看了代码才知道</p>
+]]></content>
+  </entry>
+  
+</feed>
