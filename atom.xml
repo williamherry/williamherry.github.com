@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.com/atom.xml" rel="self"/>
   <link href="http://williamherry.com/"/>
-  <updated>2015-01-22T16:30:28+08:00</updated>
+  <updated>2015-01-22T16:33:59+08:00</updated>
   <id>http://williamherry.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -339,8 +339,8 @@
 </span><span class='line'>RUN mkdir /myapp
 </span><span class='line'>WORKDIR /myapp
 </span><span class='line'>ADD . /myapp
-</span><span class='line'>ADD config/database.yml.fig /neo_lion/config/database.yml
-</span><span class='line'>ADD config/secrets.yml.fig /neo_lion/config/secrets.yml
+</span><span class='line'>ADD config/database.yml.fig /myapp/config/database.yml
+</span><span class='line'>ADD config/secrets.yml.fig /myapp/config/secrets.yml
 </span><span class='line'>ADD docker/gemrc /root/.gemrc
 </span><span class='line'>RUN gem install bundler
 </span><span class='line'>RUN bundle install</span></code></pre></td></tr></table></div></figure>
