@@ -194,8 +194,8 @@ RUN autoconf \
 RUN mkdir /myapp
 WORKDIR /myapp
 ADD . /myapp
-ADD config/database.yml.fig /neo_lion/config/database.yml
-ADD config/secrets.yml.fig /neo_lion/config/secrets.yml
+ADD config/database.yml.fig /myapp/config/database.yml
+ADD config/secrets.yml.fig /myapp/config/secrets.yml
 ADD docker/gemrc /root/.gemrc
 RUN gem install bundler
 RUN bundle install
