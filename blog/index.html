@@ -10,7 +10,7 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="一开始接触Docker就对他镜像的存储原理很感兴趣,有一个问题一直不明白,Commit一个镜像的时候到底把什么存下来了,只知道他是使用分层的AUFS,具体不是特别很清楚,直到看了这篇关于Linux AuFS的文章,才有一个自己的认识,对不对还不知道 如果你用过Photoshop, &hellip;">
+  <meta name="description" content="如果使用的fig的话那就太简单了,照着fig官方文档分分钟就可以搞定,但是它的方法存在一个问题,他是直接用的ruby,postgres,redis的image,整个加起来就上G了,国内的这破网速,虽然只需下载一次就好了,并且国内也有镜像加速的服务如daocloud,但实际使用发现任然无法接受. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +70,386 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/22/build-rails-dev-env-using-docker/">使用Docker搭建一个Rails开发环境</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-22T14:56:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2015</time>
+        
+         | <a href="/blog/2015/01/22/build-rails-dev-env-using-docker/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如果使用的fig的话那就太简单了,照着fig官方文档分分钟就可以搞定,但是它的方法存在一个问题,他是直接用的ruby,postgres,redis的image,整个加起来就上G了,国内的这破网速,虽然只需下载一次就好了,并且国内也有镜像加速的服务如daocloud,但实际使用发现任然无法接受.所以我的方法是使用一个基本的ubuntu镜像,其他镜像在此基础上构建而成</p>
+
+<p>首先是多官方的ubuntu镜像做稍微修改,这个修改就是把源换成网易的,然后制作成一个镜像,其他的镜像都一次为基础</p>
+
+<p>想看一下相关的文件:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># tree .
+</span><span class='line'>├── Dockerfile
+</span><span class='line'>├── docker
+</span><span class='line'>│   ├── gemrc
+</span><span class='line'>│   ├── postgres
+</span><span class='line'>│   │   ├── Dockerfile
+</span><span class='line'>│   │   ├── pg_hba.conf
+</span><span class='line'>│   │   ├── postgresql.conf
+</span><span class='line'>│   │   └── run
+</span><span class='line'>│   └── redis
+</span><span class='line'>│       ├── Dockerfile
+</span><span class='line'>│       └── redis.conf
+</span><span class='line'>└── fig.yml</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们使用fig来编排,所以fig.yml就是主要的入口了,内容如下:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db:
+</span><span class='line'>  build: ./docker/postgres
+</span><span class='line'>redis:
+</span><span class='line'>  build: ./docker/redis
+</span><span class='line'>web:
+</span><span class='line'>  build: .
+</span><span class='line'>  command: bundle exec rails s -b 0.0.0.0 -p 3000
+</span><span class='line'>  volumes:
+</span><span class='line'>    - .:/myapp
+</span><span class='line'>  ports:
+</span><span class='line'>    - "3000:3000"
+</span><span class='line'>  links:
+</span><span class='line'>    - db
+</span><span class='line'>    - redis</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里有三个部分,前面两个都是知道从什么地方找Dockerfile来build镜像(fig官方的例子这里是用的image: postgres)</p>
+
+<p>第三个就是实际跑rails的image了,它指定了一个image启动后运行的命令(其他两个镜像也有启动后要执行的命令,是在Dockerfile里指定),然后有一个volumes把代码目录镜像到images是,这样修改了代码不用做操作就可以看到效果</p>
+
+<p>ports指令把image里的端口映射到宿主机上,宿主机并不一定就是我们的开发机,像Mac使用boot2docker安装的docker,那么开发机就是运行docker的虚拟机了,可以用boot2docker ip得到ip地址,等之后配置完成了就可以用这个地址加3000端口查看网页了</p>
+
+<p>最后的links会在web的image执行的时候(就是container)在其的/etc/hosts里加一条到其他container地址的对应,要知道每个container运行IP都是不一样的,这样就可以在web去连db和redis了,相应的database.yml里把host写成db就可以了</p>
+
+<p>我们一个一个来看他们是怎么build的</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat docker/postgres/Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1.1
+</span><span class='line'>
+</span><span class='line'>RUN locale-gen en_US.UTF-8
+</span><span class='line'>RUN update-locale LANG=en_US.UTF-8
+</span><span class='line'>
+</span><span class='line'>RUN apt-get -qqy update && DEBIAN_FRONTEND=noninteractive apt-get install -qqy postgresql-9.3 postgresql-contrib-9.3 postgresql-9.3-postgis-2.1 libpq-dev sudo
+</span><span class='line'>
+</span><span class='line'># /etc/ssl/private can't be accessed from within container for some reason
+</span><span class='line'># (@andrewgodwin says it's something AUFS related)
+</span><span class='line'>RUN mkdir /etc/ssl/private-copy; mv /etc/ssl/private/* /etc/ssl/private-copy/; rm -r /etc/ssl/private; mv /etc/ssl/private-copy /etc/ssl/private; chmod -R 0700 /etc/ssl/private; chown -R postgres /etc/ssl/private
+</span><span class='line'>
+</span><span class='line'>ADD postgresql.conf /etc/postgresql/9.3/main/postgresql.conf
+</span><span class='line'>ADD pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf
+</span><span class='line'>RUN chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+</span><span class='line'>
+</span><span class='line'>ADD main /var/lib/postgresql/9.3/main
+</span><span class='line'>RUN chown -R postgres:postgres /var/lib/postgresql/9.3/main
+</span><span class='line'>
+</span><span class='line'>ADD run /usr/local/bin/run
+</span><span class='line'>RUN chmod +x /usr/local/bin/run
+</span><span class='line'>
+</span><span class='line'>EXPOSE 5432
+</span><span class='line'>CMD ["/usr/local/bin/run"]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个是直接抄的<a href="https://github.com/orchardup/docker-postgresql,">https://github.com/orchardup/docker-postgresql,</a> 刚发现他github项目主页就是这个已经是Deprecated,请使用官方镜像</p>
+
+<p>简单说就是安装postgresql,把配置文件改改,让访问权限宽松一点,在启动起来</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ADD main /var/lib/postgresql/9.3/main
+</span><span class='line'>RUN chown -R postgres:postgres /var/lib/postgresql/9.3/main</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这两行是我添加的,实现把一些初始数据导入,把postgresql数据目录的文件整个放在<code>docker/postgres/main</code>下面build镜像,就可以一启动就有seed数据了</p>
+
+<p>下面看看redis的Dockerfile</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat docker/redis/Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1
+</span><span class='line'>
+</span><span class='line'>RUN apt-get update -qqy && apt-get install -qqy redis-server
+</span><span class='line'>
+</span><span class='line'>ADD redis.conf /etc/redis/redis.conf
+</span><span class='line'>CMD ["redis-server", "/etc/redis/redis.conf"]
+</span><span class='line'>
+</span><span class='line'>EXPOSE 6379</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个就更简单了,安装,加个配置文件,启动</p>
+
+<p>配置文件主要修改了两个地方:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>daemonize no
+</span><span class='line'>bind 0.0.0.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>似乎docker在后台运行是不行的</p>
+
+<p>最后我们看看web的Dockerfile</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1
+</span><span class='line'>
+</span><span class='line'>ENV RUBY_MAJOR 2.1
+</span><span class='line'>ENV RUBY_VERSION 2.1.5
+</span><span class='line'>ENV RUBY_SRC_DIR /usr/src/ruby
+</span><span class='line'>
+</span><span class='line'># Essentials
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy \
+</span><span class='line'>    autoconf \
+</span><span class='line'>    build-essential \
+</span><span class='line'>    curl \
+</span><span class='line'>    git \
+</span><span class='line'>    imagemagick \
+</span><span class='line'>    libbz2-dev \
+</span><span class='line'>    libcurl4-openssl-dev \
+</span><span class='line'>    libevent-dev \
+</span><span class='line'>    libffi-dev \
+</span><span class='line'>    libglib2.0-dev \
+</span><span class='line'>    libjpeg-dev \
+</span><span class='line'>    libmagickcore-dev \
+</span><span class='line'>    libmagickwand-dev \
+</span><span class='line'>    libmysqlclient-dev \
+</span><span class='line'>    libncurses-dev \
+</span><span class='line'>    libpq-dev \
+</span><span class='line'>    libreadline-dev \
+</span><span class='line'>    libsqlite3-dev \
+</span><span class='line'>    libssl-dev \
+</span><span class='line'>    libxml2-dev \
+</span><span class='line'>    libxslt-dev \
+</span><span class='line'>    libyaml-dev \
+</span><span class='line'>    procps \
+</span><span class='line'>    zlib1g-dev \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/*
+</span><span class='line'>
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy locales \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/* \
+</span><span class='line'>  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+</span><span class='line'>ENV LANG en_US.utf8
+</span><span class='line'>
+</span><span class='line'># Ruby specifics
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy \
+</span><span class='line'>    bison \
+</span><span class='line'>    ruby \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/* \
+</span><span class='line'>  && mkdir -p $RUBY_SRC_DIR \
+</span><span class='line'>  && curl -s -SL "http://ruby.taobao.org/mirrors/ruby/2.1/ruby-$RUBY_VERSION.tar.bz2" \
+</span><span class='line'>    | tar -xjC $RUBY_SRC_DIR --strip-components=1
+</span><span class='line'>
+</span><span class='line'>WORKDIR $RUBY_SRC_DIR
+</span><span class='line'>
+</span><span class='line'>RUN autoconf \
+</span><span class='line'>  && ./configure \
+</span><span class='line'>    --disable-install-doc \
+</span><span class='line'>  && make -j"$(nproc)" \
+</span><span class='line'>  && apt-get purge -qqy --auto-remove bison ruby \
+</span><span class='line'>  && make install \
+</span><span class='line'>  && rm -r /usr/src/ruby
+</span><span class='line'>
+</span><span class='line'>RUN mkdir /myapp
+</span><span class='line'>WORKDIR /myapp
+</span><span class='line'>ADD . /myapp
+</span><span class='line'>ADD config/database.yml.fig /neo_lion/config/database.yml
+</span><span class='line'>ADD config/secrets.yml.fig /neo_lion/config/secrets.yml
+</span><span class='line'>ADD docker/gemrc /root/.gemrc
+</span><span class='line'>RUN gem install bundler
+</span><span class='line'>RUN bundle install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>前面那部分是网上找的安装ruby的配制方法,你可能不能理解为什么要自己安装ruby,你可以直接用官方ruby镜像,只要把FROM后面改成ruby就可以了,就是比较大而已,我发现下载安装好ruby的镜像还没从ubuntu镜像安装来的快</p>
+
+<p>设置好之后就可以用下面的命令启动开发环境了(如果有数据放docker/postgres/main下,fig up就够了)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>fig up -d db
+</span><span class='line'>fig run web rake db:setup
+</span><span class='line'>fig up</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从mkdir开始才是正在起作用的,太简单就不用说了,这里的.gemrc里知道了taobao的源,这样安装bundler就会快一点</p>
+
+<p>最后说说踩过的一个坑,你可能注意到了每一个Dockerfile前面都有<code>ENV DOCKERFILE_VERSION 0.0.1</code>这一行,刚开始是<code>ENV VERSION 0.0.1</code>,这样会有一个问题,就是在执行migration的时候干脆不跑了,花了我一天的时间debug,最后发现他会把这个变量传进去,<code>rake db:migrate</code>就相当于<code>rake db:migrate VERSION=0.0.1</code></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2110,818 +2490,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/22/the-ruby-programming-language-notes/">The Ruby Programming Language Notes</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-22T11:14:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2013</time>
-        
-         | <a href="/blog/2013/07/22/the-ruby-programming-language-notes/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>Global variables are prefixed with $</li>
-<li>Instance variables are prefixed with @</li>
-<li>Class variables are prefixed with @@</li>
-<li>Constant begin with a capital letter</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/[Rr]uby/   # Matches "Ruby" or "ruby"
-</span><span class='line'>/\d{5}/     # Matches 5 consecutive digits
-</span><span class='line'>1..3        # All x where 1 &lt;= x &lt;= 3 # has equal both side
-</span><span class='line'>1...3       # All x where 1 &lt;= x &lt; 3</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>Ruby case statement matches its expression against each of the possible cases using <code>===</code></p></li>
-<li><p>Ruby&rsquo;s strings are mutable, call freeze method to prevent any future modifications</p></li>
-<li><p>In Ruby world, only nil and false are false, anything else are true</p></li>
-<li><p><code>print</code> is almost same with <code>puts</code>, except it does not append a newline</p></li>
-<li><p><code>p</code> almost same with <code>puts</code>, except it use <code>inspect</code> rather than <code>to_s</code></p></li>
-<li><p>lexical</p></li>
-<li>punctuation</li>
-<li>syntactic</li>
-<li><p>arithmetic</p></li>
-<li><p>All numeric objects are immutable</p></li>
-<li><p>Integer division by zero causes a ZeroDivisionError to be thrown.</p></li>
-<li>Floating-point division by zero does not cause an error; it simple returns the value Infinity</li>
-<li><p>0.0/0.0 => NaN</p></li>
-<li><p><code>4**3**2</code> is same as <code>4**9</code> not <code>64**2</code></p></li>
-<li><p>even = (x[0] == 0)  # A number is even if the least-significat bit is 0</p></li>
-<li><p>&lsquo;a\b&rsquo; == &lsquo;a\b&rsquo;</p></li>
-<li><p>money = &ldquo;\u{20AC 20 A3 20 A5}&rdquo; # => &ldquo;€ £ ¥&rdquo;</p></li>
-<li><p>Run system command</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>`ls`
-</span><span class='line'>%x[ls]</span></code></pre></td></tr></table></div></figure>
-
-
-<p>?A  # Character literal for the  ASCII character A
-/&ldquo;  # Character literal for the  ASCII character &rdquo;
-/?  # Character literal for the  ASCII character ?
-not need any more</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>a = 0;
-</span><span class='line'>"#{a=a+1} " * 3   # returns "1 1 1", not "1 2 3"</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>s = "hello"
-</span><span class='line'>s[index, length]
-</span><span class='line'>s[0, 2] # "he"
-</span><span class='line'>s[start_index..end_index]   # include end_index
-</span><span class='line'>s[start_index...end_index]  # not include end_index
-</span><span class='line'>s[/[aeiou]/] = '*'          # replace first vowel with an asterisk</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>s = "¥1000"
-</span><span class='line'>s.each_char { |x| print "#{x} " } # Prints "¥ 1 0 0 0". Ruby 1.9
-</span><span class='line'>0.upto(s.size-1) { |i| print "#{s[i]} " }  # Inefficient with multibyte chars</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>words = %w[this is a test]  # Same as ['this', 'is', 'a', 'test']</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>a = [1, 1, 2, 2, 3, 3, 4]
-</span><span class='line'>b = [5, 5, 4, 4, 3, 3, 2]
-</span><span class='line'>a | b  # [1, 2, 3, 4, 5]: duplicates are removed
-</span><span class='line'>b | a  # [5, 4, 3, 2, 1]: elements are the same, but order is different
-</span><span class='line'>a & b  # [2, 3, 4]
-</span><span class='line'>b & a  # [4, 3, 2]</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>equality</p></li>
-<li><p><code>equal?</code> method is defined by Object to test whether two values refer to exactly the same object</p></li>
-<li><p><code>==</code> in Object is just alias to equal? but most class redefine it</p></li>
-<li><p><code>!=</code> simple use <code>==</code> and inverts the result</p></li>
-<li><p><code>eql?</code> strict version of <code>==</code></p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>1 == 1.0    # true: Fixnum and Float objects can be ==
-</span><span class='line'>1.eql?(1.0) # false: but they are never eql!</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><code>===</code> most use in case statement and:
-
-<ul>
-<li>Many classes, is the same as ==</li>
-<li>Range to test whether a value falls within the range</li>
-<li>Regexp to test whether a string matches the regular expression</li>
-<li>Class to test whether an object is an instance of that class</li>
-<li>In Ruby 1.9 Symbol to return true if the righthand operand is the same symbol as the left or if it is a string holding the same text</li>
-</ul>
-</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(1..10) === 5  # true: 5 is in the range 1..10
-</span><span class='line'>/\d+/ === "123" # true: the string matches the regular expression
-</span><span class='line'>String === "s"  # true: "s" is an instance of the class String
-</span><span class='line'>:s === "s"      # true in Ruby 1.9</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p><code>=~</code> pattern match(like Regexp)</p></li>
-<li><p><code>&lt;=&gt;</code></p>
-
-<ul>
-<li>Return -1 if its left operand is less than its right operand</li>
-<li>Return 0 if the two operands are equal</li>
-<li>Return 1 if the left operand is greater than the right operand</li>
-<li>Return nil if can not meaningfull compared</li>
-</ul>
-</li>
-<li><p>explicit</p></li>
-<li><p>to_s:
-return a human-readable representation of the object, suitable for end users</p></li>
-<li>inspect:
-is intended for debugging use, and should return a representation that is helpful to Ruby developers</li>
-<li><p>default inspect method, inherited from Object, simple calls to_s</p></li>
-<li><p>implicit</p></li>
-<li>invocation</li>
-<li>abbreviated</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># splat (*)
-</span><span class='line'>x, y = 1, *[2, 3] # Same as x, y, z = 1, 2, 3
-</span><span class='line'>x, *y = 1, 2, 3   # x = 1; y = [2, 3]
-</span><span class='line'>x, *y = 1, 2      # x = 1; y = [2]
-</span><span class='line'>x, *y = 1         # x = 1; y = []</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Ruby 1.9 only
-</span><span class='line'>*x, y = 1, 2, 3   # x = [1, 2]; y = 3
-</span><span class='line'>*x, y = 1, 2      # x=[1]; y = 2
-</span><span class='line'>*x, y = 1         # x = []; y = 1
-</span><span class='line'>
-</span><span class='line'>x, y *z = 1, *[2, 3, 4] # x = 1;y = 2; z=[3,4]</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><code>&amp;&amp;</code> has higher precedence that <code>||</code></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>1 || 2 && nil  # =&gt; 1</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>and, or and not operators are low-precedence versions of &amp;&amp;, ||, and !
-they have lower precedence that the assignment operator</p></li>
-<li><p>and and or have the same precedence and not is just slightly higher</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>x || y && nil   # && is performed first   =&gt; x
-</span><span class='line'>x or y and nil  # evaluated left-to-right =&gt; nil</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><code>?:</code> operator is right-associative(same as **)</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>a ? b : c ? d : e     # This expression ..
-</span><span class='line'>a ? b : (c ? d : e)   # is evaluated like this..
-</span><span class='line'>(a ? b : c) ? d : e   # NOT like this</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>The loop variable or variables of a for loop are not local to the loop; they remain defined even after the loop exit. Similarly, new variables defined within the body of the loop continue to exist after the loop exits.</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>squares = [1,2,3].collect {|x| x*x}   # =&gt; [1,4,9]
-</span><span class='line'>evens = (1..10).select {|x| x%2 == 0} # =&gt; [2,4,6,8,10]
-</span><span class='line'>odds = (1..10).reject {|x| x%2 == 0}  # =&gt; [1,3,5,7,9]</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>data = [2, 5, 3, 4]
-</span><span class='line'>sum = data.inject { |sum, x| sum + x }     # =&gt; 14    (1+5+3+4)
-</span><span class='line'>floatprod = data.inject(1.0) { |p,x| p*x } # =&gt; 120.0 (1.0*2*5*3*4)
-</span><span class='line'>max = data.inject { |m, x| m&gt;x ? m : x }   # =&gt; 5</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>implicit</li>
-<li><p>fundamental</p></li>
-<li><p>use return in a block will cause the method that use yield to call the block exit</p></li>
-<li><p>return value in block should use next</p></li>
-<li><p>blocks defined a new variable scope: variables created within a block exist only within that block and are undefined outside of the block</p></li>
-<li><p>the local variables in a method are available to any blocks within that method. so if a block assigns a value to a variable that is already defined outside of the block, this does not create a new block-local variable but instead assigns a new value to the already-existing variable.</p></li>
-<li><p>invocation</p></li>
-<li><p>an important difference between block parameters and method parameters is that block parameters are not allowed to have default values assigned as method parameters are.(seems not any more)</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[1,2,3].each {|x,y=10| print x*y }  # SyntaxError!</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>intuitive</p></li>
-<li><p>return always causes the enclosing method to return. the enclosing method, also called the lexically enclosing method, is the method that the block appears inside of when you look at the source code</p></li>
-<li><p>note that unlike return, break never causes the lexically enclosing method to return. break can only appear within a lexically enclosing loop or within a block. using it in any other context causes a LocalJumpError</p></li>
-<li><p>manipulate</p></li>
-<li><p>represent</p></li>
-<li><p>An important feature of procs and lambdas is that they are closures: they retain access to the local variables that were in scope when they were defined, even then the proc or lambda is invoked from a different scope</p></li>
-<li><p>subtle</p></li>
-<li>invocation</li>
-<li><p>respectively</p></li>
-<li><p>Ruby implementations typically treat Fixnum and Symbol values as immediate values rather than as true object references. For this reason, singleton methods may not be defined on Fixnum and Symbol objects. For consistency, singletons are also prohibited on other Numberic objects.</p></li>
-<li><p>Interestingly, undef can be used to undefine inherited method, without affecting the definition of the method in the class from which it is inherited.</p></li>
-<li><p>It cannot be used to undefine a singleton method in the way that def can be used to define such a method.</p></li>
-<li><p>punctuation</p></li>
-<li>unary</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>alias aka also_known_as   # alias new_name existing_name</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>def hello
-</span><span class='line'>  puts 'Hello World'
-</span><span class='line'>end
-</span><span class='line'>
-</span><span class='line'>alias original_hello hello
-</span><span class='line'>
-</span><span class='line'>def hello
-</span><span class='line'>  puts 'Your attention please'
-</span><span class='line'>  original_hello
-</span><span class='line'>  puts 'This has been a test'
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>overload</li>
-<li>ambiguous</li>
-<li>wrinkle</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>def suffix(s, index=s.size-1)
-</span><span class='line'>  s[index, s.size-index]
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>In Ruby 1.8, method parameters with default values must appear after all ordinary parameters in the parameter list. Ruby 1.9 relaxes this restriction and allows ordinary parameters to appear after parameters with defaults. It still requires all parameters with defaults to be adjacent in the parameter list &ndash; you can&rsquo;t declare two parameters with default values with an ordinary parameter between them, for example.</p></li>
-<li><p>No more than one parameter may be prefixed with an *. In Ruby 1.8, this parameter must appear after all ordinary parameters and after all parameters with defaults specified. It should be the last parameter of the method, unless the method also has a parameter with an &amp; prefix. In Ruby 1.9, a parameter with an * prefix must still appear after any parameters with defaults specified, but it may be followed by additional ordinary parameters. It must also still appear before any &amp;-prefixed parameter.</p></li>
-<li><p>anonymity</p></li>
-<li><p>Blocks are syntactic structures in Ruby; they are not objects, and cannot be manipulated as objects.</p></li>
-<li>It is possible, however, to create an object that represents a block. Depending on how the object is created, it is called a proc or a lambda</li>
-<li><p>Procs have block-like behavior and lambdas have method-like behavior. Both, however, are instances of class Proc.</p></li>
-<li><p>Proc.new => procs</p></li>
-<li>Kernel.lambda => lambda</li>
-<li>Kernel.proc => alias of lambda in Ruby 1.8</li>
-<li>Kernel.proc => alias of Proc.new in Ruby 1.9</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>succ = lambda {|x| x+1}  # Ruby 1.8 lambda
-</span><span class='line'>succ = -&gt;(x){ x+1 }      # Ruby 1.9 lambda</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># This lambda takes 2 args and declares 3 local vars
-</span><span class='line'>f = -&gt;(x,y; i,j,k) { ... }</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>zoom = -&gt;(x,y,factor=2) { [x*factor, y*factor] }   # only on Ruby 1.9</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>succ = -&gt;x { x+1 }
-</span><span class='line'>f = -&gt; x,y; i,j,k { ... }
-</span><span class='line'>zoom = -&gt;x,y,factor=2 { [x*factor, y*factor] }</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>Proc Equality &ndash; The <code>==</code> method only returns true if on Proc is a clone or duplicate of the other;</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>p = lambda {|x| x*x }
-</span><span class='line'>q = p.dup
-</span><span class='line'>q == p                      # =&gt; true: the two procs are equal
-</span><span class='line'>p.object_id == q.object_id  # =&gt; false: they are not the same object
-</span><span class='line'>
-</span><span class='line'>- A proc is the object form of a block, and it behaves like a block.
-</span><span class='line'>- A lambda has slightly modified behavior and behaves more like a mthod that a block.
-</span><span class='line'>
-</span><span class='line'>- The return statement in a block does not just return from the block to the invoking iterator, it returns from the method that invoked the interator.
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>def test
-  puts &ldquo;entering method&rdquo;
-  1.times { puts &ldquo;entering block&rdquo;; return }  # Makes test method return
-  puts &ldquo;exiting method&rdquo;   # This line is never executed
-end
-test</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>- A proc is like a block, so if you call a proc that executes a return statement, it attempts to return from the method that encloses the block that was converted to the proc.
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>def test
-  puts &ldquo;entering method&rdquo;
-  p = Proc.new { puts &ldquo;entering proc&rdquo;; return }
-  p.call                # Invoking the proc makes method return
-  puts &ldquo;exiting method&rdquo; # This line is never executed
-end
-test</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>- Using a return statement in a proc is tricky, however, because procs are ofter passed around between methods. By the time a proc is invoked, the lexically enclosing method may already have returned:
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>def procBuilder(message)            # Create and return a proc
-  Proc.new { puts message; return } # return returns from procBuilder
-  # but procBuilder has already returned here!
-end</p>
-
-<p>def test
-  puts &ldquo;entering method&rdquo;
-  p = procBuilder(&ldquo;entering proc&rdquo;)
-  p.call                # Prints &ldquo;entering proc&rdquo; and raises LocalJumpError!
-  puts &ldquo;exiting method&rdquo; # This line is never executed
-end
-test</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>- A return statement in a lambda, therefore, returns from the lambda itself, not from the method that surrounds the creation site of the lambda:
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>def test
-  puts &ldquo;entering method&rdquo;
-  p = lambda { puts &ldquo;entering lambda&rdquo;; return }
-  p.call                  # Invoking the lambda does not make the method return
-  puts &ldquo;exiting method&rdquo;   # This line <em>is</em> executed now
-end
-test</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>- The fact that return in lambda only returns from the lambda itself means that we never have to worry about LocalJumpError
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>def lambdaBuilder(message)            # Create and return a proc
-  lambda { puts message; return }     # return returns from lambda
-  # but procBuilder has already returned here!
-end</p>
-
-<p>def test
-  puts &ldquo;entering method&rdquo;
-  p = lambdaBuilder(&ldquo;entering lambda&rdquo;)
-  p.call                # Prints &ldquo;entering lambda&rdquo;
-  puts &ldquo;exiting method&rdquo; # This line is executed
-end
-test</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>- A top-level next statement works the same in a block, proc, or lambda: ti causes the yield statement or call method that invoked the block, proc, or lambda to return. If next is followed by an expression, then the value of that expression becomes the rturn value of the block, proc, or lambda.
-</span><span class='line'>
-</span><span class='line'>- redo also works the same in procs and lambdas: it transfers control back to the beginning of the proc or lambda.
-</span><span class='line'>
-</span><span class='line'>- retry is never allowed in procs or lambdas: using it always results in a LocalJumpError.
-</span><span class='line'>
-</span><span class='line'>- raise behaves the same in blocks, procs, and lambdas. Exceptions always propagate up the call stack. If a block, proc, or lambda raises an exception and there is no local rescue clause, the exception first propagates to the method that invoked the block with yield or that invoked the proc or lambda with call.
-</span><span class='line'>
-</span><span class='line'>- Argument passing to procs and lambdas
-</span><span class='line'>  - The yield statement uses yield semantics
-</span><span class='line'>  - method invocation uses invocation semantics
-</span><span class='line'>  - Yield semantics are similar to parallel assignment
-</span><span class='line'>  - invoking a proc uses yield semantics
-</span><span class='line'>  - invoking a lambda uses invocation semantics
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>p = Proc.new {|x,y| print x,y }
-p.call(1)       # x,y=1:     nil used for missing rvalue:  Prints 1nil
-p.call(1,2)     # x,y=1,2:   2 lvalues, 2rvalues:          Print 12
-p.call(1,2,3)   # x,y=1,2,3: extra rvalues discarded:      Print 12
-p.call([1,2])   # x,y=[1,2]: array automatically unpacked: Print 12</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>```
-</span><span class='line'>l = lambda {|x,y| print x,y }
-</span><span class='line'>l.call(1,2)     # This works
-</span><span class='line'>l.call(1)       # Wrong number of arguments
-</span><span class='line'>l.call(1,2,3)   # Wrong number of arguments
-</span><span class='line'>l.call([1,2])   # Wrong number of arguments
-</span><span class='line'>l.call(*[1,2])  # Works: explicit splat to unpack the array</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>In Ruby, procs and lambdas are closures.</li>
-<li>An object that is both an invocable function and a variable binding for that function.</li>
-<li><p>When you create a proc or a lambda, the resulting Proc object holds not just the executable block but also bindings for all the variables used by the block.</p></li>
-<li><p>One important difference between Method objects and Proc objects is that Method objects are not closures.</p></li>
-<li><p>encapsulated</p></li>
-<li><p>In addition to being automatically invoked by Point.new, the initialize method is automatically made private. An object can call initialize on itself, but you cannot explicitly call initialize on p to reinitialize its state.</p></li>
-<li><p>coerce</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Point::NEGATIVE_UNIT_X = Point.new(-1,0)</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>Class Instance Variables</p>
-
-<ul>
-<li>An instance variable used inside a class definition but outside an instance method definition</li>
-<li>Class instance variables cannot be used from instance methods</li>
-</ul>
-</li>
-<li><p>Define Class</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
-</span><span class='line'>  ...
-</span><span class='line'>  def Point.sum(*points)
-</span><span class='line'>  ...
-</span><span class='line'>  end
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
-</span><span class='line'>  ...
-</span><span class='line'>  def self.sum(*points)
-</span><span class='line'>    ...
-</span><span class='line'>  end
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class &lt;&lt; Point
-</span><span class='line'>  def sum(*points)
-</span><span class='line'>    ...
-</span><span class='line'>  end
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class Point
-</span><span class='line'>  class &lt;&lt; self
-</span><span class='line'>    ...
-</span><span class='line'>  end
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>Method are normally public unless they are explicitly declared to be private or protected. One exception if the initialize method, which is always implicityly private.</p></li>
-<li><p>Another exception is any &ldquo;global&rdquo; method declared outside of a class definition &mdash; those methods are defined as private instance methods of Object.</p></li>
-<li><p>A public method can be invoked from anywhere &mdash; where are no restrictions on its use.</p></li>
-<li><p>A private method is internal to the implementation of a class, and it can only be called by other instance methods of the class (or, as we&rsquo;ll see later, its subclasses).</p></li>
-<li><p>Private methods are implicitly invoked on self, and may not be explicitly invoked on an object.</p></li>
-<li><p>If m is a private method, then you must invoke it in functional style as m. You cannot write o.m or even self.m</p></li>
-<li><p>A protected method is like a private method in that it can only be invoked from within the implementation of a class or its subclasses. It differs from a private method in that it may be explicit invocatioin on self.</p></li>
-<li><p>A protected method can be used, for example, to define an accessor that allows instances of a class to share internal state with each other, but does not allow users of the class to access that state.</p></li>
-<li><p>Protected methods are the least commonly defined and also the most difficult to understand. The rule about when a protected method can be invoked can be more formally described as follows: a protected method defined by a class C may be invoked on an object o by a method in the object p if and only if the classes of o and p are both subclasses of, or equal to, the class C.</p></li>
-<li><p>One of the important things to understand about object-oriented programming and subclassing is that when methods are invoked, they are looked up dynamically so that the appropriate definition or redefinition of the method is found. That is, method invocations are not bound statically at the time they are parsed, but rather, are looked up at the time they are executed.</p></li>
-<li><p>If you use super as a bare keyword &mdash; with no arguments and no parentheses &mdash; then all of the arguments that were passwd to the current method are passed to the superclass method.</p></li>
-<li><p>Ruby&rsquo;s instance variables are not inherited and have nothing to do with the inheritance mechanism. The reason that they sometimes appear to be inherited is that instance variables are created by the methods that first assign values to them, and those methods are often inherited or chainned.</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class Point3D &lt; Point
-</span><span class='line'>  def initialize(x,y,z)
-</span><span class='line'>    super(x,y)
-</span><span class='line'>    @z = z;
-</span><span class='line'>  end
-</span><span class='line'>
-</span><span class='line'>  def to_s
-</span><span class='line'>    "(#@x, #@y, #@z)"
-</span><span class='line'>  end
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>In this code, Point3D defines an initialize method that chains tothe initialize method of its superclas.. The chained method assigns values to the variables @x and @y, which makes those variables come into existence for a particular instance of Point3D</p></li>
-<li><p>Class variables are inherited</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class A
-</span><span class='line'>  @@value = 1
-</span><span class='line'>  def A.vaue; @@value; end
-</span><span class='line'>end
-</span><span class='line'>print A.value
-</span><span class='line'>class B &lt; A; @@value = 2; end
-</span><span class='line'>print A.value
-</span><span class='line'>class C &lt; A; @@value = 3; end
-</span><span class='line'>print B.value</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>The important difference between constants and methods is that constants are looked up in the lexical scope of the place they are used before they are looked up in the inheritance hierarchy</p></li>
-<li><p>Another way that new objects come into existence is as a result of the dup and clone methods. These methods allocate a new instance of the class of the object on whhich they are invoked. They then copy all the instance variables and the taintedness of the receiver object to the newly allocated object.</p></li>
-<li><p>clone takes this copying a step further that dup &mdash; it also copies singleton methods of the receiver object and freezes the copy object if the original is frozen.</p></li>
-<li><p>A third way that objects are created is when Marshal.load is called to re-create object previously marshaled (or &ldquo;serialized&rdquo;) with Marshal.dump.</p></li>
-<li><p>A singleton is a class that has only a single instance</p></li>
-<li><p>A singleton method is a method added to a single object rather than to a class of objects</p></li>
-<li><p>A module cannot be instantiated, and it cannot be subclassed</p></li>
-<li><p>Modules are used as namespeces and as mixins</p></li>
-<li><p>Just as a class object is an instance of the Class class, a module object is an instance of the Module class. Class is a subclass of Module. This means that all classes are modules, but not all modules are classes.</p></li>
-<li><p>Class can be used as namespaces, just as modules can. Class cannot, however, be used as mixins.</p></li>
-<li><p>The inclusion of a module affects the type-checking method is_a? and the switch-equality operator ===. For example, String mixes in the Comparable module and, in Ruby 1.8, also mixes in the Enumerable module:</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>"text".is_a? Comparable  # =&gt; true
-</span><span class='line'>Enumerable === "text"    # =&gt; true in Ruby 1.8, false in 1.9</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>Note that instance_of? only checks the class of its receiver, not superclasses or modules, so the following is false:</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>"text".instance_of? Comparable  # =&gt; false</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>Although every class is a module, the include method does not allow a class to be included within another class. The arguments to include must be modules declared with module, not classes</p></li>
-<li><p>If you want to create a module like Math or Kernel (after included, call method without module name), define you methods as instance methods of the module. Then use module_function to convert those methods to &ldquo;module functions.&rdquo;</p></li>
-<li><p>In addition to loading source code, require can also load binary extensions to Ruby.</p></li>
-<li><p>load expects a complete filename including an extension. require is usually passed a library name, with no extension, rather than a filename. In that case, it searches for a file that has the library name as its base name and an appropriate source or native library extension. If a directory contains both an .rb source file and a binary extension file, require will load the source file instead of the binary file.</p></li>
-<li><p>load can load the same file multiple times. require tries to prevent multiple loads of the same file. require keeps track of the files that have been loaded by appending them to the global array $&ldquo; (also known as $LOADED_FEATURES). load does not do this.</p></li>
-<li><p>load loads the specified file at the current $SAFE level. require loads the specified library with $SAFE set to 0, even if the code that called require has a higher value for that variable. In theory, therefore, it should be safe for require to load files with a reduced $SAFE level.</p></li>
-<li><p>Files loaded with load or require are executed in a new top-level scope that is different from the one in which load or require was invoked. The loaded file can see all global variables and constants that have been defined at the time it is loaded, but it does not have access to the local scope from which the load was initiated</p></li>
-<li><p>The local variables defined in the scope from which load or require is invoked are not visible to the loaded file.</p></li>
-<li>Any local variables created by the loaded file are discarded once the load is complete; they are never visible outside the file in which they are defined.</li>
-<li>At the start of the loaded file, the value of self is always the main object, just as it is when the Ruby interpreter starts running. That is, invoking load or require whthin a method invocation does not propagate the receiver object to the loaded file.</li>
-<li><p>The current module nesting is ignored within the loaded file. You cannot, fir example, open a class and load a file of method definitions. The file will be precessed in a top-level scope, not inside any class or module.</p></li>
-<li><p>Ruby method lookup or method name resolution ( o.m )</p>
-
-<ul>
-<li>First, it checkes the eigenclass of o for singleton methods name m.</li>
-<li>If no method m is found in the eigenclass, Ruby searches the class of o for an instance method named m.</li>
-<li>If no method m is found in the class, Ruby searches the instance methods of any modules included by the class of o. If that class includes more that one module, then they are searched in the reverse of the order in which they were included. That is the most recently included module is searched first.</li>
-<li>If no instance method m is found in the class of o or in its modules, then the search moves up the inheritance hierarchy to the superclass. Steps 2 and 3 are repeated for each class in the inheritance hierarchy until each ancestor class and its included modules have ben searched.</li>
-<li>If no method named m is found after completing the search, then a method named method_missing is invoked instand. In order to find an appropriate definition of this method, the name resolution algorithm start over at step 1. The Kernel module a default implementation of method_messing, so this second pass of name resolution is guranteed to succeed.</li>
-</ul>
-</li>
-<li><p>Class objects are special: they have superclasses.</p></li>
-<li><p>The eigenclasses of class objects are also special: they have superclasses, too.</p></li>
-<li><p>refection</p></li>
-<li>introspection</li>
-<li>examine</li>
-<li><p>malicious</p></li>
-<li><p>Note that eval evaluates its code in a temporary scope. eval can alter the value of instance variables that already exist. But any new instance variables it defines are local to the invocation of eval and cease to exist when it returns. (It is as if the evaluated code is run in the body of a block &mdash; variables local to a block do not exist outside the block)</p></li>
-<li><p>synonym</p></li>
-<li><p>It is important to understand that define_method is private. You must be inside the class or module you want to use it on in order to call it:</p></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Add an instance method named m to class with body b
-</span><span class='line'>def add_method(c, m, &b)
-</span><span class='line'>  c.class_eval {
-</span><span class='line'>    define_method(m, &b)
-</span><span class='line'>  }
-</span><span class='line'>end
-</span><span class='line'>
-</span><span class='line'>add_method(String, :greet) { "Hello, " + self }
-</span><span class='line'>
-</span><span class='line'>"world".greet # =&gt; "Hello, world"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>t = Time.utc(2000, 12, 31, 23, 59, 59, 999999)
-t.year   # => 2000</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2935,6 +2503,10 @@ t.year   # => 2000</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/22/build-rails-dev-env-using-docker/">使用Docker搭建一个Rails开发环境</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
@@ -2962,10 +2534,6 @@ t.year   # => 2000</p>
     
       <li class="post">
         <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/29/omniauth-github-demo/">omniauth-github使用示例</a>
       </li>
     
   </ul>

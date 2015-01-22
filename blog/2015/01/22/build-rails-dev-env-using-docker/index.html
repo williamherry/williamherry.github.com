@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用Docker搭建一个Rails开发环境 - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+  <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
+
+  
+  <meta name="description" content="如果使用的fig的话那就太简单了,照着fig官方文档分分钟就可以搞定,但是它的方法存在一个问题,他是直接用的ruby,postgres,redis的image,整个加起来就上G了,国内的这破网速,虽然只需下载一次就好了,并且国内也有镜像加速的服务如daocloud,但实际使用发现任然无法接受. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2015/01/22/build-rails-dev-env-using-docker/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用Docker搭建一个Rails开发环境</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-22T14:56:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2015</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>如果使用的fig的话那就太简单了,照着fig官方文档分分钟就可以搞定,但是它的方法存在一个问题,他是直接用的ruby,postgres,redis的image,整个加起来就上G了,国内的这破网速,虽然只需下载一次就好了,并且国内也有镜像加速的服务如daocloud,但实际使用发现任然无法接受.所以我的方法是使用一个基本的ubuntu镜像,其他镜像在此基础上构建而成</p>
+
+<p>首先是多官方的ubuntu镜像做稍微修改,这个修改就是把源换成网易的,然后制作成一个镜像,其他的镜像都一次为基础</p>
+
+<p>想看一下相关的文件:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># tree .
+</span><span class='line'>├── Dockerfile
+</span><span class='line'>├── docker
+</span><span class='line'>│   ├── gemrc
+</span><span class='line'>│   ├── postgres
+</span><span class='line'>│   │   ├── Dockerfile
+</span><span class='line'>│   │   ├── pg_hba.conf
+</span><span class='line'>│   │   ├── postgresql.conf
+</span><span class='line'>│   │   └── run
+</span><span class='line'>│   └── redis
+</span><span class='line'>│       ├── Dockerfile
+</span><span class='line'>│       └── redis.conf
+</span><span class='line'>└── fig.yml</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们使用fig来编排,所以fig.yml就是主要的入口了,内容如下:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db:
+</span><span class='line'>  build: ./docker/postgres
+</span><span class='line'>redis:
+</span><span class='line'>  build: ./docker/redis
+</span><span class='line'>web:
+</span><span class='line'>  build: .
+</span><span class='line'>  command: bundle exec rails s -b 0.0.0.0 -p 3000
+</span><span class='line'>  volumes:
+</span><span class='line'>    - .:/myapp
+</span><span class='line'>  ports:
+</span><span class='line'>    - "3000:3000"
+</span><span class='line'>  links:
+</span><span class='line'>    - db
+</span><span class='line'>    - redis</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里有三个部分,前面两个都是知道从什么地方找Dockerfile来build镜像(fig官方的例子这里是用的image: postgres)</p>
+
+<p>第三个就是实际跑rails的image了,它指定了一个image启动后运行的命令(其他两个镜像也有启动后要执行的命令,是在Dockerfile里指定),然后有一个volumes把代码目录镜像到images是,这样修改了代码不用做操作就可以看到效果</p>
+
+<p>ports指令把image里的端口映射到宿主机上,宿主机并不一定就是我们的开发机,像Mac使用boot2docker安装的docker,那么开发机就是运行docker的虚拟机了,可以用boot2docker ip得到ip地址,等之后配置完成了就可以用这个地址加3000端口查看网页了</p>
+
+<p>最后的links会在web的image执行的时候(就是container)在其的/etc/hosts里加一条到其他container地址的对应,要知道每个container运行IP都是不一样的,这样就可以在web去连db和redis了,相应的database.yml里把host写成db就可以了</p>
+
+<p>我们一个一个来看他们是怎么build的</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat docker/postgres/Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1.1
+</span><span class='line'>
+</span><span class='line'>RUN locale-gen en_US.UTF-8
+</span><span class='line'>RUN update-locale LANG=en_US.UTF-8
+</span><span class='line'>
+</span><span class='line'>RUN apt-get -qqy update && DEBIAN_FRONTEND=noninteractive apt-get install -qqy postgresql-9.3 postgresql-contrib-9.3 postgresql-9.3-postgis-2.1 libpq-dev sudo
+</span><span class='line'>
+</span><span class='line'># /etc/ssl/private can't be accessed from within container for some reason
+</span><span class='line'># (@andrewgodwin says it's something AUFS related)
+</span><span class='line'>RUN mkdir /etc/ssl/private-copy; mv /etc/ssl/private/* /etc/ssl/private-copy/; rm -r /etc/ssl/private; mv /etc/ssl/private-copy /etc/ssl/private; chmod -R 0700 /etc/ssl/private; chown -R postgres /etc/ssl/private
+</span><span class='line'>
+</span><span class='line'>ADD postgresql.conf /etc/postgresql/9.3/main/postgresql.conf
+</span><span class='line'>ADD pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf
+</span><span class='line'>RUN chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+</span><span class='line'>
+</span><span class='line'>ADD main /var/lib/postgresql/9.3/main
+</span><span class='line'>RUN chown -R postgres:postgres /var/lib/postgresql/9.3/main
+</span><span class='line'>
+</span><span class='line'>ADD run /usr/local/bin/run
+</span><span class='line'>RUN chmod +x /usr/local/bin/run
+</span><span class='line'>
+</span><span class='line'>EXPOSE 5432
+</span><span class='line'>CMD ["/usr/local/bin/run"]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个是直接抄的<a href="https://github.com/orchardup/docker-postgresql,">https://github.com/orchardup/docker-postgresql,</a> 刚发现他github项目主页就是这个已经是Deprecated,请使用官方镜像</p>
+
+<p>简单说就是安装postgresql,把配置文件改改,让访问权限宽松一点,在启动起来</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ADD main /var/lib/postgresql/9.3/main
+</span><span class='line'>RUN chown -R postgres:postgres /var/lib/postgresql/9.3/main</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这两行是我添加的,实现把一些初始数据导入,把postgresql数据目录的文件整个放在<code>docker/postgres/main</code>下面build镜像,就可以一启动就有seed数据了</p>
+
+<p>下面看看redis的Dockerfile</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat docker/redis/Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1
+</span><span class='line'>
+</span><span class='line'>RUN apt-get update -qqy && apt-get install -qqy redis-server
+</span><span class='line'>
+</span><span class='line'>ADD redis.conf /etc/redis/redis.conf
+</span><span class='line'>CMD ["redis-server", "/etc/redis/redis.conf"]
+</span><span class='line'>
+</span><span class='line'>EXPOSE 6379</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个就更简单了,安装,加个配置文件,启动</p>
+
+<p>配置文件主要修改了两个地方:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>daemonize no
+</span><span class='line'>bind 0.0.0.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>似乎docker在后台运行是不行的</p>
+
+<p>最后我们看看web的Dockerfile</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat Dockerfile
+</span><span class='line'>FROM williamherry/ubuntu
+</span><span class='line'>MAINTAINER William Herry &lt;WilliamHerryChina@Gmail.com&gt;
+</span><span class='line'>ENV DOCKERFILE_VERSION 0.0.1
+</span><span class='line'>
+</span><span class='line'>ENV RUBY_MAJOR 2.1
+</span><span class='line'>ENV RUBY_VERSION 2.1.5
+</span><span class='line'>ENV RUBY_SRC_DIR /usr/src/ruby
+</span><span class='line'>
+</span><span class='line'># Essentials
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy \
+</span><span class='line'>    autoconf \
+</span><span class='line'>    build-essential \
+</span><span class='line'>    curl \
+</span><span class='line'>    git \
+</span><span class='line'>    imagemagick \
+</span><span class='line'>    libbz2-dev \
+</span><span class='line'>    libcurl4-openssl-dev \
+</span><span class='line'>    libevent-dev \
+</span><span class='line'>    libffi-dev \
+</span><span class='line'>    libglib2.0-dev \
+</span><span class='line'>    libjpeg-dev \
+</span><span class='line'>    libmagickcore-dev \
+</span><span class='line'>    libmagickwand-dev \
+</span><span class='line'>    libmysqlclient-dev \
+</span><span class='line'>    libncurses-dev \
+</span><span class='line'>    libpq-dev \
+</span><span class='line'>    libreadline-dev \
+</span><span class='line'>    libsqlite3-dev \
+</span><span class='line'>    libssl-dev \
+</span><span class='line'>    libxml2-dev \
+</span><span class='line'>    libxslt-dev \
+</span><span class='line'>    libyaml-dev \
+</span><span class='line'>    procps \
+</span><span class='line'>    zlib1g-dev \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/*
+</span><span class='line'>
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy locales \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/* \
+</span><span class='line'>  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+</span><span class='line'>ENV LANG en_US.utf8
+</span><span class='line'>
+</span><span class='line'># Ruby specifics
+</span><span class='line'>RUN apt-get update -qqy \
+</span><span class='line'>  && apt-get install -qqy \
+</span><span class='line'>    bison \
+</span><span class='line'>    ruby \
+</span><span class='line'>  && rm -rf /var/lib/apt/lists/* \
+</span><span class='line'>  && mkdir -p $RUBY_SRC_DIR \
+</span><span class='line'>  && curl -s -SL "http://ruby.taobao.org/mirrors/ruby/2.1/ruby-$RUBY_VERSION.tar.bz2" \
+</span><span class='line'>    | tar -xjC $RUBY_SRC_DIR --strip-components=1
+</span><span class='line'>
+</span><span class='line'>WORKDIR $RUBY_SRC_DIR
+</span><span class='line'>
+</span><span class='line'>RUN autoconf \
+</span><span class='line'>  && ./configure \
+</span><span class='line'>    --disable-install-doc \
+</span><span class='line'>  && make -j"$(nproc)" \
+</span><span class='line'>  && apt-get purge -qqy --auto-remove bison ruby \
+</span><span class='line'>  && make install \
+</span><span class='line'>  && rm -r /usr/src/ruby
+</span><span class='line'>
+</span><span class='line'>RUN mkdir /myapp
+</span><span class='line'>WORKDIR /myapp
+</span><span class='line'>ADD . /myapp
+</span><span class='line'>ADD config/database.yml.fig /neo_lion/config/database.yml
+</span><span class='line'>ADD config/secrets.yml.fig /neo_lion/config/secrets.yml
+</span><span class='line'>ADD docker/gemrc /root/.gemrc
+</span><span class='line'>RUN gem install bundler
+</span><span class='line'>RUN bundle install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>前面那部分是网上找的安装ruby的配制方法,你可能不能理解为什么要自己安装ruby,你可以直接用官方ruby镜像,只要把FROM后面改成ruby就可以了,就是比较大而已,我发现下载安装好ruby的镜像还没从ubuntu镜像安装来的快</p>
+
+<p>设置好之后就可以用下面的命令启动开发环境了(如果有数据放docker/postgres/main下,fig up就够了)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>fig up -d db
+</span><span class='line'>fig run web rake db:setup
+</span><span class='line'>fig up</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从mkdir开始才是正在起作用的,太简单就不用说了,这里的.gemrc里知道了taobao的源,这样安装bundler就会快一点</p>
+
+<p>最后说说踩过的一个坑,你可能注意到了每一个Dockerfile前面都有<code>ENV DOCKERFILE_VERSION 0.0.1</code>这一行,刚开始是<code>ENV VERSION 0.0.1</code>,这样会有一个问题,就是在执行migration的时候干脆不跑了,花了我一天的时间debug,最后发现他会把这个变量传进去,<code>rake db:migrate</code>就相当于<code>rake db:migrate VERSION=0.0.1</code></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-22T14:56:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/docker/'>docker</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2015/01/22/build-rails-dev-env-using-docker/" data-via="williamherry" data-counturl="http://williamherry.com/blog/2015/01/22/build-rails-dev-env-using-docker/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/01/14/how-docker-image-works-with-aufs/" title="Previous Post: 理解Docker镜像的存储原理">&laquo; 理解Docker镜像的存储原理</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/22/build-rails-dev-env-using-docker/">使用Docker搭建一个Rails开发环境</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-gitlab-shell-works/">How Gitlab Shell Works</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/07/2014-conclusion-and-2015-plan/">2014年总结 && 2015年展望</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2015/01/22/build-rails-dev-env-using-docker/';
+        var disqus_url = 'http://williamherry.com/blog/2015/01/22/build-rails-dev-env-using-docker/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb7d5e56d88d60f662ac5925d6ef11e5b' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+</body>
+</html>
