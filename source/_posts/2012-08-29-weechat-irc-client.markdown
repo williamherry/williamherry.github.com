@@ -24,6 +24,12 @@ sudo apt-get install weechat
 
 你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:
 
+添加一个server
+
+```
+/server add freenode chat.freenode.net
+```
+
 自动连接到freenode
 
 ```
@@ -95,7 +101,20 @@ sudo apt-get install weechat
 
 只要安装一个插件然后重启weechat就可以了
 
+Mac下需要安装带python的版本
+
+```
+brew install weechat --with-python
+```
+
 ``` ruby
 cd ~/.weechat/python/autoload
 wget http://www.weechat.org/files/scripts/notify.py
+```
+
+Mac系统可以使用这个script
+
+```
+cd ~/.weechat/python/autoload
+wget https://github.com/sindresorhus/weechat-notification-center/blob/master/notification_center.py
 ```
