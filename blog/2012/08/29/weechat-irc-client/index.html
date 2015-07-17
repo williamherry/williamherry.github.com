@@ -116,6 +116,12 @@
 
 <p>你可能会想,能不能打开软件到自动连到freenode上,自动加入一些群组呢,这当然可以了,包括你的名字都可以配置后保存起来:</p>
 
+<p>添加一个server</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/server add freenode chat.freenode.net</span></code></pre></td></tr></table></div></figure>
+
+
 <p>自动连接到freenode</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -194,10 +200,28 @@
 
 <p>只要安装一个插件然后重启weechat就可以了</p>
 
+<p>Mac下需要安装带python的版本</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">brew</span> <span class="n">install</span> <span class="n">weechat</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">python</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
 </span><span class='line'><span class="n">wget</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">weechat</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">py</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Mac系统可以使用这个script</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cd</span> <span class="o">~</span><span class="sr">/.weechat/</span><span class="n">python</span><span class="o">/</span><span class="nb">autoload</span>
+</span><span class='line'><span class="n">wget</span> <span class="ss">https</span><span class="p">:</span><span class="sr">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sindresorhus</span><span class="o">/</span><span class="n">weechat</span><span class="o">-</span><span class="n">notification</span><span class="o">-</span><span class="n">center</span><span class="o">/</span><span class="n">blob</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">notification_center</span><span class="o">.</span><span class="n">py</span>
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
@@ -263,15 +287,15 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/17/meta-ruby-note/">Ruby元编程读书笔记</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/22/build-rails-dev-env-using-docker/">使用Docker搭建一个Rails开发环境</a>
       </li>
     
       <li class="post">
         <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/14/how-gitlab-shell-works/">How Gitlab Shell Works</a>
       </li>
     
       <li class="post">
