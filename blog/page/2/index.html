@@ -10,10 +10,9 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="Global variables are prefixed with $
-Instance variables are prefixed with @
-Class variables are prefixed with @@
-Constant begin with a capital &hellip;">
+  <meta name="description" content="收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow jQuery on的用法 on的基本用法为: 1
+2
+$(selector1).on 'event', 'selector2', -&gt; ... &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -73,6 +72,72 @@ Constant begin with a capital &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T11:43:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow</p>
+
+<h3>jQuery on的用法</h3>
+
+<p>on的基本用法为:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(selector1).on 'event', 'selector2', -&gt;
+</span><span class='line'>  ...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我遇到的问题是对通过ajax加载的部分on不起作用,解决办法是确保selector1不是通过ajax加载的</p>
+
+<h3>simple_form和bootstrap一起使用的问题</h3>
+
+<p>simple_form和bootstrap一起使用的时候我遇到的问题是simple_form生成的html没有加进去bootstrap的Class,看不到bootstrap样式加到table的效果,解决办法是在Gemfile里给simple_form指定版本,Rails 4是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form', "~&gt; 3.0.0.rc"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rails 3是</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form, "~&gt; 2.1.0"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Rails 4 要使用remote: true的方法执行js需要在action里加上<code>render layout: false</code></h3>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1963,302 +2028,6 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/10/chef-attributes/">Chef基础之Arrtibutes</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-10T21:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/10/chef-attributes/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
-
-<h2>概述</h2>
-
-<p><img src="/images/chef/attributes.jpg"></p>
-
-<p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
-
-<h2>属性类型和优先级</h2>
-
-<p><img src="/images/chef/attribute-priority-stack.png"></p>
-
-<p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
-
-<ul>
-<li>automatic</li>
-<li>override</li>
-<li>normal</li>
-<li>default</li>
-</ul>
-
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p>Chef没有提供任何方式去修改自动属性(automatic),因为Ohai下次运行的时候回覆盖你做的任何修改.检验<a href="http://wiki.opscode.com/display/chef/Automatic+Attributes">自动属性</a>看有那些保留的命名</p>
-
-<h2>属性的持久性</h2>
-
-<p><em>每一次chef-client运行的开始,默认属性,覆盖属性和自动属性会被完全重置</em></p>
-
-<p>然后会利用当前的cookbooks, recipes, roles, environment和Ohai数据重新组建</p>
-
-<p>所以,一量recipe, role或environment从一个node移除并且chef-client在这个node上运行,那么在cookbook的attribute文件,roles, recipes或environments里设置的default和override属性会消失</p>
-
-<p><em>Normal属性不会被重置</em></p>
-
-<p>而是,第一次chef-client运行,任何以JSON文件形式传递给node的新属性会被合并到node中已经存在的normal属性中(使用<a href="http://wiki.opscode.com/display/chef/Deep+Merge">Deep Merge</a>)</p>
-
-<p>这就意味着,任何在recipe或cookbook中定义的normal属性会仍然存在,即使是cookbook或role已经从node的run list移除后</p>
-
-<h2>设置属性</h2>
-
-<p>属性可以在下面的对象中设置</p>
-
-<ul>
-<li>cookbooks</li>
-<li>environments (Chef 0.10.0 or above only)</li>
-<li>roles</li>
-<li>nodes</li>
-</ul>
-
-
-<h3>优先级</h3>
-
-<p><em>属性的优先级从低到高排列在下面</em></p>
-
-<ul>
-<li>attributes文件中定义的default属性</li>
-<li>environment中定义的default属性</li>
-<li>role中定义的default属性</li>
-<li>直接在node的recipe中定义的default属性</li>
-<li>attributes文件中定义的normal或set属性</li>
-<li>直接在node的recipe中定义的normal或set属性</li>
-<li>attributes文件中定义的override属性</li>
-<li>role中定义的override属性</li>
-<li>environment中定义的override属性</li>
-<li>直接在node的recipe中定义的override属性</li>
-<li>Ohai产生的automatic属性</li>
-</ul>
-
-
-<p>在attributes文件里定义的default属性有最低的优先级. Ohai生成的automatic属性有最高的优先级</p>
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p><a href="http://wiki.opscode.com/display/chef/Setting+Attributes+%28Examples%29">这里</a>有例子</p>
-
-<h2>Cookbook中定义属性</h2>
-
-<p>Cookbook的属性文件可以在cookbook的attributes子目录中找到.他们在Node对象的上下文中运算并且使用Node的方法设置属性的值</p>
-
-<p>来自Oposcode的Apache cookbook中的例子</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>属性也可以在recipe中设置,但这时<code>node.</code>就不能省略了</p>
-
-<h3>Cookbook设置属性的方法</h3>
-
-<p>使用下面的方法在cookbook的attributes文件或recipe中设置属性.他们对应到和他们名字相同的属性类型(set是normal的一个别名)</p>
-
-<ul>
-<li>override</li>
-<li>default</li>
-<li>normal(or set)</li>
-</ul>
-
-
-<h3>Cookbook中属性文件的加载顺序</h3>
-
-<p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会在继续处理当前属性之前首先加载<code>rails/attributes/defaults.rb</code></p>
-
-<p>双冒号的写法也适用于<code>include_attribute</code></p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会加载rails cookbook中的<code>attributes/tunables.rb</code>文件</p>
-
-<h3>从Recipes中重新加载Attribute文件</h3>
-
-<p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
-
-<figure class='code'><figcaption><span>reloading attributes from recipes </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s1">&#39;iptables&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:create</span><span class="p">,</span> <span class="s1">&#39;ruby_block[try_firewall_again]&#39;</span><span class="p">,</span> <span class="ss">:immediately</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">ruby_block</span> <span class="s1">&#39;try_firewall_again&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">block</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">node</span><span class="o">.</span><span class="n">load_attribute_by_short_filename</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>访问属性的方法</h3>
-
-<p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">listen_ports</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用哪个只是风格问题,你可能会在检索属性的值的时候看到</p>
-
-<h2>Environment中设置属性</h2>
-
-<p><em>Environment中可以设置default和override属性</em></p>
-
-<p>这可以在Environment的Ruby DSL文件里(分别)通过default_attributes和<code>override_attributes</code>方法设置,或者在Environment的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些这个Environment特别有属性.例如在&#8221;production&#8221;环境和&#8221;staging&#8221;环境外部负载均衡器的公共DNS可能会不一样</p>
-
-<h2>在Role中定义属性</h2>
-
-<p><em>在Role中只可以设置default和override属性,不能设置normal属性.</em>这可以在Role的Ruby DSL文件里(分别)通过<code>default_attributes</code>和<code>override_attributes</code>方法设置,或者在Role的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些各个Role不同的属性.例如一个<code>php_apache2_server</code>的role可能会和<code>mod_perl_apche2_server</code>使用不同的优化参数</p>
-
-<h2>在Node中定义属性</h2>
-
-<p>最终,Node对象可以直接被修改以设置属性.通常会设置normal优先级的属性.可以通过使用knife工具直接编辑node,或者通过WebUI.或者通过传递JSON数据给Node进行设置</p>
-
-<h3>JSON属性</h3>
-
-<p>你可以使用JSON文件指定Node的属性,它们会以normal的优先级添加到Node</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>chef-client --help
-</span><span class='line'>[...]
-</span><span class='line'>    -j JSON_ATTRIBS                  Load attributes from a JSON file or URL
-</span><span class='line'>        --json-attributes</span></code></pre></td></tr></table></div></figure>
-
-
-<p>例如.设置Apache监听不同的端口</p>
-
-<figure class='code'><figcaption><span>JSON attribute example </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>记住.通过JSON文件传递的属性会和Node已经保存的属性合并并且没有办法覆盖,但是如果有冲突,从JSON文件传递的属性会最终被使用</p>
-
-<h3>Automatic属性</h3>
-
-<p>这第四种属性不能被修改,因为你做的任何修改都会在下一次运行时被Ohai数据覆盖</p>
-
-<h2>如果使用属性</h2>
-
-<ul>
-<li><p>属性的优势</p>
-
-<ul>
-<li>为应用程序跨平台的抽象例如配置文件的路径</li>
-<li>优化参数的默认值例如给处理器多少内存或开启多少个进程</li>
-<li>任何其它你想要在Chef运行之间保留(在Node的数据)的信息</li>
-</ul>
-</li>
-</ul>
-
-
-<h3>使用的最佳实践</h3>
-
-<p><em>属性优先级的通用模式是在cookbooks和roles中使用default属性</em></p>
-
-<ul>
-<li>如果你要改变一个特定Node的值,使用normal属性</li>
-<li>Overrides属性是指roles可以强制设定一个特定的属性,即使Node已经有相应的属性</li>
-</ul>
-
-
-<p>肯定有其它的使用方式,但上面的模式是设计的初衷</p>
-
-<h3>设置同一优先级的属性</h3>
-
-<p><em>一个通用的使用案例是在cookbook的attribute文件中设置default属性,并且在role中以不同的值设置相同的default属性.</em>在这种情况下,role中的属性会被<a href="http://wiki.opscode.com/display/chef/Deep+Merge">deep merged</a>到来自attribute文件中的属性顶端.如果有冲突,在role中设置的属性会被使用.</p>
-
-<h3>只有在这个属性没有值的时候才设置</h3>
-
-<p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
-
-<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&mdash;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2274,6 +2043,10 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/">Gitlab Shell如何工作</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/07/17/meta-ruby-note/">Ruby元编程读书笔记</a>
@@ -2301,10 +2074,6 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
     
       <li class="post">
         <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
       </li>
     
   </ul>

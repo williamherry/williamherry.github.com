@@ -10,7 +10,7 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="由于C语言绝大多数编译时的信息在运行时都丢失了，所以C语言不支持元编程或內省 实例方法：在类中定义，在实例中使用 Ruby的class关键词更像一个作用域操作符而不是类型声明语句 一个对象仅仅包含它的实例变量以及一个对自身类的引用 方法存放在类中而不是实例中 类自身也是对象， &hellip;">
+  <meta name="description" content="这篇博客的目的是研究一下从git push到commit出现在gitlab页面上中间发生到什么 开始之前补充一点背景知识，ssh可以执行命令， Gitlab以及Gitolite这些操作远程仓库应该都有用这个技术 比如我们可以在~/.ssh/authorized_keys中加上自己当command &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +70,313 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/">Gitlab Shell如何工作</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-19T11:55:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2015</time>
+        
+         | <a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这篇博客的目的是研究一下从<code>git push</code>到commit出现在gitlab页面上中间发生到什么</p>
+
+<p>开始之前补充一点背景知识，<a href="http://cybermashup.com/2013/05/14/restrict-ssh-logins-to-a-single-command/">ssh可以执行命令</a>， Gitlab以及Gitolite这些操作远程仓库应该都有用这个技术</p>
+
+<p>比如我们可以在<code>~/.ssh/authorized_keys</code>中加上自己当command</p>
+
+<pre><code>command="./cmd" ssh-rsa &lt;my-rsa-key&gt;
+</code></pre>
+
+<p>这样就没法用ssh登陆了，每次登陆只会执行cmd这个程序</p>
+
+<p>就像上面文章里写的，我们还可以用<code>$SSH_ORIGINAL_COMMAND</code>变量取到客户端发来当命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>echo $SSH_ORIGINAL_COMMAND</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>chmod +x ~/cmd
+</code></pre>
+
+<p>现在如果在登陆的时候后面参数，就可以回显里</p>
+
+<pre><code>$ ssh git@gitlab.williamherry.com a b c
+# =&gt; a b c
+</code></pre>
+
+<p>Gitlab-shell就用的这个技术，<code>~/.ssh/authorized_keys</code>加一条类似这样当纪录</p>
+
+<pre><code>command="/home/git/gitlab-development-kit/gitlab-shell/bin/gitlab-shell key-15",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-rsa &lt;my-rsa-key&gt;
+</code></pre>
+
+<p>看一下gitlab-shell的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env ruby
+</span><span class='line'>
+</span><span class='line'>unless ENV['SSH_CONNECTION']
+</span><span class='line'>  puts "Only ssh allowed"
+</span><span class='line'>  exit
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>key_id = /key-[0-9]+/.match(ARGV.join).to_s
+</span><span class='line'>original_cmd = ENV['SSH_ORIGINAL_COMMAND']
+</span><span class='line'>
+</span><span class='line'>require_relative '../lib/gitlab_init'
+</span><span class='line'>
+</span><span class='line'>#
+</span><span class='line'>#
+</span><span class='line'># GitLab shell, invoked from ~/.ssh/authorized_keys
+</span><span class='line'>#
+</span><span class='line'>#
+</span><span class='line'>require File.join(ROOT_PATH, 'lib', 'gitlab_shell')
+</span><span class='line'>
+</span><span class='line'>if GitlabShell.new(key_id, original_cmd).exec
+</span><span class='line'>  exit 0
+</span><span class='line'>else
+</span><span class='line'>  exit 1
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它从ARGV读到key_id，从环境变量<code>SSH_ORIGINAL_COMMAND</code>读到命令, 我们把它写到文件看看git push对应的命令是什么，在文件中加入下面一行代码</p>
+
+<pre><code>File.write('/tmp/sss', ENV['SSH_ORIGINAL_COMMAND'])
+</code></pre>
+
+<p>通过测试发现有下面的对应关系</p>
+
+<pre><code>git push  =&gt; git-receive-pack &lt;repo&gt;
+git pull  =&gt; git-upload-pack &lt;repo&gt;
+git fetch =&gt; git-upload-pack &lt;repo&gt;
+</code></pre>
+
+<p>现在key的id有了，命令有了，操作的repo也有了，我们看一下gitlab-shell怎么处理</p>
+
+<pre><code>GitlabShell.new(key_id, original_cmd).exec
+</code></pre>
+
+<p>他用参数创建了一个GitlabShell实例之后执行exec方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">origin_cmd</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@key_id</span> <span class="o">=</span> <span class="n">key_id</span>
+</span><span class='line'>  <span class="vi">@origin_cmd</span> <span class="o">=</span> <span class="n">origin_cmd</span>
+</span><span class='line'>  <span class="vi">@config</span> <span class="o">=</span> <span class="no">GitlabConfig</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="vi">@repos_path</span> <span class="o">=</span> <span class="vi">@config</span><span class="o">.</span><span class="n">repos_path</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>初始化只是把一些变量保存到了实例变量中，我们重点追踪cmd，记住这里到origin_cmd是&#8217;git-receive-pack <repo>&lsquo;（我们只追踪git push）</p>
+
+<p>然后就是执行exec方法，该方法主要执行三个步骤</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">exec</span>
+</span><span class='line'>  <span class="n">parse_cmd</span>
+</span><span class='line'>  <span class="n">verify_access</span>
+</span><span class='line'>  <span class="n">process_cmd</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>parse_cmd解析了一个origin_cmd，把命令（git-receive-pack）赋给了实例变量@git_cmd和@git_access，把repo赋给了实例变量@repo_name</p>
+
+<p>verify_access拿前面得到的数据调用gitlab的api去验证看合不合法</p>
+
+<p>最后process_cmd调用exec_cmd然后再调用了这样一行代码</p>
+
+<pre><code>Kernel::exec({ 'PATH' =&gt; ENV['PATH'], 'LD_LIBRARY_PATH' =&gt; ENV['LD_LIBRARY_PATH'], 'GL_ID' =&gt; @key_id }, *args, unsetenv_others: true)
+</code></pre>
+
+<p>把变量都替换成真实的数据得到</p>
+
+<pre><code>Kernel::exec({ 'path' =&gt; /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games, 'LD_LIBRARY_PATH' =&gt; , 'GL_ID' =&gt; key-15}, ["git-receive-pack", "/home/git/gitlab-development-kit/repositories/williamherry/test2.git"], unsetenv_others: true })
+</code></pre>
+
+<p>这里更深入的分析再以后再搞，简单说就是git push的时候gitlab-shell再服务端打开一个接受历程等待接收pack，客户端发送pack，好像从这里就断掉了，前面说的要在gitlab网站中现实的数据是在什么什么创建的呢？</p>
+
+<p>你猜对了，他就是利用对git的<a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">hooks</a>，查看gitlab-shell目录下的hooks目录会发现有三个hooks， <code>post-receive  pre-receive  update</code>，push应该对应的是post-receive, 再里面添加打印信息</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># This file was placed here by GitLab. It makes sure that your pushed commits</span>
+</span><span class='line'><span class="c1"># will be processed properly.</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">refs</span> <span class="o">=</span> <span class="no">ARGF</span><span class="o">.</span><span class="n">read</span>
+</span><span class='line'><span class="n">key_id</span>  <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GL_ID&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">repo_path</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="n">refs</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">key_id</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">repo_path</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># reset GL_ID env since we already got its value</span>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GL_ID&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">require_relative</span> <span class="s1">&#39;../lib/gitlab_custom_hook&#39;</span>
+</span><span class='line'><span class="n">require_relative</span> <span class="s1">&#39;../lib/gitlab_post_receive&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="no">GitlabPostReceive</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">repo_path</span><span class="p">,</span> <span class="n">key_id</span><span class="p">,</span> <span class="n">refs</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>    <span class="no">GitlabCustomHook</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">post_receive</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="n">repo_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">exit</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="nb">exit</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>push的输出中包含了相关的信息，这里的hooks是成功后才执行的，如果你没有新commit，push就不会有这些输出</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="ss">refs</span><span class="p">:</span> <span class="mi">8939</span><span class="n">f77074dc85ac4529fcec1245f7c4563e17cd</span> <span class="n">a6cd629e9deefb0ab9638217bdd82ae68ff17099</span> <span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">master</span>
+</span><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="n">key_id</span><span class="p">:</span> <span class="n">key</span><span class="o">-</span><span class="mi">15</span>
+</span><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="n">repo_path</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">git</span><span class="o">/</span><span class="n">gitlab</span><span class="o">-</span><span class="n">development</span><span class="o">-</span><span class="n">kit</span><span class="o">/</span><span class="n">repositories</span><span class="o">/</span><span class="n">williamherry</span><span class="o">/</span><span class="n">test2</span><span class="o">.</span><span class="n">git</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再这个hooks中它执行了GitlabPostReceive的exec方法和GitlabCustomHook的post_receive方法。而后面这个只是负责去执行custom_hooks下面的hooks，所以我们只看一看前面一个</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">GitlabPostReceive</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">repo_path</span><span class="p">,</span> <span class="n">actor</span><span class="p">,</span> <span class="n">changes</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@config</span> <span class="o">=</span> <span class="no">GitlabConfig</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="vi">@repo_path</span><span class="p">,</span> <span class="vi">@actor</span> <span class="o">=</span> <span class="n">repo_path</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">actor</span>
+</span><span class='line'>    <span class="vi">@changes</span> <span class="o">=</span> <span class="n">changes</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">exec</span>
+</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">update_redis</span>
+</span><span class='line'>    <span class="n">broadcast_message</span> <span class="o">=</span> <span class="no">GitlabNet</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">broadcast_message</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update_redis</span>
+</span><span class='line'>    <span class="nb">system</span><span class="p">(</span><span class="o">*</span><span class="n">config</span><span class="o">.</span><span class="n">redis_command</span><span class="p">,</span> <span class="s1">&#39;rpush&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">err</span><span class="p">:</span> <span class="s1">&#39;/dev/null&#39;</span><span class="p">,</span> <span class="ss">out</span><span class="p">:</span> <span class="s1">&#39;/dev/null&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我把代码做了简化，去掉了不重要的步骤，简单说这个hooks做了两件是：往redis里塞里一条数据，查了下广播（不知道是干什么的，不过好像不是很重要的样子），用puts发现它是往队列<code>resque:gitlab:queue:post_receive</code>中添加里这样一条信息</p>
+
+<pre><code>  {"class":"PostReceive","args":["/home/git/gitlab-development-kit/repositories/williamherry/test2.git","key-15","YTZjZDYyOWU5ZGVlZmIwYWI5NjM4MjE3YmRkODJhZTY4ZmYxNzA5OSA1MjJj\nZDhhN2MwMDEzYWU0MGU3ZTVhZDFiM2I5ZjlhNGE2OWYzNmIyIHJlZnMvaGVh\nZHMvbWFzdGVyCg==\n"]}
+</code></pre>
+
+<p>那一串奇怪的字符是Base64加密后的@changes，而@changes就是前面的refs即：</p>
+
+<pre><code>8939f77074dc85ac4529fcec1245f7c4563e17cd a6cd629e9deefb0ab9638217bdd82ae68ff17099 refs/heads/master
+</code></pre>
+
+<p>好了，现在我们知道gitlab-shell和gitlag是通过redis共享数据的，接下来就是gitlab的<code>app/workers/post_receive.rb</code>中的代码做相应的处理了</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2579,72 +2886,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/">Ruby/Rails小技巧收集</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-29T11:43:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/07/29/ruby-slash-rails-tips-collection/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>收集一些当时做的时候花了好多时间去Google,但本身又很短的小问题的答案,大部分来算StackOverflow</p>
-
-<h3>jQuery on的用法</h3>
-
-<p>on的基本用法为:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$(selector1).on 'event', 'selector2', -&gt;
-</span><span class='line'>  ...</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我遇到的问题是对通过ajax加载的部分on不起作用,解决办法是确保selector1不是通过ajax加载的</p>
-
-<h3>simple_form和bootstrap一起使用的问题</h3>
-
-<p>simple_form和bootstrap一起使用的时候我遇到的问题是simple_form生成的html没有加进去bootstrap的Class,看不到bootstrap样式加到table的效果,解决办法是在Gemfile里给simple_form指定版本,Rails 4是</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form', "~&gt; 3.0.0.rc"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Rails 3是</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'simple_form, "~&gt; 2.1.0"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Rails 4 要使用remote: true的方法执行js需要在action里加上<code>render layout: false</code></h3>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2658,6 +2899,10 @@ end
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/">Gitlab Shell如何工作</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/07/17/meta-ruby-note/">Ruby元编程读书笔记</a>
@@ -2685,10 +2930,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/01/2014-plans/">2014年规划</a>
       </li>
     
   </ul>

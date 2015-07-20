@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.com/atom.xml" rel="self"/>
   <link href="http://williamherry.com/"/>
-  <updated>2015-07-17T16:36:54+08:00</updated>
+  <updated>2015-07-20T11:01:53+08:00</updated>
   <id>http://williamherry.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,284 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gitlab Shell如何工作]]></title>
+    <link href="http://williamherry.com/blog/2015/07/19/from-git-push-to-commit-show-on-page/"/>
+    <updated>2015-07-19T11:55:00+08:00</updated>
+    <id>http://williamherry.com/blog/2015/07/19/from-git-push-to-commit-show-on-page</id>
+    <content type="html"><![CDATA[<p>这篇博客的目的是研究一下从<code>git push</code>到commit出现在gitlab页面上中间发生到什么</p>
+
+<p>开始之前补充一点背景知识，<a href="http://cybermashup.com/2013/05/14/restrict-ssh-logins-to-a-single-command/">ssh可以执行命令</a>， Gitlab以及Gitolite这些操作远程仓库应该都有用这个技术</p>
+
+<p>比如我们可以在<code>~/.ssh/authorized_keys</code>中加上自己当command</p>
+
+<pre><code>command="./cmd" ssh-rsa &lt;my-rsa-key&gt;
+</code></pre>
+
+<p>这样就没法用ssh登陆了，每次登陆只会执行cmd这个程序</p>
+
+<p>就像上面文章里写的，我们还可以用<code>$SSH_ORIGINAL_COMMAND</code>变量取到客户端发来当命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>echo $SSH_ORIGINAL_COMMAND</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>chmod +x ~/cmd
+</code></pre>
+
+<p>现在如果在登陆的时候后面参数，就可以回显里</p>
+
+<pre><code>$ ssh git@gitlab.williamherry.com a b c
+# =&gt; a b c
+</code></pre>
+
+<p>Gitlab-shell就用的这个技术，<code>~/.ssh/authorized_keys</code>加一条类似这样当纪录</p>
+
+<pre><code>command="/home/git/gitlab-development-kit/gitlab-shell/bin/gitlab-shell key-15",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-rsa &lt;my-rsa-key&gt;
+</code></pre>
+
+<p>看一下gitlab-shell的代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env ruby
+</span><span class='line'>
+</span><span class='line'>unless ENV['SSH_CONNECTION']
+</span><span class='line'>  puts "Only ssh allowed"
+</span><span class='line'>  exit
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>key_id = /key-[0-9]+/.match(ARGV.join).to_s
+</span><span class='line'>original_cmd = ENV['SSH_ORIGINAL_COMMAND']
+</span><span class='line'>
+</span><span class='line'>require_relative '../lib/gitlab_init'
+</span><span class='line'>
+</span><span class='line'>#
+</span><span class='line'>#
+</span><span class='line'># GitLab shell, invoked from ~/.ssh/authorized_keys
+</span><span class='line'>#
+</span><span class='line'>#
+</span><span class='line'>require File.join(ROOT_PATH, 'lib', 'gitlab_shell')
+</span><span class='line'>
+</span><span class='line'>if GitlabShell.new(key_id, original_cmd).exec
+</span><span class='line'>  exit 0
+</span><span class='line'>else
+</span><span class='line'>  exit 1
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它从ARGV读到key_id，从环境变量<code>SSH_ORIGINAL_COMMAND</code>读到命令, 我们把它写到文件看看git push对应的命令是什么，在文件中加入下面一行代码</p>
+
+<pre><code>File.write('/tmp/sss', ENV['SSH_ORIGINAL_COMMAND'])
+</code></pre>
+
+<p>通过测试发现有下面的对应关系</p>
+
+<pre><code>git push  =&gt; git-receive-pack &lt;repo&gt;
+git pull  =&gt; git-upload-pack &lt;repo&gt;
+git fetch =&gt; git-upload-pack &lt;repo&gt;
+</code></pre>
+
+<p>现在key的id有了，命令有了，操作的repo也有了，我们看一下gitlab-shell怎么处理</p>
+
+<pre><code>GitlabShell.new(key_id, original_cmd).exec
+</code></pre>
+
+<p>他用参数创建了一个GitlabShell实例之后执行exec方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">origin_cmd</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@key_id</span> <span class="o">=</span> <span class="n">key_id</span>
+</span><span class='line'>  <span class="vi">@origin_cmd</span> <span class="o">=</span> <span class="n">origin_cmd</span>
+</span><span class='line'>  <span class="vi">@config</span> <span class="o">=</span> <span class="no">GitlabConfig</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="vi">@repos_path</span> <span class="o">=</span> <span class="vi">@config</span><span class="o">.</span><span class="n">repos_path</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>初始化只是把一些变量保存到了实例变量中，我们重点追踪cmd，记住这里到origin_cmd是&#8217;git-receive-pack <repo>&lsquo;（我们只追踪git push）</p>
+
+<p>然后就是执行exec方法，该方法主要执行三个步骤</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">exec</span>
+</span><span class='line'>  <span class="n">parse_cmd</span>
+</span><span class='line'>  <span class="n">verify_access</span>
+</span><span class='line'>  <span class="n">process_cmd</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>parse_cmd解析了一个origin_cmd，把命令（git-receive-pack）赋给了实例变量@git_cmd和@git_access，把repo赋给了实例变量@repo_name</p>
+
+<p>verify_access拿前面得到的数据调用gitlab的api去验证看合不合法</p>
+
+<p>最后process_cmd调用exec_cmd然后再调用了这样一行代码</p>
+
+<pre><code>Kernel::exec({ 'PATH' =&gt; ENV['PATH'], 'LD_LIBRARY_PATH' =&gt; ENV['LD_LIBRARY_PATH'], 'GL_ID' =&gt; @key_id }, *args, unsetenv_others: true)
+</code></pre>
+
+<p>把变量都替换成真实的数据得到</p>
+
+<pre><code>Kernel::exec({ 'path' =&gt; /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games, 'LD_LIBRARY_PATH' =&gt; , 'GL_ID' =&gt; key-15}, ["git-receive-pack", "/home/git/gitlab-development-kit/repositories/williamherry/test2.git"], unsetenv_others: true })
+</code></pre>
+
+<p>这里更深入的分析再以后再搞，简单说就是git push的时候gitlab-shell再服务端打开一个接受历程等待接收pack，客户端发送pack，好像从这里就断掉了，前面说的要在gitlab网站中现实的数据是在什么什么创建的呢？</p>
+
+<p>你猜对了，他就是利用对git的<a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">hooks</a>，查看gitlab-shell目录下的hooks目录会发现有三个hooks， <code>post-receive  pre-receive  update</code>，push应该对应的是post-receive, 再里面添加打印信息</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># This file was placed here by GitLab. It makes sure that your pushed commits</span>
+</span><span class='line'><span class="c1"># will be processed properly.</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">refs</span> <span class="o">=</span> <span class="no">ARGF</span><span class="o">.</span><span class="n">read</span>
+</span><span class='line'><span class="n">key_id</span>  <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GL_ID&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">repo_path</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="n">refs</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">key_id</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">repo_path</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># reset GL_ID env since we already got its value</span>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GL_ID&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">require_relative</span> <span class="s1">&#39;../lib/gitlab_custom_hook&#39;</span>
+</span><span class='line'><span class="n">require_relative</span> <span class="s1">&#39;../lib/gitlab_post_receive&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="no">GitlabPostReceive</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">repo_path</span><span class="p">,</span> <span class="n">key_id</span><span class="p">,</span> <span class="n">refs</span><span class="p">)</span><span class="o">.</span><span class="n">exec</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>    <span class="no">GitlabCustomHook</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">post_receive</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="n">repo_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">exit</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="nb">exit</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>push的输出中包含了相关的信息，这里的hooks是成功后才执行的，如果你没有新commit，push就不会有这些输出</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="ss">refs</span><span class="p">:</span> <span class="mi">8939</span><span class="n">f77074dc85ac4529fcec1245f7c4563e17cd</span> <span class="n">a6cd629e9deefb0ab9638217bdd82ae68ff17099</span> <span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">master</span>
+</span><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="n">key_id</span><span class="p">:</span> <span class="n">key</span><span class="o">-</span><span class="mi">15</span>
+</span><span class='line'><span class="ss">remote</span><span class="p">:</span> <span class="n">repo_path</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">git</span><span class="o">/</span><span class="n">gitlab</span><span class="o">-</span><span class="n">development</span><span class="o">-</span><span class="n">kit</span><span class="o">/</span><span class="n">repositories</span><span class="o">/</span><span class="n">williamherry</span><span class="o">/</span><span class="n">test2</span><span class="o">.</span><span class="n">git</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再这个hooks中它执行了GitlabPostReceive的exec方法和GitlabCustomHook的post_receive方法。而后面这个只是负责去执行custom_hooks下面的hooks，所以我们只看一看前面一个</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">GitlabPostReceive</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">repo_path</span><span class="p">,</span> <span class="n">actor</span><span class="p">,</span> <span class="n">changes</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@config</span> <span class="o">=</span> <span class="no">GitlabConfig</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="vi">@repo_path</span><span class="p">,</span> <span class="vi">@actor</span> <span class="o">=</span> <span class="n">repo_path</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">actor</span>
+</span><span class='line'>    <span class="vi">@changes</span> <span class="o">=</span> <span class="n">changes</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">exec</span>
+</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">update_redis</span>
+</span><span class='line'>    <span class="n">broadcast_message</span> <span class="o">=</span> <span class="no">GitlabNet</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">broadcast_message</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update_redis</span>
+</span><span class='line'>    <span class="nb">system</span><span class="p">(</span><span class="o">*</span><span class="n">config</span><span class="o">.</span><span class="n">redis_command</span><span class="p">,</span> <span class="s1">&#39;rpush&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">err</span><span class="p">:</span> <span class="s1">&#39;/dev/null&#39;</span><span class="p">,</span> <span class="ss">out</span><span class="p">:</span> <span class="s1">&#39;/dev/null&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我把代码做了简化，去掉了不重要的步骤，简单说这个hooks做了两件是：往redis里塞里一条数据，查了下广播（不知道是干什么的，不过好像不是很重要的样子），用puts发现它是往队列<code>resque:gitlab:queue:post_receive</code>中添加里这样一条信息</p>
+
+<pre><code>  {"class":"PostReceive","args":["/home/git/gitlab-development-kit/repositories/williamherry/test2.git","key-15","YTZjZDYyOWU5ZGVlZmIwYWI5NjM4MjE3YmRkODJhZTY4ZmYxNzA5OSA1MjJj\nZDhhN2MwMDEzYWU0MGU3ZTVhZDFiM2I5ZjlhNGE2OWYzNmIyIHJlZnMvaGVh\nZHMvbWFzdGVyCg==\n"]}
+</code></pre>
+
+<p>那一串奇怪的字符是Base64加密后的@changes，而@changes就是前面的refs即：</p>
+
+<pre><code>8939f77074dc85ac4529fcec1245f7c4563e17cd a6cd629e9deefb0ab9638217bdd82ae68ff17099 refs/heads/master
+</code></pre>
+
+<p>好了，现在我们知道gitlab-shell和gitlag是通过redis共享数据的，接下来就是gitlab的<code>app/workers/post_receive.rb</code>中的代码做相应的处理了</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby元编程读书笔记]]></title>
@@ -3922,273 +4200,6 @@ openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # �
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Chef基础之Arrtibutes]]></title>
-    <link href="http://williamherry.com/blog/2012/10/10/chef-attributes/"/>
-    <updated>2012-10-10T21:42:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/10/chef-attributes</id>
-    <content type="html"><![CDATA[<p>本文档是对官方Wiki<a href="http://wiki.opscode.com/display/chef/Attributes">Attributes</a>的翻译</p>
-
-<h2>概述</h2>
-
-<p><img src="http://williamherry.com/images/chef/attributes.jpg"></p>
-
-<p>属性(Attributes)就是节点(Node)的信息,如IP地址,主机名,加载的内核模块,系统中可用的编程语言的版本以及更多.新的属性可以用多种方式加到节点上.</p>
-
-<h2>属性类型和优先级</h2>
-
-<p><img src="http://williamherry.com/images/chef/attribute-priority-stack.png"></p>
-
-<p>有四种类型的属性,按优先级从高到低的顺序排列,它们是:</p>
-
-<ul>
-<li>automatic</li>
-<li>override</li>
-<li>normal</li>
-<li>default</li>
-</ul>
-
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p>Chef没有提供任何方式去修改自动属性(automatic),因为Ohai下次运行的时候回覆盖你做的任何修改.检验<a href="http://wiki.opscode.com/display/chef/Automatic+Attributes">自动属性</a>看有那些保留的命名</p>
-
-<h2>属性的持久性</h2>
-
-<p><em>每一次chef-client运行的开始,默认属性,覆盖属性和自动属性会被完全重置</em></p>
-
-<p>然后会利用当前的cookbooks, recipes, roles, environment和Ohai数据重新组建</p>
-
-<p>所以,一量recipe, role或environment从一个node移除并且chef-client在这个node上运行,那么在cookbook的attribute文件,roles, recipes或environments里设置的default和override属性会消失</p>
-
-<p><em>Normal属性不会被重置</em></p>
-
-<p>而是,第一次chef-client运行,任何以JSON文件形式传递给node的新属性会被合并到node中已经存在的normal属性中(使用<a href="http://wiki.opscode.com/display/chef/Deep+Merge">Deep Merge</a>)</p>
-
-<p>这就意味着,任何在recipe或cookbook中定义的normal属性会仍然存在,即使是cookbook或role已经从node的run list移除后</p>
-
-<h2>设置属性</h2>
-
-<p>属性可以在下面的对象中设置</p>
-
-<ul>
-<li>cookbooks</li>
-<li>environments (Chef 0.10.0 or above only)</li>
-<li>roles</li>
-<li>nodes</li>
-</ul>
-
-
-<h3>优先级</h3>
-
-<p><em>属性的优先级从低到高排列在下面</em></p>
-
-<ul>
-<li>attributes文件中定义的default属性</li>
-<li>environment中定义的default属性</li>
-<li>role中定义的default属性</li>
-<li>直接在node的recipe中定义的default属性</li>
-<li>attributes文件中定义的normal或set属性</li>
-<li>直接在node的recipe中定义的normal或set属性</li>
-<li>attributes文件中定义的override属性</li>
-<li>role中定义的override属性</li>
-<li>environment中定义的override属性</li>
-<li>直接在node的recipe中定义的override属性</li>
-<li>Ohai产生的automatic属性</li>
-</ul>
-
-
-<p>在attributes文件里定义的default属性有最低的优先级. Ohai生成的automatic属性有最高的优先级</p>
-
-<p><em>用默认属性(default)写你的cookbook, 如果有必要,在role或者node中覆盖默认变量</em></p>
-
-<p><a href="http://wiki.opscode.com/display/chef/Setting+Attributes+%28Examples%29">这里</a>有例子</p>
-
-<h2>Cookbook中定义属性</h2>
-
-<p>Cookbook的属性文件可以在cookbook的attributes子目录中找到.他们在Node对象的上下文中运算并且使用Node的方法设置属性的值</p>
-
-<p>来自Oposcode的Apache cookbook中的例子</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里Node对象的使用是隐含的,下面这样写和上面等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;dir&quot;</span><span class="o">]</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">default</span><span class="o">[</span><span class="s2">&quot;apache&quot;</span><span class="o">][</span><span class="s2">&quot;listen_ports&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>属性也可以在recipe中设置,但这时<code>node.</code>就不能省略了</p>
-
-<h3>Cookbook设置属性的方法</h3>
-
-<p>使用下面的方法在cookbook的attributes文件或recipe中设置属性.他们对应到和他们名字相同的属性类型(set是normal的一个别名)</p>
-
-<ul>
-<li>override</li>
-<li>default</li>
-<li>normal(or set)</li>
-</ul>
-
-
-<h3>Cookbook中属性文件的加载顺序</h3>
-
-<p>Chef按字母顺序加载cookbook中的属性文件.如果你需要一个属性文件在另一个之前加载(例如,你的Apache的cookbook属性文件的加载需要在Rails的cookbook属性文件加载之后),你可以使用<code>include_attribute</code>方法.像这样:</p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会在继续处理当前属性之前首先加载<code>rails/attributes/defaults.rb</code></p>
-
-<p>双冒号的写法也适用于<code>include_attribute</code></p>
-
-<figure class='code'><figcaption><span>include\_attribute </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_attribute</span> <span class="s2">&quot;rails::tunables&quot;</span>
-</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;apache2&#39;</span><span class="o">][</span><span class="s1">&#39;proxy_to_unicorn&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;rails&#39;</span><span class="o">][</span><span class="s1">&#39;use_unicorn&#39;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这会加载rails cookbook中的<code>attributes/tunables.rb</code>文件</p>
-
-<h3>从Recipes中重新加载Attribute文件</h3>
-
-<p>有时候属性依赖于recipes中的动作,所以可能会需要在recipe中重新加载属性.例如,你有一个读防火墙规则的属性,并且有一个安装防火墙软件的recipe,第一次执行这个cookbook防火墙的属性不会被设置.因为<code>include_attribute</code>在recipes中不可用,所以你需要手动重新加载<code>firewall::default</code>属性</p>
-
-<figure class='code'><figcaption><span>reloading attributes from recipes </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">package</span> <span class="s1">&#39;iptables&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:create</span><span class="p">,</span> <span class="s1">&#39;ruby_block[try_firewall_again]&#39;</span><span class="p">,</span> <span class="ss">:immediately</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">ruby_block</span> <span class="s1">&#39;try_firewall_again&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">block</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">node</span><span class="o">.</span><span class="n">load_attribute_by_short_filename</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">action</span> <span class="ss">:nothing</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>访问属性的方法</h3>
-
-<p>属性访问方法会自动创建并且方法可以和键交换使用.下面的例子和上面的用法等价</p>
-
-<figure class='code'><figcaption><span>cookbooks/apache2/attributes/default.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">dir</span>          <span class="o">=</span> <span class="s2">&quot;/etc/apache2&quot;</span>
-</span><span class='line'><span class="n">default</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">listen_ports</span> <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="s2">&quot;443&quot;</span> <span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用哪个只是风格问题,你可能会在检索属性的值的时候看到</p>
-
-<h2>Environment中设置属性</h2>
-
-<p><em>Environment中可以设置default和override属性</em></p>
-
-<p>这可以在Environment的Ruby DSL文件里(分别)通过default_attributes和<code>override_attributes</code>方法设置,或者在Environment的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些这个Environment特别有属性.例如在&#8221;production&#8221;环境和&#8221;staging&#8221;环境外部负载均衡器的公共DNS可能会不一样</p>
-
-<h2>在Role中定义属性</h2>
-
-<p><em>在Role中只可以设置default和override属性,不能设置normal属性.</em>这可以在Role的Ruby DSL文件里(分别)通过<code>default_attributes</code>和<code>override_attributes</code>方法设置,或者在Role的JSON数据中使用<code>default_attributes</code>和<code>override_attributes</code>Hashes进行设置.经常会指定一些各个Role不同的属性.例如一个<code>php_apache2_server</code>的role可能会和<code>mod_perl_apche2_server</code>使用不同的优化参数</p>
-
-<h2>在Node中定义属性</h2>
-
-<p>最终,Node对象可以直接被修改以设置属性.通常会设置normal优先级的属性.可以通过使用knife工具直接编辑node,或者通过WebUI.或者通过传递JSON数据给Node进行设置</p>
-
-<h3>JSON属性</h3>
-
-<p>你可以使用JSON文件指定Node的属性,它们会以normal的优先级添加到Node</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>chef-client --help
-</span><span class='line'>[...]
-</span><span class='line'>    -j JSON_ATTRIBS                  Load attributes from a JSON file or URL
-</span><span class='line'>        --json-attributes</span></code></pre></td></tr></table></div></figure>
-
-
-<p>例如.设置Apache监听不同的端口</p>
-
-<figure class='code'><figcaption><span>JSON attribute example </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span> <span class="nt">&quot;apache&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;listen_ports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;81&quot;</span><span class="p">,</span> <span class="s2">&quot;8080&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>记住.通过JSON文件传递的属性会和Node已经保存的属性合并并且没有办法覆盖,但是如果有冲突,从JSON文件传递的属性会最终被使用</p>
-
-<h3>Automatic属性</h3>
-
-<p>这第四种属性不能被修改,因为你做的任何修改都会在下一次运行时被Ohai数据覆盖</p>
-
-<h2>如果使用属性</h2>
-
-<ul>
-<li><p>属性的优势</p>
-
-<ul>
-<li>为应用程序跨平台的抽象例如配置文件的路径</li>
-<li>优化参数的默认值例如给处理器多少内存或开启多少个进程</li>
-<li>任何其它你想要在Chef运行之间保留(在Node的数据)的信息</li>
-</ul>
-</li>
-</ul>
-
-
-<h3>使用的最佳实践</h3>
-
-<p><em>属性优先级的通用模式是在cookbooks和roles中使用default属性</em></p>
-
-<ul>
-<li>如果你要改变一个特定Node的值,使用normal属性</li>
-<li>Overrides属性是指roles可以强制设定一个特定的属性,即使Node已经有相应的属性</li>
-</ul>
-
-
-<p>肯定有其它的使用方式,但上面的模式是设计的初衷</p>
-
-<h3>设置同一优先级的属性</h3>
-
-<p><em>一个通用的使用案例是在cookbook的attribute文件中设置default属性,并且在role中以不同的值设置相同的default属性.</em>在这种情况下,role中的属性会被<a href="http://wiki.opscode.com/display/chef/Deep+Merge">deep merged</a>到来自attribute文件中的属性顶端.如果有冲突,在role中设置的属性会被使用.</p>
-
-<h3>只有在这个属性没有值的时候才设置</h3>
-
-<p>在属性文件里,你也可以使用属性优先方法的变种<code>_unless</code>方法来做到只有在一个属性没有值时才设置这个属性,这些方法是<code>default_unless</code>, <code>set_unless</code>和<code>override_unless</code>.这些方法有时候非常方便,但要小心使用!</p>
-
-<p>在你使用这些方法的时候,这些加到你的Node中的属性会和你在cookbooks中定义的不同步,当你更新cookbook的时候.这意味着建立一个和已经存在的Node使用相同的recipes和roles会得到不同的配置&mdash;会给调试带来麻烦.出于这个原因,你应该尽可能不用<code>_unless</code>方法</p>
 ]]></content>
   </entry>
   
