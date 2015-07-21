@@ -4,7 +4,7 @@
   <title><![CDATA[William's Blog with Octopress]]></title>
   <link href="http://williamherry.com/atom.xml" rel="self"/>
   <link href="http://williamherry.com/"/>
-  <updated>2015-07-20T11:01:53+08:00</updated>
+  <updated>2015-07-21T08:23:34+08:00</updated>
   <id>http://williamherry.com/</id>
   <author>
     <name><![CDATA[William Herry]]></name>
@@ -12,6 +12,169 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[简单方法实现拖拽排序]]></title>
+    <link href="http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/"/>
+    <updated>2015-07-21T07:01:00+08:00</updated>
+    <id>http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort</id>
+    <content type="html"><![CDATA[<p>拖拽排序就是类似下面图的效果</p>
+
+<p><img src="http://williamherry.com/images/sortable.gif"></p>
+
+<p>要实现以上的效果，有很多的选择，最流行的是使用<a href="https://github.com/swanandp/acts_as_list">act_as_list</a>gem，它的问题是要修改一条记录的位置，所有跟在它后面的记录都要修改位置。这样如果你有很多条数据，排序就会变的消耗极大和很慢</p>
+
+<p>另一个办法是使用<a href="https://github.com/mixonic/ranked-model">ranked-model</a>这个gem，它只需要执行一条操作就可以了，它是每次给要排序的记录找一个前后两个数的中间值，它使用的数范围很宽，-8388607 to 8388607，使用的过程中也发现了问题，就是有时候排序是失败的，我没找到具体的原因，猜测可能是找的中间值有问题</p>
+
+<p>后来我发现了一个更简单的方式实现这样的效果，甚至都不用第三方gem（jQuery都sortable还是要用都，前面两个也用）。它都原理是：任何两个浮点数中间都包括无数个浮点数，简单说就是浮点数可以一直二分下去：1 > 0.5 > 0.25 &ndash;> 0.125</p>
+
+<p>看一下如何实现</p>
+
+<p>首先再要排序都model里加一个字段用来记录位置，类型为<strong>float</strong></p>
+
+<figure class='code'><figcaption><span>db/migrate/20140908010519_add_position_to_things.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddRowOrderToThings</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">add_column</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:position</span><span class="p">,</span> <span class="ss">:float</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后再该model都controller里添加更新都action</p>
+
+<figure class='code'><figcaption><span>controllers/admin/things_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ThingsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="vi">@thing</span> <span class="o">=</span> <span class="no">Thing</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">thing_params</span><span class="o">[</span><span class="ss">:thing_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@thing</span><span class="o">.</span><span class="n">update</span> <span class="n">thing_params</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">render</span> <span class="ss">nothing</span><span class="p">:</span> <span class="kp">true</span> <span class="c1"># this is a POST action, updates sent via AJAX, no view rendered</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">thing_params</span>
+</span><span class='line'>  <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:thing</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:position</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>后端都工作以及做完里，下面就是前端了，首先引入jquery-ui/sortable</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">jquery</span><span class="o">-</span><span class="n">ui</span><span class="o">/</span><span class="n">sortable</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下来就是最重要都部分了，在客户断直接计算好要排记录它断位置值，传给后台更新</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/update_things_position.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">axis</span><span class="o">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">cursor</span><span class="o">:</span> <span class="s1">&#39;move&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sort</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active-item-shadow&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">itemId</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;item-id&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">prevPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">prev</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">nextPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">next</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">prevPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">nextPosition</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">nextPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">prevPosition</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="p">(</span><span class="nx">nextPosition</span> <span class="o">+</span> <span class="nx">prevPosition</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/things/&quot;</span> <span class="o">+</span> <span class="nx">itemId</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">thing</span><span class="o">:</span> <span class="p">{</span> <span class="nx">position</span><span class="o">:</span> <span class="nx">position</span> <span class="p">}</span> <span class="p">},</span>
+</span><span class='line'>        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-position&#39;</span><span class="p">,</span> <span class="nx">position</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>页面渲染断时候我把记录当前的position值放在attr里，当移动一条记录后，找到这条记录前后记录的position值，如果前面没有记录，就是移到第一个了，那么把它的position设为后面一条记录position值减1，如果后面没有记录了，就是移动到最后一个，那么把它到position设为前面一条记录position值加1，如果前后都要，前后记录position值相加除2</p>
+
+<p>这样position值到变化好像是指数级的，每次都除以2，会不会除到小到没有呢？我们来看一下</p>
+
+<p>如果每次都移动到最前面或最后吗，都是加1减1到操作，完全不用担心</p>
+
+<p>看一下每次都移动到第二个位置到情况，假设有4条数据，它们到初始position值为0，1，2</p>
+
+<p>第一次把第三个数移动到第二个位置，它到值就是(0+1)/2 = 0.5，现在前两个数到position为0，0.5</p>
+
+<p>第二次把第三个数移动到第二个位置，它到值就是(0+0.5)/2 = 0.25, 现在前两个数到position为0，0.25</p>
+
+<p>第三次把第三个数移动到第二个位置，它到值就是(0+0.25)/2 = 0.125, 现在前两个数到position为0，0.125</p>
+
+<p>应该找到规律了，第n次移动之后第二个数为0.5的n次方，那么排序多少次会出现溢出的问题呢？我把这个问题留给读者 :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gitlab Shell如何工作]]></title>
@@ -3950,256 +4113,6 @@ A stub with an expectations that the method gets called.</p></blockquote>
 
 
 <p>现在就可以测试了</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用Nginx+SSL代理chef-server]]></title>
-    <link href="http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx/"/>
-    <updated>2012-10-12T21:09:00+08:00</updated>
-    <id>http://williamherry.com/blog/2012/10/12/proxy-chef-server-with-nginx</id>
-    <content type="html"><![CDATA[<h2>说明</h2>
-
-<p>本文介绍使用Nginx做为chef-server的前端代理服务器,并使用SSL加密传输数据</p>
-
-<p>这里使用的系统是centos,应该也适用于其它的发行版</p>
-
-<p>这里假设你已经配置好了chef-server,在整个过程中都不需要对chef-server做修改(你可能会想到让chef-server只监听在127.0.0.1上)</p>
-
-<h2>安装Nginx</h2>
-
-<pre><code>yum -y install nginx
-</code></pre>
-
-<h2>生成自签名证书</h2>
-
-<pre><code>mkdir -p /etc/ssl/nginx
-cd /etc/ssl/nginx
-openssl genrsa -out chef-server.pem 2048
-openssl req -new -x509 -key chef-server.pem -out chef-server.crt -days 1095 # 回车后按提示填一堆乱七八糟的东西
-</code></pre>
-
-<h2>修改nginx配置文件</h2>
-
-<p>这里有一个例子(注意key的路径以及server_name直接写IP地址)</p>
-
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.com/etc/nginx/nginx.conf'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#######################################################################</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># This is the main Nginx configuration file.</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># More information about the configuration options is available on</span>
-</span><span class='line'><span class="c">#   * the English wiki - http://wiki.nginx.org/Main</span>
-</span><span class='line'><span class="c">#   * the Russian documentation - http://sysoev.ru/nginx/</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#######################################################################</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># Main Module - directives that cover basic functionality</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpMainModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>user              nginx;
-</span><span class='line'>worker_processes  1;
-</span><span class='line'>
-</span><span class='line'>error_log  /var/log/nginx/error.log;
-</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  notice;</span>
-</span><span class='line'><span class="c">#error_log  /var/log/nginx/error.log  info;</span>
-</span><span class='line'>
-</span><span class='line'>pid        /var/run/nginx.pid;
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># Events Module</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpEventsModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>events <span class="o">{</span>
-</span><span class='line'>    worker_connections  1024;
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'><span class="c"># HTTP Core Module</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#   http://wiki.nginx.org/NginxHttpCoreModule</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c">#----------------------------------------------------------------------</span>
-</span><span class='line'>
-</span><span class='line'>http <span class="o">{</span>
-</span><span class='line'>    include       /etc/nginx/mime.types;
-</span><span class='line'>    default_type  application/octet-stream;
-</span><span class='line'>
-</span><span class='line'>    log_format  main  <span class="s1">&#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;</span>
-</span><span class='line'>                      <span class="s1">&#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;</span>
-</span><span class='line'>                      <span class="s1">&#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;</span>;
-</span><span class='line'>
-</span><span class='line'>    access_log  /var/log/nginx/access.log  main;
-</span><span class='line'>
-</span><span class='line'>    sendfile        on;
-</span><span class='line'>    <span class="c">#tcp_nopush     on;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#keepalive_timeout  0;</span>
-</span><span class='line'>    keepalive_timeout  65;
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#gzip  on;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Load config files from the /etc/nginx/conf.d directory</span>
-</span><span class='line'>    <span class="c"># The default server is in conf.d/default.conf</span>
-</span><span class='line'>    include /etc/nginx/conf.d/*.conf;
-</span><span class='line'>    upstream chef-server <span class="o">{</span>
-</span><span class='line'>      server 127.0.0.1:4000;
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    server <span class="o">{</span>
-</span><span class='line'>        listen 443 ssl;
-</span><span class='line'>
-</span><span class='line'>        server_name 192.168.122.44;
-</span><span class='line'>        root /var/lib/chef/rack/api/public;
-</span><span class='line'>
-</span><span class='line'>        ssl_certificate     /etc/ssl/nginx/chef-server.crt;
-</span><span class='line'>        ssl_certificate_key /etc/ssl/nginx/chef-server.key;
-</span><span class='line'>
-</span><span class='line'>        location / <span class="o">{</span>
-</span><span class='line'>            try_files <span class="nv">$uri</span> @backend;
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        location @backend <span class="o">{</span>
-</span><span class='line'>            proxy_set_header X-Forwarded-Proto <span class="s1">&#39;https&#39;</span>;
-</span><span class='line'>            proxy_set_header Host <span class="nv">$server_name</span>;
-</span><span class='line'>            proxy_pass http://chef-server;
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>检查配置文件并启动服务</h2>
-
-<pre><code>nginx -t
-/etc/init.d/nginx start
-</code></pre>
-
-<h2>修改client使用新的地址</h2>
-
-<figure class='code'><figcaption><span>vim</span><a href='http://williamherry.com/etc/chef/client.rb'>link</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
-</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>vim ~/.chef/knife.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'><span class="n">chef_server_url</span>  <span class="s1">&#39;https://ip-of-chef-server&#39;</span>
-</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

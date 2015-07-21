@@ -10,7 +10,7 @@
   <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
 
   
-  <meta name="description" content="这篇博客的目的是研究一下从git push到commit出现在gitlab页面上中间发生到什么 开始之前补充一点背景知识，ssh可以执行命令， Gitlab以及Gitolite这些操作远程仓库应该都有用这个技术 比如我们可以在~/.ssh/authorized_keys中加上自己当command &hellip;">
+  <meta name="description" content="拖拽排序就是类似下面图的效果 要实现以上的效果，有很多的选择，最流行的是使用act_as_listgem，它的问题是要修改一条记录的位置，所有跟在它后面的记录都要修改位置。这样如果你有很多条数据，排序就会变的消耗极大和很慢 另一个办法是使用ranked-model这个gem， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +70,198 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/">简单方法实现拖拽排序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-21T07:01:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2015</time>
+        
+         | <a href="/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>拖拽排序就是类似下面图的效果</p>
+
+<p><img src="/images/sortable.gif"></p>
+
+<p>要实现以上的效果，有很多的选择，最流行的是使用<a href="https://github.com/swanandp/acts_as_list">act_as_list</a>gem，它的问题是要修改一条记录的位置，所有跟在它后面的记录都要修改位置。这样如果你有很多条数据，排序就会变的消耗极大和很慢</p>
+
+<p>另一个办法是使用<a href="https://github.com/mixonic/ranked-model">ranked-model</a>这个gem，它只需要执行一条操作就可以了，它是每次给要排序的记录找一个前后两个数的中间值，它使用的数范围很宽，-8388607 to 8388607，使用的过程中也发现了问题，就是有时候排序是失败的，我没找到具体的原因，猜测可能是找的中间值有问题</p>
+
+<p>后来我发现了一个更简单的方式实现这样的效果，甚至都不用第三方gem（jQuery都sortable还是要用都，前面两个也用）。它都原理是：任何两个浮点数中间都包括无数个浮点数，简单说就是浮点数可以一直二分下去：1 > 0.5 > 0.25 &ndash;> 0.125</p>
+
+<p>看一下如何实现</p>
+
+<p>首先再要排序都model里加一个字段用来记录位置，类型为<strong>float</strong></p>
+
+<figure class='code'><figcaption><span>db/migrate/20140908010519_add_position_to_things.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddRowOrderToThings</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">add_column</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:position</span><span class="p">,</span> <span class="ss">:float</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后再该model都controller里添加更新都action</p>
+
+<figure class='code'><figcaption><span>controllers/admin/things_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ThingsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="vi">@thing</span> <span class="o">=</span> <span class="no">Thing</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">thing_params</span><span class="o">[</span><span class="ss">:thing_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@thing</span><span class="o">.</span><span class="n">update</span> <span class="n">thing_params</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">render</span> <span class="ss">nothing</span><span class="p">:</span> <span class="kp">true</span> <span class="c1"># this is a POST action, updates sent via AJAX, no view rendered</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">thing_params</span>
+</span><span class='line'>  <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:thing</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:position</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>后端都工作以及做完里，下面就是前端了，首先引入jquery-ui/sortable</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">jquery</span><span class="o">-</span><span class="n">ui</span><span class="o">/</span><span class="n">sortable</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下来就是最重要都部分了，在客户断直接计算好要排记录它断位置值，传给后台更新</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/update_things_position.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">axis</span><span class="o">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">cursor</span><span class="o">:</span> <span class="s1">&#39;move&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sort</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active-item-shadow&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">itemId</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;item-id&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">prevPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">prev</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">nextPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">next</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">prevPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">nextPosition</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">nextPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">prevPosition</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="p">(</span><span class="nx">nextPosition</span> <span class="o">+</span> <span class="nx">prevPosition</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/things/&quot;</span> <span class="o">+</span> <span class="nx">itemId</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">thing</span><span class="o">:</span> <span class="p">{</span> <span class="nx">position</span><span class="o">:</span> <span class="nx">position</span> <span class="p">}</span> <span class="p">},</span>
+</span><span class='line'>        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-position&#39;</span><span class="p">,</span> <span class="nx">position</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>页面渲染断时候我把记录当前的position值放在attr里，当移动一条记录后，找到这条记录前后记录的position值，如果前面没有记录，就是移到第一个了，那么把它的position设为后面一条记录position值减1，如果后面没有记录了，就是移动到最后一个，那么把它到position设为前面一条记录position值加1，如果前后都要，前后记录position值相加除2</p>
+
+<p>这样position值到变化好像是指数级的，每次都除以2，会不会除到小到没有呢？我们来看一下</p>
+
+<p>如果每次都移动到最前面或最后吗，都是加1减1到操作，完全不用担心</p>
+
+<p>看一下每次都移动到第二个位置到情况，假设有4条数据，它们到初始position值为0，1，2</p>
+
+<p>第一次把第三个数移动到第二个位置，它到值就是(0+1)/2 = 0.5，现在前两个数到position为0，0.5</p>
+
+<p>第二次把第三个数移动到第二个位置，它到值就是(0+0.5)/2 = 0.25, 现在前两个数到position为0，0.25</p>
+
+<p>第三次把第三个数移动到第二个位置，它到值就是(0+0.25)/2 = 0.125, 现在前两个数到position为0，0.125</p>
+
+<p>应该找到规律了，第n次移动之后第二个数为0.5的n次方，那么排序多少次会出现溢出的问题呢？我把这个问题留给读者 :)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2574,318 +2766,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/29/omniauth-github-demo/">Omniauth-github使用示例</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-29T11:57:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/07/29/omniauth-github-demo/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>这篇文档简单记录一下使用omniauth-github的过程</p>
-
-<p>这里有个能跑的代码可以clone看看效果<a href="https://github.com/williamherry/omniauth-github-demo">omniauth-github-demo</a></p>
-
-<p>首先新建项目:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rails new omniauth-github-demo</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为了让示例看起来不是很难看,我会把bootstrap也进来:</p>
-
-<ul>
-<li>在Gemfile里加上<code>bootstrap-sass</code>然后运行bundle</li>
-<li>在<code>app/assets/javascripts/application.js</code>加上<code>//= require bootstrap</code></li>
-<li>在<code>app/assets/stylesheets/application.css</code>加上<code>*= require bootstrap</code></li>
-</ul>
-
-
-<p>下一步把<code>omniauth-github</code>Gem加进来:
-&ndash; 在Gemfile里加上<code>omniauth-github</code>并执行bundle
-&ndash; 新建文件<code>config/initializers/omniauth.rb</code>包含以下内容</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Rails.application.config.middleware.use OmniAuth::Builder do
-</span><span class='line'>  provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于<code>ENV['GITHUB_KEY']</code>和<code>ENV['GITHUB_SECRET']</code>,需要在github上新建一个application,得到的<code>Client ID</code>和<code>Client Secret</code>就是对应的这两个东西,可以把他们写到<code>~/.bashrc</code>里面</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>export GITHUB_KEY='your client id'
-</span><span class='line'>export GITHUB_SECRET='your client secret'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>别忘了source这个文件或重新打开一个终端让显示生效</p>
-
-<p>还要注意你新建application的时候<code>The full URL to your application's homepage</code>和<code>Your application's callback URL</code>对应的端口需要和你的服务对应,比如我这里测试用rails开的3000端口,那我就可以填<code>http://localhost:3000/auth/github</code>和<code>http://localhost:3000/auth/github/callback</code></p>
-
-<p>下面我们需要在页面上加一个通过github登录的link,我直接写到layout里并加上一些div让bootstrap起作用</p>
-
-<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>body<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar navbar-fixed-top&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;navbar-inner&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>      <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>        <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>          <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
-</span><span class='line'>        <span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span><span class='line'>      <span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span><span class='line'>...
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在访问还看不到我们新加的内容,因为没有指定root,rails访问到的还是静态的index页面</p>
-
-<p>演示方便我们把root改为<code>application#index</code>并加上需要的action和view</p>
-
-<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>root <span class="s1">&#39;application#index&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> <span class="k">index</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">mkdir</span> app<span class="sr">/views/</span>application/
-</span><span class='line'>touch app<span class="sr">/views/</span>application/<span class="k">index</span>.html.erb
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在应该能看到这个link了,点一下如果看类似<code>No route matches [GET] "/auth/github/callback"</code>说明已经去github做验证并把结果返回回来了</p>
-
-<p>下一步我们需要验证完的回调</p>
-
-<p>从上面的错误信息可以看到回调地址是<code>/auth/github/callback</code>, 所以我们在routes中加一行</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;/auth/:provider/callback&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#create&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后建立controller和action</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> controller sessions create
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果你想看看返回的数据什么样子,可以这样写sessions#create</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
-</span><span class='line'>  raise env[<span class="s1">&#39;omniauth.auth&#39;</span>].to_yaml
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样点登录的link就会把返回的信息显示在页面上</p>
-
-<p>得到返回数据怎么处理就看个人需要了,你可能会想建一个表保存返回的数据, 这里我们建立users表来保存用户的nickname,由于github的nickname就是用户名,是唯一的,但是考虑到以后可能会加入其它的认证如twitter,nickname就可能冲突了,所以我们还加个provider</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>rails <span class="k">g</span> scaffold <span class="nb">User</span> nickname provider
-</span><span class='line'>rake db:migrate
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>有了保存数据的地方,我们就可以处理返回的验证了</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> create
-</span><span class='line'>  auth <span class="p">=</span> request.env[<span class="s2">&quot;omniauth.auth&quot;</span>]
-</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
-</span><span class='line'>  session[:user_id] <span class="p">=</span> user.id
-</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed in!&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>把<code>find_by_omniauth</code>方法放到了model里,它也很简单,能找到就返回,找不到就创建</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> self.find_by_omniauth<span class="p">(</span>auth<span class="p">)</span>
-</span><span class='line'>  user <span class="p">=</span> <span class="nb">User</span>.find_by_provider_and_nickname<span class="p">(</span>auth[<span class="s2">&quot;provider&quot;</span>]<span class="p">,</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]<span class="p">)</span>
-</span><span class='line'>  user ? user : <span class="nb">User</span>.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">def</span> self.create_with_omniauth<span class="p">(</span>auth<span class="p">)</span>
-</span><span class='line'>  create<span class="p">!</span> <span class="k">do</span> <span class="p">|</span>user<span class="p">|</span>
-</span><span class='line'>    user.provider <span class="p">=</span> auth[<span class="s2">&quot;provider&quot;</span>]
-</span><span class='line'>    user.nickname <span class="p">=</span> auth[<span class="s2">&quot;info&quot;</span>][<span class="s2">&quot;nickname&quot;</span>]
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>需要修改一下layout才可以看到登录成功的提示</p>
-
-<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;container&quot;</span> style<span class="p">=</span><span class="s2">&quot;margin-top: 60px;&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>% flash.each <span class="k">do</span> <span class="p">|</span>name<span class="p">,</span> msg<span class="p">|</span> %<span class="p">&gt;</span>
-</span><span class='line'>    <span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;alert alert-&lt;%= name == :notice ? &quot;</span>success<span class="s2">&quot; : &quot;</span>error<span class="s2">&quot; %&gt;&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>      <span class="p">&lt;</span><span class="k">a</span> class<span class="p">=</span><span class="s2">&quot;close&quot;</span> data<span class="p">-</span>dismiss<span class="p">=</span><span class="s2">&quot;alert&quot;</span><span class="p">&gt;</span><span class="k">x</span><span class="p">&lt;</span>/<span class="k">a</span><span class="p">&gt;</span>
-</span><span class='line'>      <span class="p">&lt;</span>%<span class="p">=</span> msg  %<span class="p">&gt;</span>
-</span><span class='line'>    <span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>%<span class="p">=</span> yield %<span class="p">&gt;</span>
-</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在登录已经成功了,我们还需要修改一下github登录的link,让它登录后显示用户名和logout</p>
-
-<p>首先我们需要定义一个帮助方法来判断用户有没登录</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>class ApplicationController <span class="p">&lt;</span> ActionController::Base
-</span><span class='line'>
-</span><span class='line'>  protect_from_forgery with: :exception
-</span><span class='line'>  helper_method :current_user
-</span><span class='line'>
-</span><span class='line'>  private
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">def</span> current_user
-</span><span class='line'>      @current_user <span class="p">||=</span> <span class="nb">User</span>.find<span class="p">(</span>session[:user_id]<span class="p">)</span> <span class="k">if</span> session[:user_id]
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后定义一条logout的路由</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">get</span> <span class="s2">&quot;signout&quot;</span> <span class="p">=&gt;</span> <span class="s2">&quot;sessions#destroy&quot;</span><span class="p">,</span> :<span class="k">as</span> <span class="p">=&gt;</span> <span class="s2">&quot;signout&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以及对应的Action</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="nb">def</span> destroy
-</span><span class='line'>  session[:user_id] <span class="p">=</span> nil
-</span><span class='line'>  redirect_to root_url<span class="p">,</span> :notice <span class="p">=&gt;</span> <span class="s2">&quot;Signed out!&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后修改layout</p>
-
-<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>div class<span class="p">=</span><span class="s2">&quot;user-nav pull-right&quot;</span><span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">if</span> current_user %<span class="p">&gt;</span>
-</span><span class='line'>    Welcome <span class="p">&lt;</span>%<span class="p">=</span> current_user.nickname %<span class="p">&gt;!</span>
-</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Sign out&quot;</span><span class="p">,</span> signout_path %<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">else</span> %<span class="p">&gt;</span>
-</span><span class='line'>    <span class="p">&lt;</span>%<span class="p">=</span> link_to <span class="s2">&quot;Github Login&quot;</span><span class="p">,</span> <span class="s2">&quot;/auth/github&quot;</span> %<span class="p">&gt;</span>
-</span><span class='line'>  <span class="p">&lt;</span>% <span class="k">end</span> %<span class="p">&gt;</span>
-</span><span class='line'><span class="p">&lt;</span>/div<span class="p">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>基本上这样就算完成了</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2899,6 +2779,10 @@ end
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/">简单方法实现拖拽排序</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/">Gitlab Shell如何工作</a>
@@ -2926,10 +2810,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/11/learning-chef-ohai-source-code/">Chef Ohai源码学习</a>
       </li>
     
   </ul>

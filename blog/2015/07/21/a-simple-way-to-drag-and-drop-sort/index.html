@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>简单方法实现拖拽排序 - William's Blog with Octopress</title>
+  <meta name="author" content="William Herry">
+  <meta name="google-site-verification" content="_KlSpzhIase_SfpNrkXR9D4RIMUinnyi_QB6FS7UhBs" />
+
+  
+  <meta name="description" content="拖拽排序就是类似下面图的效果 要实现以上的效果，有很多的选择，最流行的是使用act_as_listgem，它的问题是要修改一条记录的位置，所有跟在它后面的记录都要修改位置。这样如果你有很多条数据，排序就会变的消耗极大和很慢 另一个办法是使用ranked-model这个gem， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="William's Blog with Octopress" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!-- this font looks great -->
+<link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">William's Blog with Octopress</a></h1>
+  
+    <h2>Octopress is A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamherry.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">简单方法实现拖拽排序</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-21T07:01:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2015</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>拖拽排序就是类似下面图的效果</p>
+
+<p><img src="/images/sortable.gif"></p>
+
+<p>要实现以上的效果，有很多的选择，最流行的是使用<a href="https://github.com/swanandp/acts_as_list">act_as_list</a>gem，它的问题是要修改一条记录的位置，所有跟在它后面的记录都要修改位置。这样如果你有很多条数据，排序就会变的消耗极大和很慢</p>
+
+<p>另一个办法是使用<a href="https://github.com/mixonic/ranked-model">ranked-model</a>这个gem，它只需要执行一条操作就可以了，它是每次给要排序的记录找一个前后两个数的中间值，它使用的数范围很宽，-8388607 to 8388607，使用的过程中也发现了问题，就是有时候排序是失败的，我没找到具体的原因，猜测可能是找的中间值有问题</p>
+
+<p>后来我发现了一个更简单的方式实现这样的效果，甚至都不用第三方gem（jQuery都sortable还是要用都，前面两个也用）。它都原理是：任何两个浮点数中间都包括无数个浮点数，简单说就是浮点数可以一直二分下去：1 > 0.5 > 0.25 &ndash;> 0.125</p>
+
+<p>看一下如何实现</p>
+
+<p>首先再要排序都model里加一个字段用来记录位置，类型为<strong>float</strong></p>
+
+<figure class='code'><figcaption><span>db/migrate/20140908010519_add_position_to_things.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddRowOrderToThings</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">add_column</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:position</span><span class="p">,</span> <span class="ss">:float</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后再该model都controller里添加更新都action</p>
+
+<figure class='code'><figcaption><span>controllers/admin/things_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ThingsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="vi">@thing</span> <span class="o">=</span> <span class="no">Thing</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">thing_params</span><span class="o">[</span><span class="ss">:thing_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@thing</span><span class="o">.</span><span class="n">update</span> <span class="n">thing_params</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">render</span> <span class="ss">nothing</span><span class="p">:</span> <span class="kp">true</span> <span class="c1"># this is a POST action, updates sent via AJAX, no view rendered</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">thing_params</span>
+</span><span class='line'>  <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:thing</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:position</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>后端都工作以及做完里，下面就是前端了，首先引入jquery-ui/sortable</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">jquery</span><span class="o">-</span><span class="n">ui</span><span class="o">/</span><span class="n">sortable</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下来就是最重要都部分了，在客户断直接计算好要排记录它断位置值，传给后台更新</p>
+
+<figure class='code'><figcaption><span>assets/javascripts/admin/update_things_position.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#sortable&#39;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">axis</span><span class="o">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">cursor</span><span class="o">:</span> <span class="s1">&#39;move&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sort</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active-item-shadow&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">itemId</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;item-id&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">prevPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">prev</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">nextPosition</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">next</span><span class="p">().</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">prevPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">nextPosition</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">nextPosition</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="nx">prevPosition</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">position</span> <span class="o">=</span> <span class="p">(</span><span class="nx">nextPosition</span> <span class="o">+</span> <span class="nx">prevPosition</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/things/&quot;</span> <span class="o">+</span> <span class="nx">itemId</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">thing</span><span class="o">:</span> <span class="p">{</span> <span class="nx">position</span><span class="o">:</span> <span class="nx">position</span> <span class="p">}</span> <span class="p">},</span>
+</span><span class='line'>        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">ui</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;data-position&#39;</span><span class="p">,</span> <span class="nx">position</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>页面渲染断时候我把记录当前的position值放在attr里，当移动一条记录后，找到这条记录前后记录的position值，如果前面没有记录，就是移到第一个了，那么把它的position设为后面一条记录position值减1，如果后面没有记录了，就是移动到最后一个，那么把它到position设为前面一条记录position值加1，如果前后都要，前后记录position值相加除2</p>
+
+<p>这样position值到变化好像是指数级的，每次都除以2，会不会除到小到没有呢？我们来看一下</p>
+
+<p>如果每次都移动到最前面或最后吗，都是加1减1到操作，完全不用担心</p>
+
+<p>看一下每次都移动到第二个位置到情况，假设有4条数据，它们到初始position值为0，1，2</p>
+
+<p>第一次把第三个数移动到第二个位置，它到值就是(0+1)/2 = 0.5，现在前两个数到position为0，0.5</p>
+
+<p>第二次把第三个数移动到第二个位置，它到值就是(0+0.5)/2 = 0.25, 现在前两个数到position为0，0.25</p>
+
+<p>第三次把第三个数移动到第二个位置，它到值就是(0+0.25)/2 = 0.125, 现在前两个数到position为0，0.125</p>
+
+<p>应该找到规律了，第n次移动之后第二个数为0.5的n次方，那么排序多少次会出现溢出的问题呢？我把这个问题留给读者 :)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">William Herry</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-21T07:01:00+08:00" pubdate data-updated="true">Jul 21<span>st</span>, 2015</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/" data-via="williamherry" data-counturl="http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/" title="Previous Post: Gitlab Shell如何工作">&laquo; Gitlab Shell如何工作</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/">简单方法实现拖拽排序</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/19/from-git-push-to-commit-show-on-page/">Gitlab Shell如何工作</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/17/meta-ruby-note/">Ruby元编程读书笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/22/build-rails-dev-env-using-docker/">使用Docker搭建一个Rails开发环境</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/how-docker-image-works-with-aufs/">理解Docker镜像的存储原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/07/2014-conclusion-and-2015-plan/">2014年总结 && 2015年展望</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/memcached-cache-analysis/">Memcached Cache Analysis</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/22/login-from-console/">Login From Console</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/williamherry">@williamherry</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'williamherry',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - William Herry -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'williamherry';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/';
+        var disqus_url = 'http://williamherry.com/blog/2015/07/21/a-simple-way-to-drag-and-drop-sort/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb7d5e56d88d60f662ac5925d6ef11e5b' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+</body>
+</html>
